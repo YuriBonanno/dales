@@ -14,6 +14,7 @@ contains
     use modmpi,        only : myid
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
+	use modradrrtmgyuri,  only testyuri !This line I added
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
     use shr_orb_mod,   only : shr_orb_params
@@ -86,6 +87,14 @@ contains
 !
                LWP_slice   (imax,krad1),       &
                IWP_slice   (imax,krad1),       &
+! Added myself ------------------	   
+			   cloudFrac_reduced   (imax,krad1),       &
+               liquidRe_reduced    (imax,krad1),       &
+               iceRe_reduced       (imax,krad1),       &
+!
+               LWP_slice   (imax,krad1),       &
+               IWP_slice   (imax,krad1),       &
+!End Added myself ------------------
                presh_input      (krad1),       &
                  STAT=ierr(1))
 
@@ -96,6 +105,9 @@ contains
                o3_slice    (imax,kradmax),         &
                rho_slice   (imax,kradmax),       &
                tg_slice    (imax),               &
+! Added myself ------------------
+			   tg_slice_reduced    (imax),       &
+!End Added myself ------------------
                presf_input      (kradmax),         &
 !
                interfaceP     (imax,krad2),    &
@@ -179,12 +191,19 @@ contains
       call setupSlicesFromProfiles &
            ( j, npatch_start, &                                           !input
            LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
-
+	end do
+	call testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
+tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
+	!Here I should order the slices, and only select a subset.
+	do j=2,j1
       if (rad_longw) then
         call rrtmg_lw &
              ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
         !if(myid==0) write(*,*) 'after call to rrtmg_lw'
       end if
+	  
+	  !!
+	  
       if (rad_shortw) then
          call setupSW(sunUp)
          if (sunUp) then
