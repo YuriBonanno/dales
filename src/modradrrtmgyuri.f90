@@ -1,11 +1,13 @@
 module modradrrtmgyuri
+use modraddata
+
 implicit none
 
 contains
 	subroutine testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
 , tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
 	
-		use modglobal, only: imax,kind_rb
+		use modglobal, only: imax, kind_rb
 
 		logical :: fileexists=.false.
 		character(len = 16) :: filename = 'slicecontent.txt'
