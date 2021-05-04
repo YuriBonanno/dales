@@ -92,8 +92,8 @@ contains
                liquidRe_reduced    (imax,krad1),       &
                iceRe_reduced       (imax,krad1),       &
 !
-               LWP_slice   (imax,krad1),       &
-               IWP_slice   (imax,krad1),       &
+               LWP_slice_reduced   (imax,krad1),       &
+               IWP_slice_reduced   (imax,krad1),       &
 !End Added myself ------------------
                presh_input      (krad1),       &
                  STAT=ierr(1))
@@ -192,7 +192,7 @@ contains
            ( j, npatch_start, &                                           !input
            LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 	end do
-	call testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
+	call testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe, & !input
 tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
 	!Here I should order the slices, and only select a subset.
 	do j=2,j1
