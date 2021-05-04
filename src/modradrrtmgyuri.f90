@@ -3,7 +3,7 @@ implicit none
 
 contains
 	subroutine testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
-tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
+, tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
 	
 		use modglobal, only: imax,kind_rb
 
