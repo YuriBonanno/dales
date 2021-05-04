@@ -14,7 +14,7 @@ contains
     use modmpi,        only : myid
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
-	use modradrrtmgyuri,  only testyuri !This line I added
+	use modradrrtmgyuri,  only : testyuri !This line I added
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
     use shr_orb_mod,   only : shr_orb_params
