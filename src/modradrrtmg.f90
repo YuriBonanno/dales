@@ -112,7 +112,7 @@ contains
                tg_slice    (imax),               &
 ! Added myself ------------------
 			   tg_slice_reduced    (imax),       &
-			   slices_added (imax,jmax,krad1),    &
+			   !slices_added (imax,jmax,krad1),    &
 !End Added myself ------------------
                presf_input      (kradmax),         &
 !

@@ -188,6 +188,9 @@ SAVE
   real, allocatable :: swuca(:,:,:)  !<  clear air shortwave upward radiative flux
   real, allocatable :: lwdca(:,:,:)  !<  clear air longwave downward radiative flux
   real, allocatable :: lwuca(:,:,:)  !<  clear air longwave upward radiative flux
+  ! Added myself ------------------
+  real, allocatable :: slices_added(:,:,:)
+  !End Added myself ------------------
 
   real, allocatable :: SW_up_TOA(:,:), SW_dn_TOA(:,:), LW_up_TOA(:,:), LW_dn_TOA(:,:) !< Top of the atmosphere radiative fluxes
   real, allocatable :: SW_up_ca_TOA(:,:), SW_dn_ca_TOA(:,:), LW_up_ca_TOA(:,:), LW_dn_ca_TOA(:,:)
