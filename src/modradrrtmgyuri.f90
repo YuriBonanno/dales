@@ -4,7 +4,47 @@ use modraddata
 implicit none
 
 contains
-	subroutine testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
+	subroutine testlus
+
+		logical :: fileexists=.false.
+		character(len = 16) :: filename = 'testlus.txt'
+		character(len = 40) :: writestring
+	
+		inquire(file=filename, exist=fileexists)
+		print *, fileexists
+		if (fileexists) then
+			open(11, file=filename, status="old", position="append", action="write")
+		else
+			open(11, file=filename, status="new", action="write")
+		end if
+		writestring = 'ja testlus'
+		write(11, *) writestring
+		close(11)
+	end subroutine testlus
+
+	subroutine testyurifirst(slices_added) !inputoutput
+	
+		use modglobal, only: imax, jmax, kind_rb
+
+		logical :: fileexists=.false.
+		character(len = 16) :: filename = 'slicecontentfirsttest.txt'
+		character(len = 40) :: writestring
+	
+		real(KIND=kind_rb) ::    slices_added(imax,jmax,krad1)
+	
+		inquire(file=filename, exist=fileexists)
+		print *, fileexists
+		if (fileexists) then
+			open(11, file=filename, status="old", position="append", action="write")
+		else
+			open(11, file=filename, status="new", action="write")
+		end if
+		writestring = 'testyurifirst'
+		write(11, *) writestring
+		close(11)
+	end subroutine testyurifirst
+	
+	subroutine testyurirad(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
 , tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
 	
 		use modglobal, only: imax, kind_rb
@@ -47,6 +87,6 @@ contains
 		writestring = 'abcdefghijklmnopqrstuvwxyz'
 		write(11, *) writestring
 		close(11)
-	end subroutine testyuri
+	end subroutine testyurirad
 	
 end module modradrrtmgyuri

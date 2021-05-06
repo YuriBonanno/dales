@@ -14,7 +14,9 @@ contains
     use modmpi,        only : myid
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
-	use modradrrtmgyuri,  only : testyuri !This line I added
+! Added myself ------------------
+	use modradrrtmgyuri,  only : testyurirad, testyurifirst, testlus
+	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
     use shr_orb_mod,   only : shr_orb_params
@@ -25,6 +27,9 @@ contains
     integer                :: npatch    ! Sounding levels above domain
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
+	! Added myself ------------------
+	logical                :: barker_method
+	!End Added myself ------------------
     real(SHR_KIND_R4),save ::  eccen, & ! Earth's eccentricity factor (unitless) (typically 0 to 0.1)
                                obliq, & ! Earth's obliquity angle (deg) (-90 to +90) (typically 22-26)
                                mvelp, & ! Earth's moving vernal equinox at perhelion (deg)(0 to 360.0)
@@ -107,6 +112,7 @@ contains
                tg_slice    (imax),               &
 ! Added myself ------------------
 			   tg_slice_reduced    (imax),       &
+			   slices_added (imax,jmax,krad1),    &
 !End Added myself ------------------
                presf_input      (kradmax),         &
 !
@@ -185,17 +191,36 @@ contains
     lwDown_slice = 0
     lwUpCS_slice = 0
     lwDownCS_slice = 0
+! Added myself ------------------
+ 	barker_method=.true.
+ 	if (barker_method) then
+		call testlus
+	end if
 
-   ! Loop over the slices in the model, in the y direction
+
+!	barker_method=.true.
+!	if (barker_method) then
+!	do j=2,j1
+!       call setupSlicesFromProfiles &
+!           ( j, npatch_start, &                                           !input
+!           LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+!	   slices_added(:,j-1,:) = LWP_slice
+!	end do
+!	call testyurifirst(slices_added)
+!	
+!
+!	else
+!End Added myself ------------------
+    ! Loop over the slices in the model, in the y direction
     do j=2,j1
       call setupSlicesFromProfiles &
            ( j, npatch_start, &                                           !input
            LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
-	end do
-	call testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe, & !input
-tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
+!	end do
+!	call testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe, & !input
+!tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
 	!Here I should order the slices, and only select a subset.
-	do j=2,j1
+!	do j=2,j1
       if (rad_longw) then
         call rrtmg_lw &
              ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -220,7 +245,6 @@ tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe
           lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
         end do
       end if
-
       swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
       swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
 
@@ -244,7 +268,9 @@ tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe
       LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
 
     end do ! Large loop over j=2,j1
-
+! Added myself ------------------
+!	end if
+!End Added myself ------------------	
     do k=1,kmax
       do j=2,j1
         do i=2,i1
