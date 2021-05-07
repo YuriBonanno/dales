@@ -33,7 +33,7 @@ contains
 		character(len = 40) :: writestring
 	
 		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),       &
-		                        layerMass      (imax, jmax, krad1),       &
+		                        collumns_layerMass      (imax, jmax, krad1),       &
 								collumns_layerP   (imax, jmax, krad1),       &
 								collumns_interfaceP   (imax, jmax, krad2),       &
 								qcl_collumns   (imax, jmax, kradmax),     &
