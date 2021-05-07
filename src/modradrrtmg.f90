@@ -15,7 +15,7 @@ contains
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
 ! Added myself ------------------
-	use modradrrtmgyuri,  only : testyurirad, testyurifirst, testlus
+	use modradrrtmgyuri,  !only : testyurirad, testyurifirst, testlus
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
@@ -93,12 +93,8 @@ contains
                LWP_slice   (imax,krad1),       &
                IWP_slice   (imax,krad1),       &
 ! Added myself ------------------	   
-			   cloudFrac_reduced   (imax,krad1),       &
-               liquidRe_reduced    (imax,krad1),       &
-               iceRe_reduced       (imax,krad1),       &
-!
-               LWP_slice_reduced   (imax,krad1),       &
-               IWP_slice_reduced   (imax,krad1),       &
+			   LWP_collumns   (imax, jmax, krad1),       &
+			   LWP_flattened   (imax, jmax),       &
 !End Added myself ------------------
                presh_input      (krad1),       &
                  STAT=ierr(1))
@@ -110,10 +106,6 @@ contains
                o3_slice    (imax,kradmax),         &
                rho_slice   (imax,kradmax),       &
                tg_slice    (imax),               &
-! Added myself ------------------
-			   tg_slice_reduced    (imax),       &
-			   !slices_added (imax,jmax,krad1),    &
-!End Added myself ------------------
                presf_input      (kradmax),         &
 !
                interfaceP     (imax,krad2),    &
@@ -194,7 +186,7 @@ contains
 ! Added myself ------------------
  	barker_method=.true.
  	if (barker_method) then
-		call testlus
+		call testyuriLWP(LWP_collumns, LWP_flattened)
 	end if
 
 

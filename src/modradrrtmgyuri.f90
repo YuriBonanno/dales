@@ -22,16 +22,44 @@ contains
 		close(11)
 	end subroutine testlus
 
-	subroutine testyurifirst(slices_added) !inputoutput
+	subroutine testyuriLWP(LWP_collumns, LWP_flattened)
 	
-		use modglobal, only: imax, jmax, kind_rb
-
+		use modglobal, only: imax, jmax, kind_rb, grav
+		use modfields, only: ql0
+		
 		logical :: fileexists=.false.
-		character(len = 16) :: filename = 'slicecontentfirsttest.txt'
+		character(len = 16) :: filename = 'LWPcontentfirsttest.txt'
 		character(len = 40) :: writestring
 	
-		real(KIND=kind_rb) ::    slices_added(imax,jmax,krad1)
+		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),       &
+			                    LWP_flattened   (imax, jmax)
 	
+		qcl_collumns(:,:,:) = gl0(:,:,:)
+	    do k=1, kmax
+		   collumns_layerP(:,:,k) = presf_input(k)
+		   collumns_interfaceP(:,:,p) = presh_input(k)
+	    end do
+	    collumns_interfaceP(:,:, krad2)  = min( 1.e-4_kind_rb , 0.25*collumns_layerP(1,:,krad1) )
+	
+	    do k=kmax+1, kradmax
+		   collumns_layerP(:,:,k) = presf_input(k)
+	    end do
+	    collumns_layerP (:,:, krad1) = 0.5*presh_input(krad1)
+	
+	    do k=1, kradmax
+		   collumns_layerMass(:,:,k) = 100.*( collumns_interfaceP(:,:,k) - collumns_interfaceP(:,:,k+1) ) / grav  !of full level
+	       LWP_collumns(:,:,k) = qcl_collumns_(:,:,k)*collumns_layerMass(:,:,k)*1e3
+	    end do
+	    collumns_layerMass(:,:,krad1) = 100.*( collumns_interfaceP(:,:,krad1) - collumns_interfaceP(:,:,krad2) ) / grav
+        LWP_collumns(:,:,krad1) = 0.
+	    !LWP_collumns is not cumulative I think, Also I think it has different values for different z
+	    !I need to flatten it.
+	    do i=1,imax
+		   do j=1,jmax
+		      LWP_flattened(i,j) = SUM(LWP_collumns(i,j,:))
+		   end do
+	    end do
+
 		inquire(file=filename, exist=fileexists)
 		print *, fileexists
 		if (fileexists) then
@@ -39,6 +67,11 @@ contains
 		else
 			open(11, file=filename, status="new", action="write")
 		end if
+		do i=1,imax
+		   do j=1,jmax
+		      write(11, *) LWP_flattened(i,j)
+		   end do
+	    end do
 		writestring = 'testyurifirst'
 		write(11, *) writestring
 		close(11)

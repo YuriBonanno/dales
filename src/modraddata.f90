@@ -135,7 +135,8 @@ SAVE
                                                    ccl4vmr
   real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_slice,IWP_slice ,cloudFrac,liquidRe,iceRe
 ! Added myself ------------------	  
-  real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_slice_reduced,IWP_slice_reduced ,cloudFrac_reduced,liquidRe_reduced,iceRe_reduced
+  real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened
+  real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_collumns
 !End Added myself ------------------  
   real(kind=kind_rb),allocatable,dimension(:,:) :: interfaceP,    &
                                                    interfaceT
@@ -157,9 +158,7 @@ SAVE
   real,allocatable,dimension(:)   :: presf_input,     &   ! Full-level pressure (sounding patched to domain)
                                      presh_input          ! Halflevel  pressure (sounding patched to domain)
   real,allocatable,dimension(:)   :: tg_slice             ! Sea surface temperature of a 2D slice
-! Added myself ------------------	  
-  real,allocatable,dimension(:)   :: tg_slice_reduced     ! Reduced Sea surface temperature of a 2D slice
-!End Added myself ------------------	
+
   real(kind_rb),allocatable,dimension(:)   :: &
        o3, co2, ch4, n2o, o2, cfc11, cfc12, cfc22, ccl4   ! Profiles of trace gases
   integer :: npatch_start,npatch_end
