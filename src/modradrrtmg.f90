@@ -15,7 +15,7 @@ contains
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
 ! Added myself ------------------
-	use modradrrtmgyuri,  !only : testyurirad, testyurifirst, testlus
+	use modradrrtmgyuri,  only : testyurirad, testyuriLWP, testlus
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
