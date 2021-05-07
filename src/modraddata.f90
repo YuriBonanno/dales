@@ -136,7 +136,9 @@ SAVE
   real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_slice,IWP_slice ,cloudFrac,liquidRe,iceRe
 ! Added myself ------------------	  
   real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened
+  real(kind=kind_rb),allocatable,dimension(:,:) :: collumns_layerP
   real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_collumns
+  real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_interfaceP
 !End Added myself ------------------  
   real(kind=kind_rb),allocatable,dimension(:,:) :: interfaceP,    &
                                                    interfaceT
