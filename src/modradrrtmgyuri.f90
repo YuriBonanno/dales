@@ -33,7 +33,9 @@ contains
 		character(len = 40) :: writestring
 	
 		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),       &
+								qcl_collumns   (imax, jmax, kradmax),            &
 			                    LWP_flattened   (imax, jmax)
+
 	
 		qcl_collumns(:,:,:) = ql0(:,:,:)
 	    do k=1, kmax
