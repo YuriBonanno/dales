@@ -24,9 +24,10 @@ contains
 
 	subroutine testyuriLWP(LWP_collumns, LWP_flattened)
 	
-		use modglobal, only: imax, jmax, kind_rb, grav
+		use modglobal, only: imax, jmax, kmax, kind_rb, grav
 		use modfields, only: ql0
 		
+		integer :: i,j,k
 		logical :: fileexists=.false.
 		character(len = 16) :: filename = 'LWPcontentfirsttest.txt'
 		character(len = 40) :: writestring
@@ -48,7 +49,7 @@ contains
 	
 	    do k=1, kradmax
 		   collumns_layerMass(:,:,k) = 100.*( collumns_interfaceP(:,:,k) - collumns_interfaceP(:,:,k+1) ) / grav  !of full level
-	       LWP_collumns(:,:,k) = qcl_collumns_(:,:,k)*collumns_layerMass(:,:,k)*1e3
+	       LWP_collumns(:,:,k) = qcl_collumns(:,:,k)*collumns_layerMass(:,:,k)*1e3
 	    end do
 	    collumns_layerMass(:,:,krad1) = 100.*( collumns_interfaceP(:,:,krad1) - collumns_interfaceP(:,:,krad2) ) / grav
         LWP_collumns(:,:,krad1) = 0.
