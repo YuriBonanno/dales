@@ -34,7 +34,7 @@ contains
 		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),       &
 			                    LWP_flattened   (imax, jmax)
 	
-		qcl_collumns(:,:,:) = gl0(:,:,:)
+		qcl_collumns(:,:,:) = ql0(:,:,:)
 	    do k=1, kmax
 		   collumns_layerP(:,:,k) = presf_input(k)
 		   collumns_interfaceP(:,:,p) = presh_input(k)
@@ -75,7 +75,7 @@ contains
 		writestring = 'testyurifirst'
 		write(11, *) writestring
 		close(11)
-	end subroutine testyurifirst
+	end subroutine testyuriLWP
 	
 	subroutine testyurirad(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
 , tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
