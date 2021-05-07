@@ -42,10 +42,12 @@ contains
 		qcl_collumns(:,:,:) = ql0(:,:,:)
 	    do k=1, kmax
 		   collumns_layerP(:,:,k) = presf_input(k)
-		   collumns_interfaceP(:,:,p) = presh_input(k)
+		   collumns_interfaceP(:,:,k) = presh_input(k)
 	    end do
-	    collumns_interfaceP(:,:, krad2)  = min( 1.e-4_kind_rb , 0.25*collumns_layerP(1,:,krad1) )
-	
+		do i=1,imax
+	       collumns_interfaceP(i,:, krad2)  = min( 1.e-4_kind_rb , 0.25*collumns_layerP(1,:,krad1) )
+		end do
+	    
 	    do k=kmax+1, kradmax
 		   collumns_layerP(:,:,k) = presf_input(k)
 	    end do
