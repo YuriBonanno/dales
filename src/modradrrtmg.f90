@@ -186,7 +186,7 @@ contains
 ! Added myself ------------------
  	barker_method=.true.
  	if (barker_method) then
-		call testyuriLWP(LWP_collumns, LWP_flattened)
+		call testyuriLWP(LWP_collumns, LWP_flattened, cloudFrac)
 	end if
 
 

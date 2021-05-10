@@ -4,6 +4,7 @@ use modraddata
 implicit none
 
 contains
+!test Routine
 	subroutine testlus
 
 		logical :: fileexists=.false.
@@ -22,7 +23,9 @@ contains
 		close(11)
 	end subroutine testlus
 
-	subroutine testyuriLWP(LWP_collumns, LWP_flattened)
+
+!Important Routine
+	subroutine testyuriLWP(LWP_collumns, LWP_flattened, cloudFrac)
 	
 		use modglobal, only: imax, jmax, kmax, kind_rb, grav
 		use modfields, only: ql0
@@ -34,15 +37,19 @@ contains
 		character(len = 16) :: filenameql0 = 'ql0content.txt'
 		character(len = 40) :: writestring
 	
-		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),       &
-		                        collumns_layerMass      (imax, jmax, krad1),       &
-								collumns_layerP   (imax, jmax, krad1),       &
-								collumns_interfaceP   (imax, jmax, krad2),       &
-								qcl_collumns   (imax, jmax, kradmax),     &
-			                    LWP_flattened  (imax, jmax),              &
-								ztop_field     (imax, jmax)
+		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),                &! LWP per gridpoint
+		                        collumns_layerMass      (imax, jmax, krad1),       &! Mass per gridpoint
+								collumns_layerP   (imax, jmax, krad1),             &! Pressure at the full gridpoint
+								collumns_interfaceP   (imax, jmax, krad2),         &! Pressure at the half gridpoint
+								qcl_collumns   (imax, jmax, kradmax),              &! cloud liquid content
+			                    LWP_flattened  (imax, jmax),                       &! LWP flattened over Z direction
+								cloudFrac      (imax, jmax),                       &! Fraction of clouds per collumn
+								ztop_field     (imax, jmax)							! Height of the highest cloud
 	
+		!Define qcl
 		qcl_collumns(:,:,:) = ql0(:,:,:)
+		
+		!Define Pressure
 	    do k=1, kmax
 		   collumns_layerP(:,:,k) = presf_input(k)
 		   collumns_interfaceP(:,:,k) = presh_input(k)
@@ -57,6 +64,7 @@ contains
 	    collumns_layerP (:,:, krad1) = 0.5*presh_input(krad1)
 	
 		!This one could be partially moved to the other k do loops
+		!Define Layermass and LWP
 	    do k=1, kradmax
 		   collumns_layerMass(:,:,k) = 100.*( collumns_interfaceP(:,:,k) - collumns_interfaceP(:,:,k+1) ) / grav  !of full level
 	       LWP_collumns(:,:,k) = qcl_collumns(:,:,k)*collumns_layerMass(:,:,k)*1e3
@@ -67,12 +75,18 @@ contains
 		
 	    !LWP_collumns is not cumulative I think, Also I think it has different values for different z
 	    !I need to flatten it.
+		!Define Ztop and cloudfrac
 	    ztop_field(:,:) = 0.
 		do i=1,imax
 		   do j=1,jmax
+			! Defines LWP_flattened and sets cloudFrac to 1 when LWP larger than zero
 		      LWP_flattened(i,j) = SUM(LWP_collumns(i,j,:))
+			  if (LWP_flattened(i,j)>0.0) then
+				cloudFrac(i,j) = 1
+			  end if
 			  do k=1,kmax
 			     inverse_k = kmax + 1 - k
+				 !looks through the liquid in a gridpoint from top to bottom and assigns the first nonzero value to the ztop_field and then exits the vertical loop
 				 if (ql0(i,j,inverse_k)>0.0) then
 					ztop_field(i,j) = ql0(i,j,inverse_k) 
 					EXIT
@@ -80,6 +94,14 @@ contains
 			  end do
 		   end do
 	    end do
+
+		!Select only the collumns with a nonzero cloudratio
+
+		!Order on basis of ztop_field
+		
+		!Order on basis of LWP
+
+
 
 		inquire(file=filenameLWP, exist=fileLWPexists)
 		inquire(file=filenameql0, exist=fileql0exists)
@@ -117,6 +139,7 @@ contains
 		
 	end subroutine testyuriLWP
 	
+	!OutdatedRoutine
 	subroutine testyurirad(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
 , tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
 	

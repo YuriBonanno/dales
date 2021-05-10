@@ -137,8 +137,9 @@ SAVE
 ! Added myself ------------------	  
   real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened
   real(kind=kind_rb),allocatable,dimension(:,:) :: ztop_field
-  real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_layerP
+  real(kind=kind_rb),allocatable,dimension(:,:) :: qcl_collumns
   real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_collumns
+  real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_layerP
   real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_interfaceP
   real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_layerMass
 !End Added myself ------------------  
