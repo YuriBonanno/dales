@@ -28,8 +28,10 @@ contains
 		use modfields, only: ql0
 		
 		integer :: i,j,k,inverse_k
-		logical :: fileexists=.false.
-		character(len = 16) :: filename = 'LWPcontentfirsttest.txt'
+		logical :: fileLWPexists=.false.
+		logical :: fileql0exists=.false.
+		character(len = 16) :: filenameLWP = 'LWPcontent.txt'
+		character(len = 16) :: filenameql0 = 'ql0content.txt'
 		character(len = 40) :: writestring
 	
 		real(KIND=kind_rb) ::   LWP_collumns   (imax, jmax, krad1),       &
@@ -61,9 +63,12 @@ contains
 	    end do
 	    collumns_layerMass(:,:,krad1) = 100.*( collumns_interfaceP(:,:,krad1) - collumns_interfaceP(:,:,krad2) ) / grav
         LWP_collumns(:,:,krad1) = 0.
+		
+		
 	    !LWP_collumns is not cumulative I think, Also I think it has different values for different z
 	    !I need to flatten it.
-	    do i=1,imax
+	    ztop_field(:,:) = 0.
+		do i=1,imax
 		   do j=1,jmax
 		      LWP_flattened(i,j) = SUM(LWP_collumns(i,j,:))
 			  do k=1,kmax
@@ -76,21 +81,40 @@ contains
 		   end do
 	    end do
 
-		inquire(file=filename, exist=fileexists)
-		print *, fileexists
-		if (fileexists) then
-			open(11, file=filename, status="old", position="append", action="write")
+		inquire(file=filenameLWP, exist=fileexists)
+		inquire(file=filenameql0, exist=fileexists)
+		!print *, fileLWPexists
+		!print *, fileql0exists
+		if (fileLWPexists) then
+			open(11, file=filenameLWP, status="old", position="append", action="write")
 		else
-			open(11, file=filename, status="new", action="write")
+			open(11, file=filenameLWP, status="new", action="write")
 		end if
 		do i=1,imax
 		   do j=1,jmax
 		      write(11, *) LWP_flattened(i,j)
 		   end do
 	    end do
-		writestring = 'testyurifirst'
+		writestring = 'LWPOneSet'
 		write(11, *) writestring
 		close(11)
+		
+		if (fileql0exists) then
+			open(12, file=filenameql0, status="old", position="append", action="write")
+		else
+			open(12, file=filenameql0, status="new", action="write")
+		end if
+		do i=1,imax
+		   do j=1,jmax
+			  do k=1,kmax
+				write(12, *) ql0(i,j,k)
+			  end do
+		   end do
+	    end do
+		writestring = 'ql0OneSet'
+		write(12, *) writestring
+		close(12)
+		
 	end subroutine testyuriLWP
 	
 	subroutine testyurirad(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe & !input
