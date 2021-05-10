@@ -27,7 +27,7 @@ contains
 		use modglobal, only: imax, jmax, kmax, kind_rb, grav
 		use modfields, only: ql0
 		
-		integer :: i,j,k
+		integer :: i,j,k,inverse_k
 		logical :: fileexists=.false.
 		character(len = 16) :: filename = 'LWPcontentfirsttest.txt'
 		character(len = 40) :: writestring
@@ -37,7 +37,8 @@ contains
 								collumns_layerP   (imax, jmax, krad1),       &
 								collumns_interfaceP   (imax, jmax, krad2),       &
 								qcl_collumns   (imax, jmax, kradmax),     &
-			                    LWP_flattened  (imax, jmax)
+			                    LWP_flattened  (imax, jmax),              &
+								ztop_field     (imax, jmax)
 	
 		qcl_collumns(:,:,:) = ql0(:,:,:)
 	    do k=1, kmax
@@ -53,6 +54,7 @@ contains
 	    end do
 	    collumns_layerP (:,:, krad1) = 0.5*presh_input(krad1)
 	
+		!This one could be partially moved to the other k do loops
 	    do k=1, kradmax
 		   collumns_layerMass(:,:,k) = 100.*( collumns_interfaceP(:,:,k) - collumns_interfaceP(:,:,k+1) ) / grav  !of full level
 	       LWP_collumns(:,:,k) = qcl_collumns(:,:,k)*collumns_layerMass(:,:,k)*1e3
@@ -64,6 +66,13 @@ contains
 	    do i=1,imax
 		   do j=1,jmax
 		      LWP_flattened(i,j) = SUM(LWP_collumns(i,j,:))
+			  do k=1,kmax
+			     inverse_k = kmax + 1 - k
+				 if (ql0(i,j,inverse_k)>0.0) then
+					ztop_field(i,j) = ql0(i,j,inverse_k) 
+					EXIT
+				 end if
+			  end do
 		   end do
 	    end do
 
