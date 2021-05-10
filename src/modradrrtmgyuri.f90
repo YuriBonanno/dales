@@ -81,8 +81,8 @@ contains
 		   end do
 	    end do
 
-		inquire(file=filenameLWP, exist=fileexists)
-		inquire(file=filenameql0, exist=fileexists)
+		inquire(file=filenameLWP, exist=fileLWPexists)
+		inquire(file=filenameql0, exist=fileql0exists)
 		!print *, fileLWPexists
 		!print *, fileql0exists
 		if (fileLWPexists) then
