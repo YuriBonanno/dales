@@ -15,7 +15,7 @@ contains
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
 ! Added myself ------------------
-	use modradrrtmgyuri,  only : testyurirad, testyuriLWP, testlus
+	use modradrrtmgyuri
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
@@ -234,7 +234,7 @@ contains
 		do j = 1, GLQ_slices
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-			   current_GLQ_point, total_amount_GLQ_points)
+			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all)
 
 			! Feed the slices into rrtmg_sw
 				!INPUT:
@@ -1052,12 +1052,12 @@ contains
 
 	do i=1,imax
 		do k=1,kradmax
-			layerMass_slice(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
-			LWP_slice(i,k) = qcl_slice(i,k)*layerMass_slice(i,k)*1e3
-			IWP_slice(i,k) = qci_slice(i,k)*layerMass_slice(i,k)*1e3
+			layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
+			LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
+			IWP_slice(i,k) = qci_slice(i,k)*layerMass(i,k)*1e3
 			qci_slice(i,k) = qci_slice(i,k)*rho_slice(i,k)   !cstep, qci is now in kg/m3 needed for ice effective radius
 		enddo
-		layerMass_slice(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
+		layerMass(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
 		LWP_slice(i,krad1) = 0.
 		IWP_slice(i,krad1) = 0.
 	enddo
@@ -1072,11 +1072,11 @@ contains
 				cloudFrac(i,k) = 1.
 				liquidRe(i,k) = reff_factor  * qcl_slice(i,k)**(1./3.)
 
-				if (liquidRe_GLQ(i,k).lt.2.5) then
-					liquidRe_GLQ(i,k) = 2.5
+				if (liquidRe(i,k).lt.2.5) then
+					liquidRe(i,k) = 2.5
 				endif
-				if (liquidRe_GLQ(i,k).gt.60.) then
-					liquidRe_GLQ(i,k) = 60.
+				if (liquidRe(i,k).gt.60.) then
+					liquidRe(i,k) = 60.
 				endif
 			endif
 			if (IWP_slice(i,k).gt.0) then
