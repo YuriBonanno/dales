@@ -62,7 +62,8 @@ contains
 		integer,allocatable,dimension(:,:):: cloud_class       						!Contains the whole grid with integers showing to which class every collumns belongs
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 		real(kind=kind_rb),allocatable,dimension(:) :: n_quantiles 					!= n_classes - 1, could be integer but must be real for quicksort
-		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
+		!This definition not necessary because it is defined later
+		!real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
