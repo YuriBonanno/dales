@@ -15,7 +15,7 @@ contains
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
 ! Added myself ------------------
-	use modradrrtmgyuri
+	use modradrrtmgyuri only : findGLQPoints, reshuffleValues
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
