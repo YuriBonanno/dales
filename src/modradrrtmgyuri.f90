@@ -361,7 +361,7 @@ contains
 				if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
 					n_classes = n_classes - 1
 					deallocate (n_quantiles)
-					!deallocate (n_classes)
+					deallocate (n_class)
 					goto 10
 				end if
 
