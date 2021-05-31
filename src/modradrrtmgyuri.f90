@@ -357,13 +357,14 @@ contains
 				!n_class(n_classes) = n_clouds - counter
 
 				min_class  = minval(n_class(:))
-				min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
-				if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
-					n_classes = n_classes - 1
-					deallocate (n_quantiles)
-					deallocate (n_class)
-					goto 10
-				end if
+				!Skip this part for now, but might need to look at this later
+				!min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
+				! if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
+					! n_classes = n_classes - 1
+					! deallocate (n_quantiles)
+					! deallocate (n_class)
+					! goto 10
+				! end if
 
 				write(*,*)
 				write(*,*) 'index of classes:'
