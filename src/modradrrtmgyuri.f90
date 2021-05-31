@@ -88,7 +88,7 @@ contains
 
 		!__________________________________________________________
 		!Define all field values
-	
+		print *, "Starting Define all field values"
 		!Should initialize all the variables
 		!Make checklist
 		
@@ -175,9 +175,10 @@ contains
 	    layerMass_grid(1:imax,1:jmax,krad1) = 100.*( interfaceP_grid(1:imax,1:jmax,krad1) - interfaceP_grid(1:imax,1:jmax,krad2) ) / grav
         !784
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
-		
+		print *, "finished Define all field values"
 		!__________________________________________________________
 		!determine specific necessary values
+		print *, "starting cloud and LWP data"
 		cloud_threshold = 0.0
 		cloud_patch_threshold = 0.0
 		
@@ -214,6 +215,10 @@ contains
 		
 		if (SUM(cloudtop_distribution).ne.n_clouds) then
 			print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
+			print *, "SUM(cloudtop_distribution)"
+			print *, SUM(cloudtop_distribution)
+			print *, "n_clouds"
+			print *, n_clouds
 		end if
 		
 		
@@ -235,6 +240,10 @@ contains
 		!   n_clouds
 		!   n_clear
 		!   LWP_flattened
+		
+		print *, "finished cloud and LWP data"
+		print *, "starting cloudless collumns"
+		
 		
 		if (n_clear > 0) then
 			allocate (clear_LWP_ordered (n_clear))
@@ -277,12 +286,12 @@ contains
 			!deallocate (GLQ_points_clear)
 			!deallocate (GLQ_weights_clear)
 		end if
-		
+		print *, "finished cloudless collumns"
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Cloudy Sky Gauss-Legendre
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Select only the collumns with a nonzero cloudratio
-		
+		print *, "starting clouded collumns"
 		if (n_clouds > 0) then
 			allocate (cloudtop_height_ordered (n_clouds))
 
@@ -429,7 +438,8 @@ contains
 			end do
 
 		end if
-		
+		print *, "finished clouded collumns"
+		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
@@ -446,7 +456,7 @@ contains
 				GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
 			enddo
 		enddo
-		
+		print *, "finished GLQ to long total array"
 		!!!!!RADIATION!!!!!
 		
 		!__________________________________________________________

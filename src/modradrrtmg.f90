@@ -207,19 +207,13 @@ contains
  	barker_method=.true.
  	if (barker_method) then
 
-		! Initialise the method
-		! INPUT:
-			! Empty GLQ_clear_points
-			! Empty GLQ_cloudtop_points
-			! Classes array
+		!Finds the GLQ points used for filling the 
+
+		print *, "Starting  findGLQPoints"
 		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
 		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all)
-		! OUTPUT:
-			! Need indexes of N_GLQ_clear
-			! Need indexes of N_GLQ_cloudtop
-			! Classes to which they belong
-			! Classes and all i,j points that belong to every point in the grid
+		print *, "Finished  findGLQPoints"
 
 		! Function that Create n <= j1 slices with the necessary info.
 			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
@@ -231,15 +225,16 @@ contains
 			GLQ_slices = GLQ_slices + 1
 		end if
 
+		print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
+			print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
 			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all)
+			print *, "Finished  setupBarkerSlicesFromProfiles"
+			
 
-			! Feed the slices into rrtmg_sw
-				!INPUT:
-				!j slices of:
-					!tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe 
+			print *, "Starting  radiation"
 			if (rad_longw) then
 				call rrtmg_lw &
 					 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -255,16 +250,14 @@ contains
 						( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
 				end if
 			end if
-				!OUTPUT
-				!j slices of:
-					!tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe 
+			print *, "finished  radiation"
 
+			print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
-				!
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
 				n_classes, n_class, class_size, current_GLQ_point, total_amount_GLQ_points)
-
+			print *, "Finished  reshuffleValues"
 		enddo
 	else
 ! End Added myself ------------------
