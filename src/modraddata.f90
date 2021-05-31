@@ -134,15 +134,7 @@ SAVE
                                                    cfc22vmr,  &
                                                    ccl4vmr
   real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_slice,IWP_slice ,cloudFrac,liquidRe,iceRe
-! Added myself ------------------	  
-  real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened
-  real(kind=kind_rb),allocatable,dimension(:,:) :: ztop_field
-  real(kind=kind_rb),allocatable,dimension(:,:) :: qcl_collumns
-  real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_collumns
-  real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_layerP
-  real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_interfaceP
-  real(kind=kind_rb),allocatable,dimension(:,:,:) :: collumns_layerMass
-!End Added myself ------------------  
+
   real(kind=kind_rb),allocatable,dimension(:,:) :: interfaceP,    &
                                                    interfaceT
   real(SHR_KIND_R4)                             :: eccen,     &  ! Eccentricity
@@ -192,9 +184,6 @@ SAVE
   real, allocatable :: swuca(:,:,:)  !<  clear air shortwave upward radiative flux
   real, allocatable :: lwdca(:,:,:)  !<  clear air longwave downward radiative flux
   real, allocatable :: lwuca(:,:,:)  !<  clear air longwave upward radiative flux
-  ! Added myself ------------------
-  real, allocatable :: slices_added(:,:,:)
-  !End Added myself ------------------
 
   real, allocatable :: SW_up_TOA(:,:), SW_dn_TOA(:,:), LW_up_TOA(:,:), LW_dn_TOA(:,:) !< Top of the atmosphere radiative fluxes
   real, allocatable :: SW_up_ca_TOA(:,:), SW_dn_ca_TOA(:,:), LW_up_ca_TOA(:,:), LW_dn_ca_TOA(:,:)

@@ -29,6 +29,26 @@ contains
     logical                :: sunUp
 	! Added myself ------------------
 	logical                :: barker_method
+	integer :: GLQ_slices
+	integer :: current_GLQ_point													!GLQ point counter for the barker method
+	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
+	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
+	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
+	integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
+	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
+
+	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+	integer :: class_size							!Amount of clouds in individual class
+	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
+	integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
+	integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
+	real    :: cloud_threshold 						!for the definition of a clouded collumn
+	real    :: cloud_patch_threshold 				!for the definition of cloud top
+
+
+
 	!End Added myself ------------------
     real(SHR_KIND_R4),save ::  eccen, & ! Earth's eccentricity factor (unitless) (typically 0 to 0.1)
                                obliq, & ! Earth's obliquity angle (deg) (-90 to +90) (typically 22-26)
@@ -93,8 +113,8 @@ contains
                LWP_slice   (imax,krad1),       &
                IWP_slice   (imax,krad1),       &
 ! Added myself ------------------	   
-			   LWP_collumns   (imax, jmax, krad1),       &
-			   LWP_flattened   (imax, jmax),       &
+!			   LWP_collumns   (imax, jmax, krad1),       &
+!			   LWP_flattened   (imax, jmax),       &
 !End Added myself ------------------
                presh_input      (krad1),       &
                  STAT=ierr(1))
@@ -186,82 +206,122 @@ contains
 ! Added myself ------------------
  	barker_method=.true.
  	if (barker_method) then
-		call testyuriLWP(LWP_collumns, LWP_flattened, cloudFrac)
-	end if
 
+		! Initialise the method
+		! INPUT:
+			! Empty GLQ_clear_points
+			! Empty GLQ_cloudtop_points
+			! Classes array
+		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
+		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all)
+		! OUTPUT:
+			! Need indexes of N_GLQ_clear
+			! Need indexes of N_GLQ_cloudtop
+			! Classes to which they belong
+			! Classes and all i,j points that belong to every point in the grid
 
-!	barker_method=.true.
-!	if (barker_method) then
-!	do j=2,j1
-!       call setupSlicesFromProfiles &
-!           ( j, npatch_start, &                                           !input
-!           LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
-!	   slices_added(:,j-1,:) = LWP_slice
-!	end do
-!	call testyurifirst(slices_added)
-!	
-!
-!	else
-!End Added myself ------------------
-    ! Loop over the slices in the model, in the y direction
-    do j=2,j1
-      call setupSlicesFromProfiles &
-           ( j, npatch_start, &                                           !input
-           LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
-!	end do
-!	call testyuri(tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe, & !input
-!tg_slice_reduced, cloudFrac_reduced, IWP_slice_reduced, LWP_slice_reduced, iceRe_reduced, liquidRe_reduced ) ! output
-	!Here I should order the slices, and only select a subset.
-!	do j=2,j1
-      if (rad_longw) then
-        call rrtmg_lw &
-             ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
-        !if(myid==0) write(*,*) 'after call to rrtmg_lw'
-      end if
-	  
-	  !!
-	  
-      if (rad_shortw) then
-         call setupSW(sunUp)
-         if (sunUp) then
-           call rrtmg_sw &
-                ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
-         end if
-      end if
+		! Function that Create n <= j1 slices with the necessary info.
+			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
+			! For all these collumns, the following variables have to be known
+				!LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe
 
-      lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
-      lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
-      if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine 
-        do i=2,i1
-          lwd(i,j,1) =  -0.8 * boltz * thl0(i,j,1) ** 4.
-          lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
-        end do
-      end if
-      swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
-      swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
+		GLQ_slices = total_amount_GLQ_points/imax
+		if (MODULO(total_amount_GLQ_points, imax) > 0) then
+			GLQ_slices = GLQ_slices + 1
+		end if
 
-      swdir(2:i1,j,1:k1) = -swDownDir_slice(1:imax,1:k1)
-      swdif(2:i1,j,1:k1) = -swDownDif_slice(1:imax,1:k1)
-      lwc  (2:i1,j,1:k1) =  LWP_slice      (1:imax,1:k1)
- 
-      lwuca(2:i1,j,1:k1) =  lwUpCS_slice  (1:imax,1:k1)
-      lwdca(2:i1,j,1:k1) = -lwDownCS_slice(1:imax,1:k1)
-      swuca(2:i1,j,1:k1) =  swUpCS_slice  (1:imax,1:k1)
-      swdca(2:i1,j,1:k1) = -swDownCS_slice(1:imax,1:k1)
+		do j = 1, GLQ_slices
+			call setupBarkerSlicesFromProfiles(npatch_start, &
+			   LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
+			   current_GLQ_point, total_amount_GLQ_points)
 
-      SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
-      SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
-      LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
-      LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
+			! Feed the slices into rrtmg_sw
+				!INPUT:
+				!j slices of:
+					!tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe 
+			if (rad_longw) then
+				call rrtmg_lw &
+					 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+				!if(myid==0) write(*,*) 'after call to rrtmg_lw'
+			end if
 
-      SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
-      SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
-      LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
-      LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
+			  !!
 
-    end do ! Large loop over j=2,j1
+			if (rad_shortw) then
+				call setupSW(sunUp)
+				if (sunUp) then
+					call rrtmg_sw &
+						( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+				end if
+			end if
+				!OUTPUT
+				!j slices of:
+					!tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe 
+
+			!Place all the flux values into the original array:
+				!
+			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
+				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+				n_classes, n_class, class_size, current_GLQ_point, total_amount_GLQ_points)
+
+		enddo
+	else
+! End Added myself ------------------
+		do j=2,j1
+		  call setupSlicesFromProfiles &
+			   ( j, npatch_start, &                                           !input
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+
+		  if (rad_longw) then
+			call rrtmg_lw &
+				 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+			!if(myid==0) write(*,*) 'after call to rrtmg_lw'
+		  end if
+
+		  !!
+
+		  if (rad_shortw) then
+			 call setupSW(sunUp)
+			 if (sunUp) then
+			   call rrtmg_sw &
+					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+			 end if
+		  end if
+
+		  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
+		  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
+		  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
+			do i=2,i1
+			  lwd(i,j,1) =  -0.8 * boltz * thl0(i,j,1) ** 4.
+			  lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
+			end do
+		  end if
+		  swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
+		  swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
+
+		  swdir(2:i1,j,1:k1) = -swDownDir_slice(1:imax,1:k1)
+		  swdif(2:i1,j,1:k1) = -swDownDif_slice(1:imax,1:k1)
+		  lwc  (2:i1,j,1:k1) =  LWP_slice      (1:imax,1:k1)
+
+		  lwuca(2:i1,j,1:k1) =  lwUpCS_slice  (1:imax,1:k1)
+		  lwdca(2:i1,j,1:k1) = -lwDownCS_slice(1:imax,1:k1)
+		  swuca(2:i1,j,1:k1) =  swUpCS_slice  (1:imax,1:k1)
+		  swdca(2:i1,j,1:k1) = -swDownCS_slice(1:imax,1:k1)
+
+		  SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
+		  SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
+		  LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
+		  LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
+
+		  SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
+		  SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
+		  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
+		  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
+
+		end do ! Large loop over j=2,j1
 ! Added myself ------------------
-!	end if
+	end if
 !End Added myself ------------------	
     do k=1,kmax
       do j=2,j1
@@ -778,6 +838,7 @@ contains
 
       do i=1,imax
         do k=1,kradmax
+			!Redundant?
           cloudFrac(i,k) = 0.
           liquidRe (i,k) = 0.
           iceRe    (i,k) = 0.
@@ -809,8 +870,10 @@ contains
              !cstep Ou Liou  iceRe(i,k) = 326.3 + 12.42 * tempC + 0.197 * tempC**2 + 0.0012 * tempC**3  !cstep : Ou Liou 1995
              B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0) !Eq. 14 Wyser 1998
              iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998, Eq. 35
-             cloudFrac(i,k) = 1.
-             B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0)
+
+			 !HAPPENS TWICE??
+			 cloudFrac(i,k) = 1.
+			 B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0)
              iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998
 
              if (iceRe(i,k).lt.5.) then
@@ -825,6 +888,215 @@ contains
       enddo
 
   end subroutine setupSlicesFromProfiles
+
+! ==============================================================================;
+! ==============================================================================;
+
+  subroutine setupBarkerSlicesFromProfiles(npatch_start, &
+           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
+		   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all)
+  !=============================================================================!
+  ! This subroutine sets up 2D (xz) slices of different variables:              !
+  ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
+  ! cloudFrac,liquidRe,iceRe(=0)                                                !
+  ! for the full height of the atmosphere (up to nzrad+2, where the upper level !
+  ! is an extrapolation, for more accuracy)                                     !
+  !                                                                             !
+  ! The variables are stored in modraddata.f90 and allocated in the subroutine  !
+  ! from which setupSlicesFromProfiles is called (radrrtmg)                     !
+  ! JvdDussen, 24-6-2010                                                        !
+  ! ============================================================================!
+
+  use modglobal, only: imax,jmax,kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
+  use modfields, only: thl0,ql0,qt0,exnf
+  use modsurfdata, only: tskin,ps
+  use modmicrodata, only : Nc_0,sig_g
+  use modmpi, only: myid
+
+  implicit none
+
+  integer,intent(in) :: npatch_start
+  real(KIND=kind_rb),intent(out) ::    LWP_slice(imax,krad1), &
+									   IWP_slice(imax,krad1), &
+									   cloudFrac(imax,krad1), &
+									   liquidRe (imax,krad1), &
+									   iceRe    (imax,krad1)
+  integer :: i,k,ksounding, temp_i, temp_j
+  integer :: total_amount_GLQ_points
+  integer :: current_GLQ_point
+  integer,dimension(:,:) :: GLQ_index_all (total_amount_GLQ_points, 2)
+  real (KIND=kind_rb) :: exners
+  real(KIND=kind_rb) :: layerMass(imax,krad1)
+  !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
+  !real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
+  real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
+  real , parameter :: rho_liq = 1000.
+
+  real :: reff_factor
+  real :: ilratio
+  real :: tempC  !temperature in celsius
+  real :: IWC0 ,B_function !cstep needed for ice effective radius following Eqs. (14) and (35) from Wyser 1998
+
+	IWC0 = 50e-3  !kg/m3, Wyser 1998 Eq. 14 (he gives 50 g/m3)
+	reff_factor = 1e6*(3. /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
+
+	! Compute absolute temperature and water contents (without border points)
+
+	!tabs(:,:) = 0.;
+	!sstxy(:,:) = 0.
+	tabs_slice(:,:) = 0.; qv_slice(:,:) = 0.; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
+	rho_slice(:,:) = 0.
+
+	exners = (ps/pref0) ** (rd/cp)
+
+	current_GLQ_point = current_GLQ_point
+	do i=1,imax
+		temp_i = GLQ_index_all(current_GLQ_point,1)
+		temp_j = GLQ_index_all(current_GLQ_point,2)
+
+		do k=1,kmax
+			!!! +1 in j must be checked with Stephan
+			tabs_slice(i,k) = thl0(temp_i+1,temp_j+1,k) * exnf(k) &
+								+ (rlv / cp) * ql0(temp_i+1,temp_j+1,k)
+		enddo
+		current_GLQ_point = current_GLQ_point + 1
+	enddo
+
+	current_GLQ_point = current_GLQ_point
+	do i=1,imax
+		temp_i = GLQ_index_all(current_GLQ_point,1)
+		temp_j = GLQ_index_all(current_GLQ_point,2)
+
+		tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
+		do k=1,kmax
+			! +1 in j must be checked with Stephan
+			qv_slice  (i,k) = max(qt0(temp_i+1,temp_j+1,k) - ql0(temp_i+1,temp_j+1,k),1e-18) !avoid RRTMG reading negative initial values 
+			qcl_slice (i,k) = ql0(temp_i+1,temp_j+1,k)
+			qci_slice (i,k) = 0.
+			o3_slice  (i,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
+
+			h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
+			layerT  (i,k) = tabs_slice(i,k)
+			layerP  (i,k) = presf_input(k)
+		enddo
+		current_GLQ_point = current_GLQ_point + 1
+	enddo
+
+	! Patch sounding on top (no qcl or qci above domain; hard coded)
+	do i=1,imax
+		ksounding=npatch_start
+		do k=kmax+1,kradmax
+			tabs_slice(i,k) =  tsnd(ksounding)
+			qv_slice  (i,k) =  qsnd(ksounding)
+			qcl_slice (i,k) = 0.
+			qci_slice (i,k) = 0.
+			rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
+			ksounding=ksounding+1
+		enddo
+	enddo
+
+	! o3 profile provided by user (user03=true) or reference prof from RRTMG
+	if (usero3) then
+		do i=1,imax
+			ksounding=npatch_start
+			do k=kmax+1,kradmax
+				o3_slice(i,k) = o3snd(ksounding)
+				ksounding=ksounding+1
+			enddo
+			do k=1,kradmax
+				o3vmr  (i,k)   = mwdry/mwo3 * o3_slice(i,k)
+			enddo
+			o3vmr  (i,krad1)   = o3vmr(i,kradmax)
+		enddo
+	else
+		do i=1,imax
+			do k=1,krad1
+				o3vmr   (i,k) = o3(k)
+			enddo
+		enddo
+	end if
+
+
+	do i=1,imax
+		do k=kmax+1,kradmax
+			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
+			layerP	(i,k)    = presf_input (k)
+			layerT	(i,k)    = tabs_slice(i,k)
+		enddo
+			!! Properly set boundary conditions
+		h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+		layerP  (i, krad1)   = 0.5*presh_input(krad1)
+		layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
+	enddo
+
+	do i=1,imax
+		do k=1,krad1
+			co2vmr  (i,k) = co2(k)
+			ch4vmr  (i,k) = ch4(k)
+			n2ovmr  (i,k) = n2o(k)
+			o2vmr   (i,k) = o2(k)
+			cfc11vmr(i,k) = cfc11(k)
+			cfc12vmr(i,k) = cfc12(k)
+			cfc22vmr(i,k) = cfc22(k)
+			ccl4vmr (i,k) = ccl4(k)
+
+			interfaceP(i,k) =   presh_input(k)
+		enddo
+		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
+		do k=2,krad1
+		   interfaceT(i,k) = (layerT(i,k-1) + layerT(i,k)) / 2.
+		enddo
+		interfaceT(i,krad2) = 2.*layerT(i,krad1) - interfaceT(i,krad1)
+		interfaceT(i,1)  = tg_slice(i)
+	enddo
+
+	do i=1,imax
+		do k=1,kradmax
+			layerMass_slice(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
+			LWP_slice(i,k) = qcl_slice(i,k)*layerMass_slice(i,k)*1e3
+			IWP_slice(i,k) = qci_slice(i,k)*layerMass_slice(i,k)*1e3
+			qci_slice(i,k) = qci_slice(i,k)*rho_slice(i,k)   !cstep, qci is now in kg/m3 needed for ice effective radius
+		enddo
+		layerMass_slice(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
+		LWP_slice(i,krad1) = 0.
+		IWP_slice(i,krad1) = 0.
+	enddo
+
+	cloudFrac(:,:) = 0.
+	liquidRe (:,:) = 0.
+	iceRe    (:,:) = 0.
+
+	do i=1,imax
+		do k=1,kradmax
+			if (LWP_slice(i,k).gt.0.) then
+				cloudFrac(i,k) = 1.
+				liquidRe(i,k) = reff_factor  * qcl_slice(i,k)**(1./3.)
+
+				if (liquidRe_GLQ(i,k).lt.2.5) then
+					liquidRe_GLQ(i,k) = 2.5
+				endif
+				if (liquidRe_GLQ(i,k).gt.60.) then
+					liquidRe_GLQ(i,k) = 60.
+				endif
+			endif
+			if (IWP_slice(i,k).gt.0) then
+				cloudFrac(i,k) = 1.
+
+				B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0) !Eq. 14 Wyser 1998
+				iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998, Eq. 35
+
+				if (iceRe(i,k).lt.5.) then
+					iceRe(i,k) = 5.
+				 endif
+
+				 if (iceRe(i,k).gt.140.) then
+					iceRe(i,k) = 140.
+				 endif
+			endif
+		enddo
+	enddo
+
+  end subroutine setupBarkerSlicesFromProfiles
 
 ! ==============================================================================;
 ! ==============================================================================;
