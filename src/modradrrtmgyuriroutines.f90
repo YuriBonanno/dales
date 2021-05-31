@@ -35,7 +35,7 @@ contains
 		 if (i >= j) exit
 		 t = a(i);  a(i) = a(j);  a(j) = t
 		 temp_hor_index = indexes(i,1); indexes(i,1) = indexes(j,1); indexes(j,1) = temp_hor_index
-		 temp_ver_index = indexes(i,2); indexes(i,2) = indexes(j,2); indexes(j,2) = temp_vert_index
+		 temp_ver_index = indexes(i,2); indexes(i,2) = indexes(j,2); indexes(j,2) = temp_ver_index
 		 i=i+1
 		 j=j-1
 	  end do
@@ -117,11 +117,13 @@ contains
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
 
-	   real x(n_s)
+	   integer :: n_s, n_quantiles
 
-	   real q(n_quantiles)
+	   real :: x(n_s)
 
-	   logical std
+	   real :: q(n_quantiles)
+
+	   logical :: std
 
 
 	   confidence_1 = 0.684
@@ -156,15 +158,15 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		integer :: dims
+		integer :: dims, i, j, k, imax, jmax, kmax
 		character(len = 16) :: filename
 		real(kind=kind_rb) :: dataset (imax, jmax, kmax)
 
 		!__________________________________________________________
 		!Make and write to files
-		if (dims<1 or dims>3) then
+		if (dims<1 .or. dims>3) then
 			print *, "writing to file failed because of erroneous dimensions"
-			exit writetofile
+			return
 		end if
 		
 		inquire(file=filename, exist=fileexists)
@@ -175,13 +177,13 @@ contains
 			open(11, file=filename, status="new", action="write")
 		end if
 		
-		if (dims = 1) then
+		if (dims == 1) then
 			do i=1,imax
 				write(11, *) dataset(i,1,1)
 			end do
 		end if
 			
-		if (dims = 2) then
+		if (dims == 2) then
 			do i=1,imax
 				do j=1,jmax
 					write(11, *) dataset(i,j,1)
@@ -189,7 +191,7 @@ contains
 			end do
 		end if
 		
-		if (dims = 3) then
+		if (dims == 3) then
 			do i=1,imax
 				do j=1,jmax
 					do k=1,kmax
