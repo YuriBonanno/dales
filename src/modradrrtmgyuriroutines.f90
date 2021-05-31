@@ -19,7 +19,7 @@ contains
 	real*8  a(*), x, t
 	integer first, last
 	integer i, j
-	integer indexes(*,2)
+	integer indexes(last-first+1,2)
 	integer temp_hor_index, temp_ver_index
 
 	  x = a( (first+last) / 2 )
@@ -117,12 +117,10 @@ contains
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
 
-	   integer :: n_s, n_quantiles
-
+	   integer :: n_s, n_quantiles, index_11, index_12, index_q, index_median
+	   real :: confidence_1
 	   real :: x(n_s)
-
 	   real :: q(n_quantiles)
-
 	   logical :: std
 
 
@@ -158,7 +156,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		integer :: dims, i, j, k, imax, jmax, kmax
+		integer :: dims, i, j, k
 		character(len = 16) :: filename
 		real(kind=kind_rb) :: dataset (imax, jmax, kmax)
 
