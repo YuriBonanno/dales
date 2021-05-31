@@ -83,8 +83,8 @@ contains
 		!Cloud class might be unnecesary
 		integer,dimension(:,:) :: cloud_class(imax, jmax)						!Contains the whole grid with integers showing to which class every collumns belongs
 
-		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax),         &!Cloud height distribution	
-		real(kind=kind_rb),dimension(:,:) :: cloudFrac (imax, jmax)			&! cloud height class grid
+		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax)         !Cloud height distribution	
+		real(kind=kind_rb),dimension(:,:) :: cloudFrac (imax, jmax)			! cloud height class grid
 
 		!__________________________________________________________
 		!Define all field values
@@ -302,7 +302,7 @@ contains
 
 			!Initialise the classes
 			
-			allocate(cloud_class(imax, jmax))
+			!allocate(cloud_class(imax, jmax))
 			n_classes_initial = 20
 			n_classes = n_classes_initial
 			if (n_classes > 1) then
