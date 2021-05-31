@@ -37,6 +37,8 @@ contains
 		integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 		integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
+		integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+		integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		
 		
@@ -46,20 +48,21 @@ contains
 		integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 		integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
 		integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
+		integer :: min_class							!amount of clouds in smallest cloud class
 		integer :: counter,counter2						!counter that allows for cloud_top ordering
 		real    :: cloud_threshold 						!for the definition of a clouded collumn
 		real    :: cloud_patch_threshold 				!for the definition of cloud top
+		real	:: min_thresh							!Minimal size a cloud class has to have
 		
 		!Cloud ordering
 		!integer,allocatable,dimension(:) :: clear_LWP_distribution					!Possibly very unnecessary
 		!integer,allocatable,dimension(:) :: LWP_distribution						!Possibly very unneccesary
 		integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
-		integer,allocatable,dimension(:) :: n_quantiles 							!= Cloud_classes - 1
-		integer,allocatable,dimension(:) :: cloudtop_distribution 					!amount of cloudtops in every row
-		integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-		integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of
-		integer,allocatable,dimension(:,:):: cloud_class       						!Contains the whole grid with integers showing to which class every collumns belongs (Not necessary)
+		!Cloud class might be unnecesary
+		integer,allocatable,dimension(:,:):: cloud_class       						!Contains the whole grid with integers showing to which class every collumns belongs
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+		real(kind=kind_rb),allocatable,dimension(:) :: n_quantiles 					!= n_classes - 1, could be integer but must be real for quicksort
+		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
@@ -75,10 +78,11 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:,:,:) :: layerMass_grid		!mass within a gridpoint
 		real(kind=kind_rb),allocatable,dimension(:,:,:) :: qcl_grid				!actually just ql0
 
+		!This variable might nog be necessary
+		real(KIND=kind_rb) :: cloudtop_distribution (k1),                     	&!Cloud height distribution amount of clouds in height index x
 		
 								!Cloud ordering
-		real(KIND=kind_rb) ::   cloudtop_distribution (k1),                     	&!Cloud height distribution
-								LWP_distribution (kradmax),                        	&!Cloud height distribution
+		real(KIND=kind_rb) ::   LWP_distribution (kradmax),                        	&!Cloud height distribution
 								cloudFrac      (imax, jmax),                       	&! Fraction of clouds per collumn
 								ztop_field     (imax, jmax),					   	&! Height of the highest cloud
 								cloud_class     (imax, jmax),					   	&! cloud height class grid
@@ -152,7 +156,9 @@ contains
 		end do
 		!end do
 		!!!!Hier dus die : en die wil ik vervangen door iets explicieters, 1:j1 bijv.
-		interfaceP_grid(1:imax,:, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP_grid(1,:,krad1) ) !767
+		do i=1,imax
+			interfaceP_grid(i,:, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP_grid(1,:,krad1) ) !767
+		end do
 		!end do
 			
 		!do i=1,imax
@@ -244,8 +250,8 @@ contains
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
 			counter = 0
-			do i = 1, nx
-				do j = 1, ny
+			do i = 1, imax
+				do j = 1, jmax
 					if (LWP_flattened(i,j) <= cloud_threshold) then
 						counter = counter + 1
 						clear_LWP_ordered(counter) = LWP_flattened(i,j)
@@ -322,13 +328,13 @@ contains
 				do i = 1,imax
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
-							if(ztop_field(i,j) > n_quantiles(n_classes-1))
+							if(ztop_field(i,j) > n_quantiles(n_classes-1)) then
 								cloud_class(i,j) = n_classes
 								n_class(n_classes) = n_class(n_classes) + 1
 							else
 								do n = 1, n_classes-1
-									if(ztop_field(i,j) <= n_quantiles(n))
-										cloud_classes(i,j) = n
+									if(ztop_field(i,j) <= n_quantiles(n)) then
+										cloud_class(i,j) = n
 										n_class(n) = n_class(n) + 1
 									end if
 								end do
@@ -352,7 +358,7 @@ contains
 				if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
 					n_classes = n_classes - 1
 					deallocate (n_quantiles)
-					deallocate (n_classes)
+					!deallocate (n_classes)
 					goto 10
 				end if
 
@@ -369,7 +375,7 @@ contains
 				
 				class_size = n_class(1)
 				do i=2,n_classes
-					if class_size /= n_class(i)
+					if (class_size /= n_class(i)) then
 						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg"
 					end if
 				end do
@@ -400,7 +406,7 @@ contains
 				counter = 0
 				do i = 1, imax
 					do j = 1, jmax
-						if (n_class(i,j) == n) then
+						if (cloud_class(i,j) == n) then
 							counter = counter + 1
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
 							original_cloudtop_LWP_indexes(counter, 1, n) = i
@@ -470,7 +476,9 @@ contains
 		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
 		n_classes,n_class, class_size, current_GLQ_point, total_amount_GLQ_points)
 	
-	use modglobal, only: imax, k1
+	use modglobal, only: imax, k1, boltz
+	use modfields, only: thl0
+    use modsurfdata, only: tskin
 	use modraddata
 	
 	integer :: i
@@ -487,6 +495,9 @@ contains
 	integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 	!integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
+	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+	integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
+
 
 	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
 	integer :: class_size							!Amount of clouds in individual class
@@ -590,8 +601,8 @@ contains
 					end if
 
 					do n = n1, n2
-						temp_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
-						temp_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
+						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
+						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
 						
 						lwu(fill_i, fill_j,1:k1) =  lwUp_slice  (i,1:k1)
 						lwd(fill_i, fill_j,1:k1) = -lwDown_slice(i,1:k1)
