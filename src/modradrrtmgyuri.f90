@@ -365,9 +365,11 @@ contains
 					! deallocate (n_class)
 					! goto 10
 				! end if
+				print *, ztop_field(:,:)
+
 
 				write(*,*)
-				write(*,*) 'index of classes:'
+				write(*,*) 'altitude of classes:'
 				do i = 1, n_classes
 					if (i < n_classes) then
 						write(*,*) i, n_quantiles(i)
