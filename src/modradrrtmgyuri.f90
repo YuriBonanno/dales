@@ -246,6 +246,7 @@ contains
 		
 		
 		if (n_clear > 0) then
+			print *, "n_clear > 0"
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
@@ -293,6 +294,7 @@ contains
 		!Select only the collumns with a nonzero cloudratio
 		print *, "starting clouded collumns"
 		if (n_clouds > 0) then
+			print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 
 			counter = 0
@@ -302,6 +304,7 @@ contains
 				do while (counter2>0)
 					counter = counter + 1
 					cloudtop_height_ordered(counter) = zf(k)
+					counter2 = counter2 - 1
 				end do
 			end do
 			!Determined:
