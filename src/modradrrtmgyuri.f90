@@ -80,7 +80,7 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:,:,:) :: qcl_grid				!actually just ql0
 
 		!This variable might nog be necessary
-		real(KIND=kind_rb) :: cloudtop_distribution (k1)                     	&!Cloud height distribution amount of clouds in height index x
+		real(KIND=kind_rb),dimension(:) :: cloudtop_distribution (k1)            !Cloud height distribution amount of clouds in height index x
 		
 								!Cloud ordering
 		real(KIND=kind_rb) ::   LWP_distribution (kradmax),                        	&!Cloud height distribution
@@ -93,7 +93,7 @@ contains
 		                        grid_layerMass      (imax, jmax, krad1),       	&! Mass per gridpoint
 								grid_layerP   (imax, jmax, krad1),             	&! Pressure at the full gridpoint
 								grid_interfaceP   (imax, jmax, krad2),         	&! Pressure at the half gridpoint
-								qcl_grid   (imax, jmax, kradmax)               	&! cloud liquid content
+								qcl_grid   (imax, jmax, kradmax)               	! cloud liquid content
 
 	
 		!__________________________________________________________
