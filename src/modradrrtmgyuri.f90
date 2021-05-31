@@ -58,8 +58,7 @@ contains
 		!integer,allocatable,dimension(:) :: clear_LWP_distribution					!Possibly very unnecessary
 		!integer,allocatable,dimension(:) :: LWP_distribution						!Possibly very unneccesary
 		integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
-		!Cloud class might be unnecesary
-		integer,allocatable,dimension(:,:):: cloud_class       						!Contains the whole grid with integers showing to which class every collumns belongs
+		
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 		real(kind=kind_rb),allocatable,dimension(:) :: n_quantiles 					!= n_classes - 1, could be integer but must be real for quicksort
 		!This definition not necessary because it is defined later
@@ -79,17 +78,14 @@ contains
 		real(kind=kind_rb),dimension(:,:,:) :: qcl_grid			(imax, jmax, kradmax)	!actually just ql0
 
 		!This variable might nog be necessary
-		real(KIND=kind_rb),dimension(:) :: cloudtop_distribution (k1)            !Cloud height distribution amount of clouds in height index x
-		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)				!Grid containing collumn highest cloud, cloudtop height
-		real(kind=kind_rb),dimension(:,:) :: cloud_class(imax, jmax)				! cloud height class grid
+		real(KIND=kind_rb),dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
+		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)			!Grid containing collumn highest cloud, cloudtop height
+		!Cloud class might be unnecesary
+		integer,dimension(:,:) :: cloud_class(imax, jmax)						!Contains the whole grid with integers showing to which class every collumns belongs
 
-		
-		
-								!Cloud ordering
-		real(KIND=kind_rb) ::   LWP_distribution (kradmax),         &!Cloud height distribution
-								cloudFrac      (imax, jmax)			&! cloud height class grid
+		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax),         &!Cloud height distribution	
+		real(kind=kind_rb),dimension(:,:) :: cloudFrac (imax, jmax)			&! cloud height class grid
 
-	
 		!__________________________________________________________
 		!Define all field values
 	
