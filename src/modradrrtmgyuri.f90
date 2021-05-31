@@ -68,32 +68,26 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
 		!real(kind=kind_rb),allocatable,dimension(:,:) :: subset_holder !!???
-		real(kind=kind_rb),allocatable,dimension(:,:) :: ztop_field					!Grid containing cloudtop heights
 		
 		!Grid data
-		real(kind=kind_rb) :: total_cloud_fraction									!total fraction of of grid that is covered by clouds
-		real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened				!flattened collumns LWP content
-		real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid				!full grid LWP contents, Is not actually a LWP
-		real(kind=kind_rb),allocatable,dimension(:,:,:) :: layerP_grid			!pressure at grid core (full-level)
-		real(kind=kind_rb),allocatable,dimension(:,:,:) :: interfaceP_grid		!pressure at grid interface (half-level)
-		real(kind=kind_rb),allocatable,dimension(:,:,:) :: layerMass_grid		!mass within a gridpoint
-		real(kind=kind_rb),allocatable,dimension(:,:,:) :: qcl_grid				!actually just ql0
+		real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
+		real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content
+		real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)		!full grid LWP contents, Is not actually a LWP
+		real(kind=kind_rb),dimension(:,:,:) :: layerP_grid 		(imax, jmax, krad1)		!pressure at grid core (full-level)
+		real(kind=kind_rb),dimension(:,:,:) :: interfaceP_grid	(imax, jmax, krad2)		!pressure at grid interface (half-level)
+		real(kind=kind_rb),dimension(:,:,:) :: layerMass_grid	(imax, jmax, krad1)		!mass within a gridpoint
+		real(kind=kind_rb),dimension(:,:,:) :: qcl_grid			(imax, jmax, kradmax)	!actually just ql0
 
 		!This variable might nog be necessary
 		real(KIND=kind_rb),dimension(:) :: cloudtop_distribution (k1)            !Cloud height distribution amount of clouds in height index x
+		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)				!Grid containing collumn highest cloud, cloudtop height
+		real(kind=kind_rb),dimension(:,:) :: cloud_class(imax, jmax)				! cloud height class grid
+
+		
 		
 								!Cloud ordering
-		real(KIND=kind_rb) ::   LWP_distribution (kradmax),                        	&!Cloud height distribution
-								cloudFrac      (imax, jmax),                       	&! Fraction of clouds per collumn
-								ztop_field     (imax, jmax),					   	&! Height of the highest cloud
-								cloud_class     (imax, jmax),					   	&! cloud height class grid
-								!Grid data
-								LWP_flattened  (imax, jmax),                       	&! LWP flattened over Z direction						
-								LWP_grid   (imax, jmax, krad1),                	&! LWP per gridpoint
-		                        grid_layerMass      (imax, jmax, krad1),       	&! Mass per gridpoint
-								grid_layerP   (imax, jmax, krad1),             	&! Pressure at the full gridpoint
-								grid_interfaceP   (imax, jmax, krad2),         	&! Pressure at the half gridpoint
-								qcl_grid   (imax, jmax, kradmax)               	! cloud liquid content
+		real(KIND=kind_rb) ::   LWP_distribution (kradmax),         &!Cloud height distribution
+								cloudFrac      (imax, jmax)			&! cloud height class grid
 
 	
 		!__________________________________________________________
