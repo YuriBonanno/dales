@@ -71,8 +71,8 @@ contains
 		 i=i+1
 		 j=j-1
 	  end do
-	  if (first < i-1) call quicksort(a, first, i-1)
-	  if (j+1 < last)  call quicksort(a, j+1, last)
+	  if (first < i-1) call quicksort(a, first, i-1, indexes(first:i-1, :))
+	  if (j+1 < last)  call quicksort(a, j+1, last, indexes(j+1:last, :))
 	end subroutine quicksort
 
 
@@ -117,7 +117,7 @@ contains
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
 
-	   integer :: n_s, n_quantiles, index_11, index_12, index_q, index_median
+	   integer :: k, n_s, n_quantiles, index_11, index_12, index_q, index_median
 	   real :: confidence_1
 	   real :: x(n_s)
 	   real :: q(n_quantiles)
