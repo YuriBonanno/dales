@@ -79,7 +79,7 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:,:,:) :: qcl_grid				!actually just ql0
 
 		!This variable might nog be necessary
-		real(KIND=kind_rb) :: cloudtop_distribution (k1),                     	&!Cloud height distribution amount of clouds in height index x
+		real(KIND=kind_rb) :: cloudtop_distribution (k1)                     	&!Cloud height distribution amount of clouds in height index x
 		
 								!Cloud ordering
 		real(KIND=kind_rb) ::   LWP_distribution (kradmax),                        	&!Cloud height distribution
@@ -496,7 +496,7 @@ contains
 	!integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-	integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
+	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of cloudtop_LWP_ordered
 
 
 	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
