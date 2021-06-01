@@ -331,8 +331,8 @@ contains
 			!allocate(cloud_class(imax, jmax))
 			n_classes_initial = 20
 			n_classes = n_classes_initial
-			if (n_classes > 1) then
-		10    	allocate (quantiles_value(n_classes-1))
+		10	if (n_classes > 1) then
+		    	allocate (quantiles_value(n_classes-1))
 
 				write(*,*) 'n_classes = ', n_classes
 
