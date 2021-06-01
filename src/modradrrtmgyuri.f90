@@ -60,7 +60,7 @@ contains
 		integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
 		
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
-		real(kind=kind_rb),allocatable,dimension(:) :: n_quantiles 					!= n_classes - 1, could be integer but must be real for quicksort
+		real(kind=kind_rb),allocatable,dimension(:) :: quantiles 					!= n_classes - 1, could be integer but must be real for quicksort
 		!This definition not necessary because it is defined later
 		!real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
@@ -102,6 +102,8 @@ contains
 		
 		
 		qcl_grid(:, :, :) = 0.
+		!Maybe shift all instances of gl0
+		
 		
 		!Deze sequence kan efficienter maar voor nu zoveel mogelijk gescheiden om implosies te voorkomen
 		
@@ -193,23 +195,24 @@ contains
 		cloudtop_distribution(:) = 0
 		do i=1,imax
 		   do j=1,jmax
-			! Defines LWP_flattened and sets cloudFrac to 1 when LWP larger than cloud_threshold
-		      LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
-			  !Something could go wrong here with cloud threshold =/= cloud patch threshold,
-			  !there could be more n_clouds than SUM(cloudtop_distribution)
-			  if (LWP_flattened(i,j)>cloud_threshold) then
-				cloudFrac(i,j) = 1
-				n_clouds = n_clouds + 1
-			  end if
-			  do k=1,k1
-			     inverse_k = k1 + 1 - k
-				 !looks through the liquid in a gridpoint from top to bottom and assigns the first nonzero value to the ztop_field and then exits the vertical loop
-				 if (ql0(i,j,inverse_k)>cloud_patch_threshold) then
-					ztop_field(i,j) = zf(inverse_k) 
-					cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1
-					EXIT
-				 end if
-			  end do
+				! Defines LWP_flattened and sets cloudFrac to 1 when LWP larger than cloud_threshold
+				LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
+				!Something could go wrong here with cloud threshold =/= cloud patch threshold,
+				!there could be more n_clouds than SUM(cloudtop_distribution)
+				if (LWP_flattened(i,j)>cloud_threshold) then
+					cloudFrac(i,j) = 1
+					n_clouds = n_clouds + 1
+					do k=1,k1
+						inverse_k = k1 + 1 - k
+						!looks through the liquid in a gridpoint from top to bottom and assigns the first nonzero value to the ztop_field and then exits the vertical loop
+						!if (ql0(i,j,inverse_k)>cloud_patch_threshold) then
+						if (LWP_grid(i,j,inverse_k)>cloud_patch_threshold) then
+							ztop_field(i,j) = zf(inverse_k) 
+							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1
+						EXIT
+						end if
+					end do
+				end if
 		   end do
 	    end do
 		
@@ -221,16 +224,22 @@ contains
 			print *, n_clouds
 		end if
 		
-		
-		
 		n_clear = (imax*jmax)-n_clouds
 		
 		total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 		
+		!!Cloudtop distribution might be unccecessary
+		print *, "cloudtop_distribution"
+		print *, cloudtop_distribution
 		call quicksort(cloudtop_distribution, 1, kmax)
+		print *, "sorted cloudtop_distribution"
+		print *, cloudtop_distribution
 		
+		print *, "n_clouds"
 		print *, n_clouds
+		print *, "n_clear"
 		print *, n_clear
+		print *, "total_cloud_fraction"
 		print *, total_cloud_fraction
 		
 		!Determined:
@@ -318,11 +327,11 @@ contains
 			n_classes_initial = 20
 			n_classes = n_classes_initial
 			if (n_classes > 1) then
-		10    	allocate (n_quantiles(n_classes-1))
+		10    	allocate (quantiles(n_classes-1))
 
 				write(*,*) 'n_classes = ', n_classes
 
-				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, n_quantiles)
+				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles)
 
 				allocate (n_class(n_classes))
 				n_class(:) = 0
@@ -331,12 +340,12 @@ contains
 				do i = 1,imax
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
-							if(ztop_field(i,j) > n_quantiles(n_classes-1)) then
+							if(ztop_field(i,j) > quantiles(n_classes-1)) then
 								cloud_class(i,j) = n_classes
 								n_class(n_classes) = n_class(n_classes) + 1
 							else
 								do n = 1, n_classes-1
-									if(ztop_field(i,j) <= n_quantiles(n)) then
+									if(ztop_field(i,j) <= quantiles(n)) then
 										cloud_class(i,j) = n
 										n_class(n) = n_class(n) + 1
 									end if
@@ -348,7 +357,7 @@ contains
 				
 				!counter = 1
 				!do n = 1,n_classes-1
-				!	do while(cloudtop_height_ordered(counter) <= n_quantiles(n))
+				!	do while(cloudtop_height_ordered(counter) <= quantiles(n))
 				!		n_class(n) = n_class(n) + 1
 				!		counter = counter + 1
 				!	end do
@@ -361,7 +370,7 @@ contains
 				!min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
 				! if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
 					! n_classes = n_classes - 1
-					! deallocate (n_quantiles)
+					! deallocate (quantiles)
 					! deallocate (n_class)
 					! goto 10
 				! end if
@@ -372,8 +381,14 @@ contains
 				write(*,*) 'altitude of classes:'
 				do i = 1, n_classes
 					if (i < n_classes) then
-						write(*,*) i, n_quantiles(i)
+						write(*,*) "i, quantiles(i)"
+						write(*,*) i, quantiles(i)
+						write(*,*) "i, n_class(i)"
+						write(*,*) i, n_class(i)
 					else
+						write(*,*) "i, maxval(cloudtop_height_ordered)"
+						write(*,*) i, maxval(cloudtop_height_ordered)
+						write(*,*) "i, n_class(i)"
 						write(*,*) i, maxval(cloudtop_height_ordered)
 					end if
 				end do
@@ -385,7 +400,7 @@ contains
 						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg"
 					end if
 				end do
-				!deallocate (n_quantiles)
+				!deallocate (quantiles)
 			else
 				allocate (n_class(n_classes))
 				n_class(:) = 0
