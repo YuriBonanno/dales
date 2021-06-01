@@ -417,24 +417,35 @@ contains
 				n_class(1) = n_clouds
 				class_size = n_class(1)
 				cloud_class(:,:) = n_classes
+				print *, "cloud and classes finished"
 			end if
 			
 			n_RT_Ratio = 50
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
+			print *, "GLQ_points_cloudtop"
 			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
+			print *, "GLQ_weight_cloudtop"
 			allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
 			
+			print *, "cloudtop_LWP_ordered"
 			allocate (cloudtop_LWP_ordered(class_size, n_classes))
+			print *, "original_cloudtop_LWP_indexes"
 			allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
 			
+			print *, "GLQ_cloudtop_LWP_indexes"
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
+			print *, "start going through classes"
 			do n = 1, n_classes
-			
+				print *, "n"
+				print *, n
+				
+				print *, "gauleg"
 				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
 				
+				print *, "placing in original indexes"
 				counter = 0
 				do i = 1, imax
 					do j = 1, jmax
@@ -447,8 +458,10 @@ contains
 					end do
 				end do
 				
+				print *, "quicksortindexes"
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n))
 			
+				print *, "save GLQ points"
 				n2 = 0
 				do N_g = 1, n_GLQ_cloudtop
 				
@@ -459,6 +472,7 @@ contains
 						n2 = n_class(n)
 					end if
 					
+					print *, "bars are set, now placing  in GLQ indexes"
 					x_index = int(GLQ_points_cloudtop(N_g, n))
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
