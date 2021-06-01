@@ -333,6 +333,9 @@ contains
 
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
 
+				print *, "quantiles_value"
+				print *, quantiles_value
+
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				cloud_class(:,:) = 0
@@ -374,25 +377,26 @@ contains
 					! deallocate (n_class)
 					! goto 10
 				! end if
-				print *, ztop_field(:,:)
+				
+				!print *, ztop_field(:,:)
 
 
-				write(*,*)
-				write(*,*) 'altitude of classes:'
-				do i = 1, n_classes
-					if (i < n_classes) then
-						write(*,*) "i, quantiles_value(i)"
-						write(*,*) i, quantiles_value(i)
-						write(*,*) "i, n_class(i)"
-						write(*,*) i, n_class(i)
-					else
-						write(*,*) "i, maxval(cloudtop_height_ordered)"
-						write(*,*) i, maxval(cloudtop_height_ordered)
-						write(*,*) "i, n_class(i)"
-						write(*,*) i, maxval(cloudtop_height_ordered)
-					end if
-				end do
-				write(*,*)
+				! write(*,*)
+				! write(*,*) 'altitude of classes:'
+				! do i = 1, n_classes
+					! if (i < n_classes) then
+						! write(*,*) "i, quantiles_value(i)"
+						! write(*,*) i, quantiles_value(i)
+						! write(*,*) "i, n_class(i)"
+						! write(*,*) i, n_class(i)
+					! else
+						! write(*,*) "i, maxval(cloudtop_height_ordered)"
+						! write(*,*) i, maxval(cloudtop_height_ordered)
+						! write(*,*) "i, n_class(i)"
+						! write(*,*) i, maxval(cloudtop_height_ordered)
+					! end if
+				! end do
+				! write(*,*)
 				
 				class_size = n_class(1)
 				do i=2,n_classes
