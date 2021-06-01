@@ -261,6 +261,7 @@ contains
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
 			counter = 0
+			!!This could be moved up
 			do i = 1, imax
 				do j = 1, jmax
 					if (LWP_flattened(i,j) <= cloud_threshold) then
@@ -374,13 +375,13 @@ contains
 
 				min_class  = minval(n_class(:))
 				!Skip this part for now, but might need to look at this later
-				!min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
-				! if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
-					! n_classes = n_classes - 1
-					! deallocate (quantiles_value)
-					! deallocate (n_class)
-					! goto 10
-				! end if
+				min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
+				if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
+					n_classes = n_classes - 1
+					deallocate (quantiles_value)
+					deallocate (n_class)
+					goto 10
+				end if
 				
 				!print *, ztop_field(:,:)
 
