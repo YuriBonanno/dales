@@ -139,7 +139,7 @@ contains
 	   else
 
 		  do k = 1, n_quantiles
-			 index_q = float(k) / float(n_quantiles + 1) * n_s
+			 index_q = (float(k) / float(n_quantiles + 1)) * n_s
 			 q(k)    = x(index_q)
 		  end do
 
