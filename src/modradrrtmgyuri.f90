@@ -411,6 +411,7 @@ contains
 				end do
 				!deallocate (quantiles_value)
 			else
+				print *, "success...?"
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				n_class(1) = n_clouds
