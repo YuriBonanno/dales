@@ -229,11 +229,12 @@ contains
 		total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 		
 		!!Cloudtop distribution might be unccecessary
-		print *, "cloudtop_distribution"
-		print *, cloudtop_distribution
-		call quicksort(cloudtop_distribution, 1, k1)
-		print *, "sorted cloudtop_distribution"
-		print *, cloudtop_distribution
+		!!!~The sorting is porbalby bad!
+		! print *, "cloudtop_distribution"
+		! print *, cloudtop_distribution
+		!call quicksort(cloudtop_distribution, 1, k1)
+		! print *, "sorted cloudtop_distribution"
+		! print *, cloudtop_distribution
 		
 		print *, "n_clouds"
 		print *, n_clouds
