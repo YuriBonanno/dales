@@ -450,7 +450,7 @@ contains
 				do i = 1, imax
 					do j = 1, jmax
 						if (cloud_class(i,j) == n) then
-							counter = counter + 1]]
+							counter = counter + 1
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
 							original_cloudtop_LWP_indexes(counter, 1, n) = i
 							original_cloudtop_LWP_indexes(counter, 2, n) = j
