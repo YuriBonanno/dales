@@ -415,6 +415,7 @@ contains
 				n_class(:) = 0
 				n_class(1) = n_clouds
 				class_size = n_class(1)
+				cloud_class(:,:) = n_classes
 			end if
 			
 			n_RT_Ratio = 50
