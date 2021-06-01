@@ -39,6 +39,7 @@ contains
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 		integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
 		integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
+		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		
 		
@@ -59,7 +60,6 @@ contains
 		!integer,allocatable,dimension(:) :: LWP_distribution						!Possibly very unneccesary
 		integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
 		
-		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 		real(kind=kind_rb),allocatable,dimension(:) :: quantiles_value 					!= n_classes - 1, could be integer but must be real for quicksort
 		!This definition not necessary because it is defined later
 		!real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
