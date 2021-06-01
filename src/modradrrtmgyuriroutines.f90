@@ -15,7 +15,6 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksortindexes(a, first, last, indexes)
-	print *, "is this okay?"
 	implicit none
 	real*8  a(*), x, t
 	integer first, last
