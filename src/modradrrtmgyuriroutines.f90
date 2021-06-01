@@ -15,12 +15,15 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksortindexes(a, first, last, indexes)
+	print *, "is this okay?"
 	implicit none
 	real*8  a(*), x, t
 	integer first, last
 	integer i, j
 	integer indexes(last-first+1,2)
 	integer temp_hor_index, temp_ver_index
+	print *, "definitions are fine"
+
 
 	  x = a( (first+last) / 2 )
 	  i = first
@@ -39,6 +42,7 @@ contains
 		 i=i+1
 		 j=j-1
 	  end do
+	  print *, "recursion"
 	  if (first < i-1) call quicksortindexes(a, first, i-1, indexes(first:i-1, :))
 	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes(j+1:last, :))
 	end subroutine quicksortindexes
