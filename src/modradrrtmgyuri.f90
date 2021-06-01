@@ -231,7 +231,7 @@ contains
 		!!Cloudtop distribution might be unccecessary
 		print *, "cloudtop_distribution"
 		print *, cloudtop_distribution
-		call quicksort(cloudtop_distribution, 1, kmax)
+		call quicksort(cloudtop_distribution, 1, k1)
 		print *, "sorted cloudtop_distribution"
 		print *, cloudtop_distribution
 		
@@ -319,6 +319,9 @@ contains
 			!Determined:
 			!   cloudtop_height_ordered
 
+			print *, "cloudtop_height_ordered"
+			print *, cloudtop_height_ordered
+			
 			write(*,*)
 
 			!Initialise the classes
