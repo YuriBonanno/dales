@@ -40,6 +40,12 @@ contains
 		 j=j-1
 	  end do
 	  print *, "recursion"
+	  print *, "last-first + 1"
+	  print *, last-first + 1
+	  print *, "first, i"
+	  print *, first, i
+	  print *, "j, last"
+	  print *, j, last
 	  if (first < i-1) call quicksortindexes(a, first, i-1, indexes(first:i-1, :))
 	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes(j+1:last, :))
 	end subroutine quicksortindexes
