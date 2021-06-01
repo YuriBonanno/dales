@@ -229,7 +229,7 @@ contains
 		total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 		
 		!!Cloudtop distribution might be unccecessary
-		!!!~The sorting is porbalby bad!
+		!!!~The sorting is bad, also you should not pass integers to quicksort!
 		! print *, "cloudtop_distribution"
 		! print *, cloudtop_distribution
 		!call quicksort(cloudtop_distribution, 1, k1)
@@ -450,7 +450,7 @@ contains
 				do i = 1, imax
 					do j = 1, jmax
 						if (cloud_class(i,j) == n) then
-							counter = counter + 1
+							counter = counter + 1]]
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
 							original_cloudtop_LWP_indexes(counter, 1, n) = i
 							original_cloudtop_LWP_indexes(counter, 2, n) = j
@@ -485,6 +485,7 @@ contains
 
 		end if
 		print *, "finished clouded collumns"
+		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		

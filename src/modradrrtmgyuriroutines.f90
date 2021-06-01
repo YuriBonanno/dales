@@ -16,13 +16,11 @@ contains
 	!!
 	recursive subroutine quicksortindexes(a, first, last, indexes)
 	implicit none
-	real*8  a(*), x, t
 	integer first, last
 	integer i, j
-	integer indexes(last-first+1,2)
 	integer temp_hor_index, temp_ver_index
-	print *, "definitions are fine"
-
+	integer indexes(last-first+1,2)
+	real  	a(last-first+1), x, t
 
 	  x = a( (first+last) / 2 )
 	  i = first
@@ -53,10 +51,9 @@ contains
 	!!
 	recursive subroutine quicksort(a, first, last)
 	implicit none
-	real*8  a(*), x, t
 	integer first, last
 	integer i, j
-
+	real  a(last-first+1), x, t
 
 	  x = a( (first+last) / 2 )
 	  i = first
