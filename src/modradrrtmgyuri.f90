@@ -60,7 +60,7 @@ contains
 		integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
 		
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
-		real(kind=kind_rb),allocatable,dimension(:) :: quantiles 					!= n_classes - 1, could be integer but must be real for quicksort
+		real(kind=kind_rb),allocatable,dimension(:) :: quantiles_value 					!= n_classes - 1, could be integer but must be real for quicksort
 		!This definition not necessary because it is defined later
 		!real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
@@ -209,7 +209,7 @@ contains
 						if (LWP_grid(i,j,inverse_k)>cloud_patch_threshold) then
 							ztop_field(i,j) = zf(inverse_k) 
 							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1
-						EXIT
+							EXIT
 						end if
 					end do
 				end if
@@ -327,11 +327,11 @@ contains
 			n_classes_initial = 20
 			n_classes = n_classes_initial
 			if (n_classes > 1) then
-		10    	allocate (quantiles(n_classes-1))
+		10    	allocate (quantiles_value(n_classes-1))
 
 				write(*,*) 'n_classes = ', n_classes
 
-				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles)
+				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
 
 				allocate (n_class(n_classes))
 				n_class(:) = 0
@@ -340,12 +340,12 @@ contains
 				do i = 1,imax
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
-							if(ztop_field(i,j) > quantiles(n_classes-1)) then
+							if(ztop_field(i,j) > quantiles_value(n_classes-1)) then
 								cloud_class(i,j) = n_classes
 								n_class(n_classes) = n_class(n_classes) + 1
 							else
 								do n = 1, n_classes-1
-									if(ztop_field(i,j) <= quantiles(n)) then
+									if(ztop_field(i,j) <= quantiles_value(n)) then
 										cloud_class(i,j) = n
 										n_class(n) = n_class(n) + 1
 									end if
@@ -357,7 +357,7 @@ contains
 				
 				!counter = 1
 				!do n = 1,n_classes-1
-				!	do while(cloudtop_height_ordered(counter) <= quantiles(n))
+				!	do while(cloudtop_height_ordered(counter) <= quantiles_value(n))
 				!		n_class(n) = n_class(n) + 1
 				!		counter = counter + 1
 				!	end do
@@ -370,7 +370,7 @@ contains
 				!min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
 				! if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
 					! n_classes = n_classes - 1
-					! deallocate (quantiles)
+					! deallocate (quantiles_value)
 					! deallocate (n_class)
 					! goto 10
 				! end if
@@ -381,8 +381,8 @@ contains
 				write(*,*) 'altitude of classes:'
 				do i = 1, n_classes
 					if (i < n_classes) then
-						write(*,*) "i, quantiles(i)"
-						write(*,*) i, quantiles(i)
+						write(*,*) "i, quantiles_value(i)"
+						write(*,*) i, quantiles_value(i)
 						write(*,*) "i, n_class(i)"
 						write(*,*) i, n_class(i)
 					else
@@ -400,7 +400,7 @@ contains
 						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg"
 					end if
 				end do
-				!deallocate (quantiles)
+				!deallocate (quantiles_value)
 			else
 				allocate (n_class(n_classes))
 				n_class(:) = 0
