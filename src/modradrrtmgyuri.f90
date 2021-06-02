@@ -575,9 +575,9 @@ contains
 			
 			! N_g = MODULO(temp_GLQ_point, imax) + 1 !This is just i?
 			if (temp_GLQ_point <= total_amount_GLQ_points) then
-				print "temp_GLQ_point <= total_amount_GLQ_points"
+				print *, "temp_GLQ_point <= total_amount_GLQ_points"
 				if (temp_GLQ_point <= n_GLQ_clear) then
-					print "temp_GLQ_point <= n_GLQ_clear"
+					print *, "temp_GLQ_point <= n_GLQ_clear"
 				!!!!!!!!!!!!!!!!!!!!!
 					!Cloudless
 					!n1 and n2 could be saved..., so you dont have to redetermine the n1 and n2
@@ -637,7 +637,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					print "temp_GLQ_point > n_GLQ_clear"
+					print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
