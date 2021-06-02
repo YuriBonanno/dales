@@ -491,6 +491,8 @@ contains
 
 		end if
 		print *, "finished clouded collumns"
+		print *, "original_cloudtop_LWP_indexes(:,:,:)"
+		print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
