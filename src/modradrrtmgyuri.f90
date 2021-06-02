@@ -533,7 +533,7 @@ contains
 	!Only the values in the radiation or also the field values in modraddata?
 	subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-		n_classes,n_class, class_size, current_GLQ_point, total_amount_GLQ_points)
+		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points)
 	
 	use modglobal, only: imax, k1, boltz
 	use modfields, only: thl0
@@ -545,7 +545,7 @@ contains
 	integer :: fill_i, fill_j
 	integer :: n, n1, n2
 	integer :: class_number															!Counter for the cloudtop classes
-	integer :: current_GLQ_point													!GLQ point counter for the barker method
+	integer :: passed_GLQ_point, temp_GLQ_point									!GLQ point counter for the barker method
 	integer :: cloudtop_GLQ_point													!Reduced GLQ point counter for 
 	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
@@ -566,26 +566,28 @@ contains
 	real    :: cloud_threshold 						!for the definition of a clouded collumn
 	real    :: cloud_patch_threshold 				!for the definition of cloud top
 		
-		
+		temp_GLQ_point = passed_GLQ_point
 		do i=1,imax
 			
 			!Is GLQ_index_all even necessary?
-			!GLQ_i   = int(GLQ_index_all(current_GLQ_point, 1))
-			!GLQ_j   = int(GLQ_index_all(current_GLQ_point, 2))
+			!GLQ_i   = int(GLQ_index_all(temp_GLQ_point, 1))
+			!GLQ_j   = int(GLQ_index_all(temp_GLQ_point, 2))
 			
-			! N_g = MODULO(current_GLQ_point, imax) + 1 !This is just i?
-			if (current_GLQ_point <= total_amount_GLQ_points) then
-				if (current_GLQ_point <= n_GLQ_clear) then
+			! N_g = MODULO(temp_GLQ_point, imax) + 1 !This is just i?
+			if (temp_GLQ_point <= total_amount_GLQ_points) then
+				print "temp_GLQ_point <= total_amount_GLQ_points"
+				if (temp_GLQ_point <= n_GLQ_clear) then
+					print "temp_GLQ_point <= n_GLQ_clear"
 				!!!!!!!!!!!!!!!!!!!!!
 					!Cloudless
 					!n1 and n2 could be saved..., so you dont have to redetermine the n1 and n2
-					if (current_GLQ_point == 1) then
+					if (temp_GLQ_point == 1) then
 						n1 = 1
-						n2 = (GLQ_points_clear(current_GLQ_point) + GLQ_points_clear(current_GLQ_point+1)) / 2
+						n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
 					else
-						if (current_GLQ_point < n_GLQ_clear) then
-							n1 = (GLQ_points_clear(current_GLQ_point-1) + GLQ_points_clear(current_GLQ_point)) / 2
-							n2 = (GLQ_points_clear(current_GLQ_point) + GLQ_points_clear(current_GLQ_point+1)) / 2
+						if (temp_GLQ_point < n_GLQ_clear) then
+							n1 = (GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2
+							n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
 						else
 							n1 = (GLQ_points_clear(n_clear-1) + GLQ_points_clear(n_clear)) / 2
 							n2 = n_clear
@@ -632,13 +634,13 @@ contains
 						LW_dn_ca_TOA (fill_i, fill_j) = -lwDownCS_slice(i,krad2)
 						
 					end do
-					current_GLQ_point = current_GLQ_point + 1
+					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					
+					print "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
-					cloudtop_GLQ_point = current_GLQ_point - n_GLQ_clear
+					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
 					class_number = cloudtop_GLQ_point/class_size
 					cloudtop_GLQ_point = MODULO(cloudtop_GLQ_point, class_size)
 					if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
@@ -697,7 +699,7 @@ contains
 						LW_dn_ca_TOA (fill_i, fill_j) = -lwDownCS_slice(i,krad2)
 						
 					end do
-					current_GLQ_point = current_GLQ_point + 1
+					temp_GLQ_point = temp_GLQ_point + 1
 				end if
 			end if
 		end do

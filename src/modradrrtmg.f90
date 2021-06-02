@@ -31,7 +31,7 @@ contains
 	logical :: barker_method
 	integer :: slice_length, passed_slice_length											!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices											!Amount of slices necessary for the sliced GLQ method
-	integer :: current_GLQ_point													!GLQ point counter for the barker method
+	integer :: current_GLQ_point, passed_GLQ_point													!GLQ point counter for the barker method
 	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
@@ -224,23 +224,27 @@ contains
 		GLQ_slices = total_amount_GLQ_points/imax
 		slice_length = MODULO(total_amount_GLQ_points, imax)
 		if (slice_length>0) then
-			GLQ_slices = GLQ_slices + 1
+			GLQ_slices = GLQ_slices + 1 
 		end if
 
+		current_GLQ_point = 1
+		passed_GLQ_point = current_GLQ_point
 		print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
-			if (j == GLQ_slices) then
+			if (j == GLQ_slices .and. slice_length>0) then
+				print*, "slice shortening happened", slice_length
 				passed_slice_length = slice_length
 			else
 				passed_slice_length = imax
 			end if
+			
+			passed_GLQ_point = current_GLQ_point
 			print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
+			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
 			print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-
 			print *, "Starting  radiation"
 			if (rad_longw) then
 				call rrtmg_lw &
@@ -259,13 +263,17 @@ contains
 			end if
 			print *, "finished  radiation"
 
+			passed_GLQ_point = current_GLQ_point
 			print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
-			!!!Need to shift j??
+			!!!Need to shift j??			
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-				n_classes, n_class, class_size, current_GLQ_point, total_amount_GLQ_points)
+				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points)
 			print *, "Finished  reshuffleValues"
+			current_GLQ_point = current_GLQ_point + passed_slice_length
+			
+			passed_GLQ_point = current_GLQ_point
 		enddo
 	else
 ! End Added myself ------------------
@@ -895,7 +903,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length)
+		   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -925,7 +933,7 @@ contains
 									   iceRe    (imax,krad1)
   integer :: i,k,ksounding, temp_i, temp_j
   integer :: total_amount_GLQ_points
-  integer :: current_GLQ_point
+  integer :: passed_GLQ_point, temp_GLQ_point
   integer :: slice_length
   integer,dimension(:,:) :: GLQ_index_all (total_amount_GLQ_points, 2)
   real (KIND=kind_rb) :: exners
@@ -953,13 +961,11 @@ contains
 	exners = (ps/pref0) ** (rd/cp)
 
 
-	current_GLQ_point = current_GLQ_point
-	
-	
+	temp_GLQ_point = passed_GLQ_point
 	
 	do i=1,slice_length
-		temp_i = GLQ_index_all(current_GLQ_point,1)
-		temp_j = GLQ_index_all(current_GLQ_point,2)
+		temp_i = GLQ_index_all(temp_GLQ_point,1)
+		temp_j = GLQ_index_all(temp_GLQ_point,2)
 
 		tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
 		do k=1,kmax
@@ -977,13 +983,13 @@ contains
 			layerT  (i,k) = tabs_slice(i,k)
 			layerP  (i,k) = presf_input(k)
 		enddo
-		current_GLQ_point = current_GLQ_point + 1
+		temp_GLQ_point = temp_GLQ_point + 1
 	enddo
 
-	! current_GLQ_point = current_GLQ_point
+	! temp_GLQ_point = passed_GLQ_point
 	! do i=1,slice_length
-		! temp_i = GLQ_index_all(current_GLQ_point,1)
-		! temp_j = GLQ_index_all(current_GLQ_point,2)
+		! temp_i = GLQ_index_all(temp_GLQ_point,1)
+		! temp_j = GLQ_index_all(temp_GLQ_point,2)
 
 		! tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
 		! do k=1,kmax
@@ -997,7 +1003,7 @@ contains
 			! layerT  (i,k) = tabs_slice(i,k)
 			! layerP  (i,k) = presf_input(k)
 		! enddo
-		! current_GLQ_point = current_GLQ_point + 1
+		! temp_GLQ_point = temp_GLQ_point + 1
 	! enddo
 
 	! Patch sounding on top (no qcl or qci above domain; hard coded)
