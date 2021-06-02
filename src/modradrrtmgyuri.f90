@@ -465,7 +465,7 @@ contains
 				end do
 				
 				print *, "quicksortindexes"
-				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n))
+				!!call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n))
 			
 				print *, "save GLQ points"
 				n2 = 0
