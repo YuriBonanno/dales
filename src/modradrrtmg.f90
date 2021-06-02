@@ -204,7 +204,7 @@ contains
     lwUpCS_slice = 0
     lwDownCS_slice = 0
 ! Added myself ------------------
- 	barker_method=.true.
+ 	barker_method=.false.
  	if (barker_method) then
 
 		!Finds the GLQ points used for filling the 
@@ -254,6 +254,7 @@ contains
 
 			print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
+			!!!Need to shift j??
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
 				n_classes, n_class, class_size, current_GLQ_point, total_amount_GLQ_points)
