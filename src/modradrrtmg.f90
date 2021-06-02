@@ -204,7 +204,7 @@ contains
     lwUpCS_slice = 0
     lwDownCS_slice = 0
 ! Added myself ------------------
- 	barker_method=.false.
+ 	barker_method=.true.
  	if (barker_method) then
 
 		!Finds the GLQ points used for filling the 
@@ -229,7 +229,7 @@ contains
 		do j = 1, GLQ_slices
 			print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
-			   LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all)
 			print *, "Finished  setupBarkerSlicesFromProfiles"
 			
@@ -922,7 +922,7 @@ contains
   real (KIND=kind_rb) :: exners
   real(KIND=kind_rb) :: layerMass(imax,krad1)
   !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
-  !real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
+  real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
   real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
   real , parameter :: rho_liq = 1000.
 
@@ -937,7 +937,7 @@ contains
 	! Compute absolute temperature and water contents (without border points)
 
 	!tabs(:,:) = 0.;
-	!sstxy(:,:) = 0.
+	sstxy(:,:) = 0.
 	tabs_slice(:,:) = 0.; qv_slice(:,:) = 0.; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
 	rho_slice(:,:) = 0.
 
