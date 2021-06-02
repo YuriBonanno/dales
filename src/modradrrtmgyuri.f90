@@ -280,7 +280,7 @@ contains
 			end do
 
 			!Order on basis of LWP
-			call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes)
+			!!call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes)
 		
 			!Determine the indexes of the Gauss-Legendre points
 			n_GLQ_clear = 30
