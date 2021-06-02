@@ -254,8 +254,11 @@ contains
 		print *, "finished cloud and LWP data"
 		print *, "starting cloudless collumns"
 		
-		n_GLQ_clear = 30
+		n_GLQ_clear = 0
+		
+
 		if (n_clear > 0) then
+			n_GLQ_clear = 30
 			if (n_GLQ_clear < n_clear) then
 				n_GLQ_clear = n_clear
 			end if
