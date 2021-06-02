@@ -648,6 +648,10 @@ contains
 					end if
 					cloudtop_GLQ_point = cloudtop_GLQ_point + 1
 					
+					print *, "class_number"
+					print *, class_number
+					print *, "cloudtop_GLQ_point"
+					print *, cloudtop_GLQ_point
 					if (cloudtop_GLQ_point == 1) then
 						n1 = 1
 						n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
@@ -660,7 +664,8 @@ contains
 							n2 = n_clouds
 						end if
 					end if
-
+					
+					print *, "start through LWP indexes"
 					do n = n1, n2
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
