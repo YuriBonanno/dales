@@ -11,7 +11,8 @@ contains
 !Important Routine
 	subroutine findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all)
+		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
+		original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	
 		use modglobal, only: imax, jmax, kmax, i1, j1, k1, kind_rb, grav, zf, zh
 		use modfields, only: ql0
@@ -38,10 +39,9 @@ contains
 		integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 		integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-		integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
-		
+		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
 		
 		!Cloud ordering
 		integer :: n1, n2								!Boundaries of start and end within GLQ
@@ -479,6 +479,7 @@ contains
 					end if
 					
 					print *, "bars are set, now placing  in GLQ indexes"
+					!Look at if this works, weird index results
 					x_index = int(GLQ_points_cloudtop(N_g, n))
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
@@ -535,7 +536,8 @@ contains
 	!Only the values in the radiation or also the field values in modraddata?
 	subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length)
+		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
+		original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	
 	use modglobal, only: k1, boltz
 	use modfields, only: thl0

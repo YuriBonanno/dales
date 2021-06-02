@@ -39,6 +39,9 @@ contains
 	integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
+	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+
 
 	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
 	integer :: class_size							!Amount of clouds in individual class
@@ -212,8 +215,9 @@ contains
 
 		print *, "Starting  findGLQPoints"
 		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all)
+			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+			n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
+			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		print *, "Finished  findGLQPoints"
 
 		! Function that Create n <= j1 slices with the necessary info.
@@ -269,7 +273,8 @@ contains
 			!!!Need to shift j??			
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length)
+				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
+				original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 			print *, "Finished  reshuffleValues"
 			current_GLQ_point = current_GLQ_point + passed_slice_length
 			
