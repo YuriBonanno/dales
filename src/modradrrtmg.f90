@@ -903,7 +903,7 @@ contains
   ! JvdDussen, 24-6-2010                                                        !
   ! ============================================================================!
 
-  use modglobal, only: kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
+  use modglobal, only: imax,jmax,kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
   use modfields, only: thl0,ql0,qt0,exnf
   use modsurfdata, only: tskin,ps
   use modmicrodata, only : Nc_0,sig_g
