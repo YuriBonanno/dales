@@ -28,8 +28,9 @@ contains
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
 	! Added myself ------------------
-	logical                :: barker_method
-	integer :: GLQ_slices
+	logical :: barker_method
+	integer :: slice_length, passed_slice_length											!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
+	integer :: GLQ_slices											!Amount of slices necessary for the sliced GLQ method
 	integer :: current_GLQ_point													!GLQ point counter for the barker method
 	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
@@ -221,7 +222,8 @@ contains
 				!LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe
 
 		GLQ_slices = total_amount_GLQ_points/imax
-		if (MODULO(total_amount_GLQ_points, imax) > 0) then
+		slice_length = MODULO(total_amount_GLQ_points, imax)
+		if (slice_length) then
 			GLQ_slices = GLQ_slices + 1
 		end if
 
@@ -230,7 +232,7 @@ contains
 			print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all)
+			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
 			print *, "Finished  setupBarkerSlicesFromProfiles"
 			
 
@@ -888,7 +890,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all)
+		   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -901,13 +903,14 @@ contains
   ! JvdDussen, 24-6-2010                                                        !
   ! ============================================================================!
 
-  use modglobal, only: imax,jmax,kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
+  use modglobal, only: kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
   use modfields, only: thl0,ql0,qt0,exnf
   use modsurfdata, only: tskin,ps
   use modmicrodata, only : Nc_0,sig_g
   use modmpi, only: myid
 
   implicit none
+
 
   integer,intent(in) :: npatch_start
   real(KIND=kind_rb),intent(out) ::    LWP_slice(imax,krad1), &
@@ -918,6 +921,7 @@ contains
   integer :: i,k,ksounding, temp_i, temp_j
   integer :: total_amount_GLQ_points
   integer :: current_GLQ_point
+  integer :: slice_length
   integer,dimension(:,:) :: GLQ_index_all (total_amount_GLQ_points, 2)
   real (KIND=kind_rb) :: exners
   real(KIND=kind_rb) :: layerMass(imax,krad1)
@@ -943,8 +947,12 @@ contains
 
 	exners = (ps/pref0) ** (rd/cp)
 
+
 	current_GLQ_point = current_GLQ_point
-	do i=1,imax
+	
+	
+	
+	do i=1,slice_length
 		temp_i = GLQ_index_all(current_GLQ_point,1)
 		temp_j = GLQ_index_all(current_GLQ_point,2)
 
@@ -968,7 +976,7 @@ contains
 	enddo
 
 	! current_GLQ_point = current_GLQ_point
-	! do i=1,imax
+	! do i=1,slice_length
 		! temp_i = GLQ_index_all(current_GLQ_point,1)
 		! temp_j = GLQ_index_all(current_GLQ_point,2)
 
@@ -988,7 +996,7 @@ contains
 	! enddo
 
 	! Patch sounding on top (no qcl or qci above domain; hard coded)
-	do i=1,imax
+	do i=1,slice_length
 		ksounding=npatch_start
 		do k=kmax+1,kradmax
 			tabs_slice(i,k) =  tsnd(ksounding)
@@ -1002,7 +1010,7 @@ contains
 
 	! o3 profile provided by user (user03=true) or reference prof from RRTMG
 	if (usero3) then
-		do i=1,imax
+		do i=1,slice_length
 			ksounding=npatch_start
 			do k=kmax+1,kradmax
 				o3_slice(i,k) = o3snd(ksounding)
@@ -1014,7 +1022,7 @@ contains
 			o3vmr  (i,krad1)   = o3vmr(i,kradmax)
 		enddo
 	else
-		do i=1,imax
+		do i=1,slice_length
 			do k=1,krad1
 				o3vmr   (i,k) = o3(k)
 			enddo
@@ -1022,7 +1030,7 @@ contains
 	end if
 
 
-	do i=1,imax
+	do i=1,slice_length
 		do k=kmax+1,kradmax
 			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
 			layerP	(i,k)    = presf_input (k)
@@ -1034,7 +1042,7 @@ contains
 		layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
 	enddo
 
-	do i=1,imax
+	do i=1,slice_length
 		do k=1,krad1
 			co2vmr  (i,k) = co2(k)
 			ch4vmr  (i,k) = ch4(k)
@@ -1055,7 +1063,7 @@ contains
 		interfaceT(i,1)  = tg_slice(i)
 	enddo
 
-	do i=1,imax
+	do i=1,slice_length
 		do k=1,kradmax
 			layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
 			LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
@@ -1071,7 +1079,7 @@ contains
 	liquidRe (:,:) = 0.
 	iceRe    (:,:) = 0.
 
-	do i=1,imax
+	do i=1,slice_length
 		do k=1,kradmax
 			if (LWP_slice(i,k).gt.0.) then
 				cloudFrac(i,k) = 1.
