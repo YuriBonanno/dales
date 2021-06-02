@@ -533,9 +533,9 @@ contains
 	!Only the values in the radiation or also the field values in modraddata?
 	subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points)
+		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length)
 	
-	use modglobal, only: imax, k1, boltz
+	use modglobal, only: k1, boltz
 	use modfields, only: thl0
     use modsurfdata, only: tskin
 	use modraddata
@@ -549,6 +549,7 @@ contains
 	integer :: cloudtop_GLQ_point													!Reduced GLQ point counter for 
 	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+	integer :: passed_slice_length
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 	integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
@@ -567,13 +568,13 @@ contains
 	real    :: cloud_patch_threshold 				!for the definition of cloud top
 		
 		temp_GLQ_point = passed_GLQ_point
-		do i=1,imax
+		do i=1,passed_slice_length
 			
 			!Is GLQ_index_all even necessary?
 			!GLQ_i   = int(GLQ_index_all(temp_GLQ_point, 1))
 			!GLQ_j   = int(GLQ_index_all(temp_GLQ_point, 2))
 			
-			! N_g = MODULO(temp_GLQ_point, imax) + 1 !This is just i?
+			! N_g = MODULO(temp_GLQ_point, passed_slice_length) + 1 !This is just i?
 			if (temp_GLQ_point <= total_amount_GLQ_points) then
 				print *, "temp_GLQ_point <= total_amount_GLQ_points"
 				if (temp_GLQ_point <= n_GLQ_clear) then
@@ -645,7 +646,7 @@ contains
 					if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
 						class_number = class_number + 1
 					end if
-					cloudtop_GLQ_point = cloudtop_GLQ_point - class_number*class_size
+					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
 					!cloudtop_GLQ_point = cloudtop_GLQ_point + 1
 					
 					print *, "class_size"

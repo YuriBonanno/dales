@@ -269,7 +269,7 @@ contains
 			!!!Need to shift j??			
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points)
+				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length)
 			print *, "Finished  reshuffleValues"
 			current_GLQ_point = current_GLQ_point + passed_slice_length
 			
