@@ -223,12 +223,17 @@ contains
 
 		GLQ_slices = total_amount_GLQ_points/imax
 		slice_length = MODULO(total_amount_GLQ_points, imax)
-		if (slice_length) then
+		if (slice_length>0) then
 			GLQ_slices = GLQ_slices + 1
 		end if
 
 		print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
+			if (j == GLQ_slices) then
+				passed_slice_length = slice_length
+			else
+				passed_slice_length = imax
+			end if
 			print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
