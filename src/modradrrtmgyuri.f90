@@ -669,6 +669,8 @@ contains
 					end if
 					
 					print *, "start through LWP indexes"
+					print *, "n1", n1
+					print *, "n2", n2
 					do n = n1, n2
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
