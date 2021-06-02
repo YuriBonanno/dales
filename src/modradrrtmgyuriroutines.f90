@@ -21,7 +21,9 @@ contains
 	integer temp_hor_index, temp_ver_index
 	integer indexes(last-first+1,2)
 	real  	a(last-first+1), x, t
-
+	
+	print *, a
+	
 	  x = a( (first+last) / 2 )
 	  i = first
 	  j = last

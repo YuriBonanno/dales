@@ -51,9 +51,9 @@ contains
 		integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
 		integer :: min_class							!amount of clouds in smallest cloud class
 		integer :: counter,counter2						!counter that allows for cloud_top ordering
-		real    :: cloud_threshold 						!for the definition of a clouded collumn
-		real    :: cloud_patch_threshold 				!for the definition of cloud top
-		real	:: min_thresh							!Minimal size a cloud class has to have
+		real(kind=kind_rb)    	:: cloud_threshold 						!for the definition of a clouded collumn
+		real(kind=kind_rb)    	:: cloud_patch_threshold 				!for the definition of cloud top
+		real(kind=kind_rb)		:: min_thresh							!Minimal size a cloud class has to have
 		
 		!Cloud ordering
 		!integer,allocatable,dimension(:) :: clear_LWP_distribution					!Possibly very unnecessary
