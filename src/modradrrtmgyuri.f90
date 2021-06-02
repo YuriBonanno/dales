@@ -426,7 +426,7 @@ contains
 				print *, "cloud and classes finished"
 			end if
 			
-			n_RT_Ratio = 50
+			n_RT_Ratio = 1
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
