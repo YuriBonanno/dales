@@ -254,8 +254,11 @@ contains
 		print *, "finished cloud and LWP data"
 		print *, "starting cloudless collumns"
 		
-		
+		n_GLQ_clear = 30
 		if (n_clear > 0) then
+			if (n_GLQ_clear < n_clear) then
+				n_GLQ_clear = n_clear
+			end if
 			print *, "n_clear > 0"
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (original_clear_LWP_indexes (n_clear, 2))
@@ -489,13 +492,18 @@ contains
 		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
+		print *, "allocating"
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		do i =1, n_GLQ_clear
-			GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
-			GLQ_index_all(i, 2) = GLQ_clear_LWP_indexes(i, 2)
-		enddo
+		print *, "GLQ clear"
+		if (n_GLQ_clear>0) then
+			do i =1, n_GLQ_clear
+				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
+				GLQ_index_all(i, 2) = GLQ_clear_LWP_indexes(i, 2)
+			enddo
+		end if
 		GLQ_counter = n_GLQ_clear
+		print *, "GLQ clouded"
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
 				GLQ_counter = GLQ_counter + 1
