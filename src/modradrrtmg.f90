@@ -947,22 +947,13 @@ contains
 		temp_i = GLQ_index_all(current_GLQ_point,1)
 		temp_j = GLQ_index_all(current_GLQ_point,2)
 
+		tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
 		do k=1,kmax
 			!!! +1 in j must be checked with Stephan
 			tabs_slice(i,k) = thl0(temp_i+1,temp_j+1,k) * exnf(k) &
 								+ (rlv / cp) * ql0(temp_i+1,temp_j+1,k)
-		enddo
-		current_GLQ_point = current_GLQ_point + 1
-	enddo
-
-	current_GLQ_point = current_GLQ_point
-	do i=1,imax
-		temp_i = GLQ_index_all(current_GLQ_point,1)
-		temp_j = GLQ_index_all(current_GLQ_point,2)
-
-		tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
-		do k=1,kmax
-			! +1 in j must be checked with Stephan
+								
+			!!! +1 in j must be checked with Stephan
 			qv_slice  (i,k) = max(qt0(temp_i+1,temp_j+1,k) - ql0(temp_i+1,temp_j+1,k),1e-18) !avoid RRTMG reading negative initial values 
 			qcl_slice (i,k) = ql0(temp_i+1,temp_j+1,k)
 			qci_slice (i,k) = 0.
@@ -974,6 +965,26 @@ contains
 		enddo
 		current_GLQ_point = current_GLQ_point + 1
 	enddo
+
+	! current_GLQ_point = current_GLQ_point
+	! do i=1,imax
+		! temp_i = GLQ_index_all(current_GLQ_point,1)
+		! temp_j = GLQ_index_all(current_GLQ_point,2)
+
+		! tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
+		! do k=1,kmax
+			!!+1 in j must be checked with Stephan
+			! qv_slice  (i,k) = max(qt0(temp_i+1,temp_j+1,k) - ql0(temp_i+1,temp_j+1,k),1e-18) !avoid RRTMG reading negative initial values 
+			! qcl_slice (i,k) = ql0(temp_i+1,temp_j+1,k)
+			! qci_slice (i,k) = 0.
+			! o3_slice  (i,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
+
+			! h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
+			! layerT  (i,k) = tabs_slice(i,k)
+			! layerP  (i,k) = presf_input(k)
+		! enddo
+		! current_GLQ_point = current_GLQ_point + 1
+	! enddo
 
 	! Patch sounding on top (no qcl or qci above domain; hard coded)
 	do i=1,imax
