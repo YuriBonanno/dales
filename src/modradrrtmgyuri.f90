@@ -232,7 +232,7 @@ contains
 		!!!~The sorting is bad, also you should not pass integers to quicksort!
 		! print *, "cloudtop_distribution"
 		! print *, cloudtop_distribution
-		!call quicksort(cloudtop_distribution, 1, k1)
+		!call quicksort(cloudtop_distribution, 1, k1, k1)
 		! print *, "sorted cloudtop_distribution"
 		! print *, cloudtop_distribution
 		
@@ -280,7 +280,7 @@ contains
 			end do
 
 			!Order on basis of LWP
-			!!call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes)
+			call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)
 		
 			!Determine the indexes of the Gauss-Legendre points
 			n_GLQ_clear = 30
@@ -465,7 +465,7 @@ contains
 				end do
 				
 				print *, "quicksortindexes"
-				!!call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n))
+				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
 			
 				print *, "save GLQ points"
 				n2 = 0

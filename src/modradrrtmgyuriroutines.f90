@@ -14,15 +14,13 @@ contains
 	! License: GPLv3
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
-	recursive subroutine quicksortindexes(a, first, last, indexes)
+	recursive subroutine quicksortindexes(a, first, last, indexes, length)
 	implicit none
-	integer first, last
+	integer first, last, length
 	integer i, j
 	integer temp_hor_index, temp_ver_index
-	integer indexes(last-first+1,2)
-	real  	a(last-first+1), x, t
-	
-	print *, a
+	integer indexes(length,2)
+	real  	a(length), x, t
 	
 	  x = a( (first+last) / 2 )
 	  i = first
@@ -41,15 +39,9 @@ contains
 		 i=i+1
 		 j=j-1
 	  end do
-	  print *, "recursion"
-	  print *, "last-first + 1"
-	  print *, last-first + 1
-	  print *, "first, i"
-	  print *, first, i
-	  print *, "j, last"
-	  print *, j, last
-	  if (first < i-1) call quicksortindexes(a, first, i-1, indexes(first:i-1, :))
-	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes(j+1:last, :))
+
+	  if (first < i-1) call quicksortindexes(a, first, i-1, indexes, length)
+	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes, length)
 	end subroutine quicksortindexes
 
 	! quicksort.f -*-f90-*-
@@ -57,9 +49,9 @@ contains
 	! License: GPLv3
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
-	recursive subroutine quicksort(a, first, last)
+	recursive subroutine quicksort(a, first, last, length)
 	implicit none
-	integer first, last
+	integer first, last, length
 	integer i, j
 	real  a(last-first+1), x, t
 
@@ -79,8 +71,8 @@ contains
 		 i=i+1
 		 j=j-1
 	  end do
-	  if (first < i-1) call quicksort(a, first, i-1)
-	  if (j+1 < last)  call quicksort(a, j+1, last)
+	  if (first < i-1) call quicksort(a, first, i-1, length)
+	  if (j+1 < last)  call quicksort(a, j+1, last, length)
 	end subroutine quicksort
 
 
