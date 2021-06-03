@@ -19,7 +19,7 @@ contains
 	integer first, last, length
 	integer i, j
 	integer temp_hor_index, temp_ver_index
-	integer indexes(length,2)
+	integer indexes(length, 2)
 	real  	a(length), x, t
 	
 	  x = a( (first+last) / 2 )
@@ -53,7 +53,7 @@ contains
 	implicit none
 	integer first, last, length
 	integer i, j
-	real  a(last-first+1), x, t
+	real  a(length), x, t
 
 	  x = a( (first+last) / 2 )
 	  i = first
