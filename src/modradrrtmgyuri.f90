@@ -434,17 +434,17 @@ contains
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
 			! print *, "GLQ_points_cloudtop"
-			! allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
+			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
 			! print *, "GLQ_weight_cloudtop"
-			! allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
+			allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
 			
 			! print *, "cloudtop_LWP_ordered"
-			! allocate (cloudtop_LWP_ordered(class_size, n_classes))
+			allocate (cloudtop_LWP_ordered(class_size, n_classes))
 			! print *, "original_cloudtop_LWP_indexes"
-			! allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
+			allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
 			
 			! print *, "GLQ_cloudtop_LWP_indexes"
-			! allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
+			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
 			! print *, "start going through classes"
 			do n = 1, n_classes
@@ -520,7 +520,7 @@ contains
 				GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
 			enddo
 		enddo
-		print *, "this wrong?"
+
 		print *, GLQ_index_all(:, :)
 		
 		! print *, "finished GLQ to long total array"

@@ -213,12 +213,12 @@ contains
 
 		!Finds the GLQ points used for filling the 
 
-		print *, "Starting  findGLQPoints"
+		!print *, "Starting  findGLQPoints"
 		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
 			n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
-		print *, "Finished  findGLQPoints"
+		!print *, "Finished  findGLQPoints"
 
 		! Function that Create n <= j1 slices with the necessary info.
 			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
@@ -236,20 +236,20 @@ contains
 		print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
 			if (j == GLQ_slices .and. slice_length>0) then
-				print*, "slice shortening happened", slice_length
+				!print*, "slice shortening happened", slice_length
 				passed_slice_length = slice_length
 			else
 				passed_slice_length = imax
 			end if
 			
 			passed_GLQ_point = current_GLQ_point
-			print *, "Starting  setupBarkerSlicesFromProfiles"
+			!print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
-			print *, "Finished  setupBarkerSlicesFromProfiles"
+			!print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-			print *, "Starting  radiation"
+			!print *, "Starting  radiation"
 			if (rad_longw) then
 				call rrtmg_lw &
 					 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -265,17 +265,17 @@ contains
 						( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
 				end if
 			end if
-			print *, "finished  radiation"
+			!print *, "finished  radiation"
 
 			passed_GLQ_point = current_GLQ_point
-			print *, "Starting  reshuffleValues"
+			!print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
 			!!!Need to shift j??			
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
 				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
 				original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
-			print *, "Finished  reshuffleValues"
+			!print *, "Finished  reshuffleValues"
 			current_GLQ_point = current_GLQ_point + passed_slice_length
 			
 			passed_GLQ_point = current_GLQ_point
