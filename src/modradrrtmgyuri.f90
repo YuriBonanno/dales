@@ -520,7 +520,7 @@ contains
 				GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
 			enddo
 		enddo
-		
+		print *, "this wrong?"
 		print *, GLQ_index_all(:, :)
 		
 		! print *, "finished GLQ to long total array"
