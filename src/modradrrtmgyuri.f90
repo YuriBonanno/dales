@@ -679,42 +679,42 @@ contains
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
 						
-						print *, "A"
+						!print *, "A"
 						lwu(fill_i, fill_j,1:k1) =  lwUp_slice  (i,1:k1)
 						lwd(fill_i, fill_j,1:k1) = -lwDown_slice(i,1:k1)
-						print *, "AA"
+						!print *, "AA"
 						!____________________
 						if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine 
 						!do i=2,i1
-						print *, "AAA"
+						!print *, "AAA"
 						lwd(fill_i, fill_j,1) =  -0.8 * boltz * thl0(fill_i, fill_j,1) ** 4.
-						print *, "AAAA"
+						!print *, "AAAA"
 						lwu(fill_i, fill_j,1) =  1.0 * boltz * tskin(fill_i, fill_j) ** 4.
 						!end do
 						end if
 						!____________________
-						print *, "FFFFFF"
+						!print *, "FFFFFF"
 						swu(fill_i, fill_j,1:k1) =  swUp_slice  (i,1:k1)
 						swd(fill_i, fill_j,1:k1) = -swDown_slice(i,1:k1)
 
-						print *, "CCCCCC"
+						!print *, "CCCCCC"
 						swdir(fill_i, fill_j,1:k1) = -swDownDir_slice(i,1:k1)
 						swdif(fill_i, fill_j,1:k1) = -swDownDif_slice(i,1:k1)
 						lwc  (fill_i, fill_j,1:k1) =  LWP_slice      (i,1:k1)
 
-						print *, "BBBBBB"
+						!print *, "BBBBBB"
 						lwuca(fill_i, fill_j,1:k1) =  lwUpCS_slice  (i,1:k1)
 						lwdca(fill_i, fill_j,1:k1) = -lwDownCS_slice(i,1:k1)
 						swuca(fill_i, fill_j,1:k1) =  swUpCS_slice  (i,1:k1)
 						swdca(fill_i, fill_j,1:k1) = -swDownCS_slice(i,1:k1)
 
-						print *, "XXXXXX"
+						!print *, "XXXXXX"
 						SW_up_TOA (fill_i, fill_j) =  swUp_slice  (i,krad2)
 						SW_dn_TOA (fill_i, fill_j) = -swDown_slice(i,krad2)
 						LW_up_TOA (fill_i, fill_j) =  lwUp_slice  (i,krad2)
 						LW_dn_TOA (fill_i, fill_j) = -lwDown_slice(i,krad2)
 
-						print *, "ZZZZZZ"
+						!print *, "ZZZZZZ"
 						SW_up_ca_TOA (fill_i, fill_j) =  swUpCS_slice  (i,krad2)
 						SW_dn_ca_TOA (fill_i, fill_j) = -swDownCS_slice(i,krad2)
 						LW_up_ca_TOA (fill_i, fill_j) =  lwUpCS_slice  (i,krad2)
