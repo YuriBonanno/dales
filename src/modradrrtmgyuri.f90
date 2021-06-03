@@ -88,7 +88,7 @@ contains
 
 		!__________________________________________________________
 		!Define all field values
-		print *, "Starting Define all field values"
+		!print *, "Starting Define all field values"
 		!Should initialize all the variables
 		!Make checklist
 		
@@ -177,10 +177,10 @@ contains
 	    layerMass_grid(1:imax,1:jmax,krad1) = 100.*( interfaceP_grid(1:imax,1:jmax,krad1) - interfaceP_grid(1:imax,1:jmax,krad2) ) / grav
         !784
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
-		print *, "finished Define all field values"
+		!print *, "finished Define all field values"
 		!__________________________________________________________
 		!determine specific necessary values
-		print *, "starting cloud and LWP data"
+		!print *, "starting cloud and LWP data"
 		cloud_threshold = 0.0
 		cloud_patch_threshold = 0.0
 		
@@ -216,13 +216,13 @@ contains
 		   end do
 	    end do
 		
-		if (SUM(cloudtop_distribution).ne.n_clouds) then
-			print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
-			print *, "SUM(cloudtop_distribution)"
-			print *, SUM(cloudtop_distribution)
-			print *, "n_clouds"
-			print *, n_clouds
-		end if
+		! if (SUM(cloudtop_distribution).ne.n_clouds) then
+			! print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
+			! print *, "SUM(cloudtop_distribution)"
+			! print *, SUM(cloudtop_distribution)
+			! print *, "n_clouds"
+			! print *, n_clouds
+		! end if
 		
 		n_clear = (imax*jmax)-n_clouds
 		
@@ -236,12 +236,12 @@ contains
 		! print *, "sorted cloudtop_distribution"
 		! print *, cloudtop_distribution
 		
-		print *, "n_clouds"
-		print *, n_clouds
-		print *, "n_clear"
-		print *, n_clear
-		print *, "total_cloud_fraction"
-		print *, total_cloud_fraction
+		! print *, "n_clouds"
+		! print *, n_clouds
+		! print *, "n_clear"
+		! print *, n_clear
+		! print *, "total_cloud_fraction"
+		! print *, total_cloud_fraction
 		
 		!Determined:
 		!   Cloud_fraction
@@ -251,8 +251,8 @@ contains
 		!   n_clear
 		!   LWP_flattened
 		
-		print *, "finished cloud and LWP data"
-		print *, "starting cloudless collumns"
+		! print *, "finished cloud and LWP data"
+		! print *, "starting cloudless collumns"
 		
 		n_GLQ_clear = 0
 		
@@ -262,7 +262,7 @@ contains
 			if (n_GLQ_clear < n_clear) then
 				n_GLQ_clear = n_clear
 			end if
-			print *, "n_clear > 0"
+			! print *, "n_clear > 0"
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
@@ -304,14 +304,14 @@ contains
 			!deallocate (GLQ_points_clear)
 			!deallocate (GLQ_weights_clear)
 		end if
-		print *, "finished cloudless collumns"
+		! print *, "finished cloudless collumns"
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Cloudy Sky Gauss-Legendre
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Select only the collumns with a nonzero cloudratio
-		print *, "starting clouded collumns"
+		! print *, "starting clouded collumns"
 		if (n_clouds > 0) then
-			print *, "n_clouds > 0"
+			! print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 
 			counter = 0
@@ -327,8 +327,8 @@ contains
 			!Determined:
 			!   cloudtop_height_ordered
 
-			print *, "cloudtop_height_ordered"
-			print *, cloudtop_height_ordered
+			! print *, "cloudtop_height_ordered"
+			! print *, cloudtop_height_ordered
 			
 			write(*,*)
 
@@ -340,12 +340,12 @@ contains
 		10	if (n_classes > 1) then
 		    	allocate (quantiles_value(n_classes-1))
 
-				write(*,*) 'n_classes = ', n_classes
+				! write(*,*) 'n_classes = ', n_classes
 
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
 
-				print *, "quantiles_value"
-				print *, quantiles_value
+				! print *, "quantiles_value"
+				! print *, quantiles_value
 
 				allocate (n_class(n_classes))
 				n_class(:) = 0
@@ -412,7 +412,7 @@ contains
 				class_size = n_class(1)
 				do i=2,n_classes
 					if (class_size /= n_class(i)) then
-						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg"
+						! print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
 						n_classes = n_classes - 1
 						deallocate (quantiles_value)
 						deallocate (n_class)
@@ -421,41 +421,40 @@ contains
 				end do
 				!deallocate (quantiles_value)
 			else
-				print *, "success...?"
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				n_class(1) = n_clouds
 				class_size = n_class(1)
 				cloud_class(:,:) = n_classes
-				print *, "cloud and classes finished"
 			end if
+			! print *, "cloud and classes finished"
 			
 			n_RT_Ratio = 1
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
-			print *, "GLQ_points_cloudtop"
-			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
-			print *, "GLQ_weight_cloudtop"
-			allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
+			! print *, "GLQ_points_cloudtop"
+			! allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
+			! print *, "GLQ_weight_cloudtop"
+			! allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
 			
-			print *, "cloudtop_LWP_ordered"
-			allocate (cloudtop_LWP_ordered(class_size, n_classes))
-			print *, "original_cloudtop_LWP_indexes"
-			allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
+			! print *, "cloudtop_LWP_ordered"
+			! allocate (cloudtop_LWP_ordered(class_size, n_classes))
+			! print *, "original_cloudtop_LWP_indexes"
+			! allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
 			
-			print *, "GLQ_cloudtop_LWP_indexes"
-			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
+			! print *, "GLQ_cloudtop_LWP_indexes"
+			! allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
-			print *, "start going through classes"
+			! print *, "start going through classes"
 			do n = 1, n_classes
-				print *, "n"
-				print *, n
+				! print *, "n"
+				! print *, n
 				
-				print *, "gauleg"
+				! print *, "gauleg"
 				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
 				
-				print *, "placing in original indexes"
+				! print *, "placing in original indexes"
 				counter = 0
 				do i = 1, imax
 					do j = 1, jmax
@@ -468,10 +467,10 @@ contains
 					end do
 				end do
 				
-				print *, "quicksortindexes"
+				! print *, "quicksortindexes"
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
 			
-				print *, "save GLQ points"
+				! print *, "save GLQ points"
 				n2 = 0
 				do N_g = 1, n_GLQ_cloudtop
 				
@@ -482,7 +481,7 @@ contains
 						n2 = n_class(n)
 					end if
 					
-					print *, "bars are set, now placing  in GLQ indexes"
+					! print *, "bars are set, now placing  in GLQ indexes"
 					!Look at if this works, weird index results
 					x_index = int(GLQ_points_cloudtop(N_g, n))
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
@@ -495,17 +494,17 @@ contains
 			end do
 
 		end if
-		print *, "finished clouded collumns"
-		print *, "original_cloudtop_LWP_indexes(:,:,:)"
-		print *, original_cloudtop_LWP_indexes(:,:,:)
+		! print *, "finished clouded collumns"
+		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
+		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
-		print *, "starting GLQ to long total array"
+		! print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
-		print *, "allocating this amount of points", total_amount_GLQ_points
+		! print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		print *, "GLQ clear"
+		! print *, "GLQ clear"
 		if (n_GLQ_clear>0) then
 			do i =1, n_GLQ_clear
 				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
@@ -513,7 +512,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded"
+		! print *, "GLQ clouded"
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
 				GLQ_counter = GLQ_counter + 1
@@ -521,7 +520,10 @@ contains
 				GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
 			enddo
 		enddo
-		print *, "finished GLQ to long total array"
+		
+		print *, GLQ_index_all(:, :)
+		
+		! print *, "finished GLQ to long total array"
 		!!!!!RADIATION!!!!!
 		
 		!__________________________________________________________
@@ -584,9 +586,9 @@ contains
 			
 			! N_g = MODULO(temp_GLQ_point, passed_slice_length) + 1 !This is just i?
 			if (temp_GLQ_point <= total_amount_GLQ_points) then
-				print *, "temp_GLQ_point <= total_amount_GLQ_points"
+				! print *, "temp_GLQ_point <= total_amount_GLQ_points"
 				if (temp_GLQ_point <= n_GLQ_clear) then
-					print *, "temp_GLQ_point <= n_GLQ_clear"
+					! print *, "temp_GLQ_point <= n_GLQ_clear"
 				!!!!!!!!!!!!!!!!!!!!!
 					!Cloudless
 					!n1 and n2 could be saved..., so you dont have to redetermine the n1 and n2
@@ -646,7 +648,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					print *, "temp_GLQ_point > n_GLQ_clear"
+					!print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
@@ -657,10 +659,10 @@ contains
 					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
 					!cloudtop_GLQ_point = cloudtop_GLQ_point + 1
 					
-					print *, "class_size"
-					print *, class_size
-					print *, "class_number"
-					print *, class_number
+					!print *, "class_size"
+					!print *, class_size
+					!print *, "class_number"
+					!print *, class_number
 					print *, "cloudtop_GLQ_point"
 					print *, cloudtop_GLQ_point
 					if (cloudtop_GLQ_point == 1) then
