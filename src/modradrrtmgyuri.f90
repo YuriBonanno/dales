@@ -413,6 +413,10 @@ contains
 				do i=2,n_classes
 					if (class_size /= n_class(i)) then
 						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg"
+						n_classes = n_classes - 1
+						deallocate (quantiles_value)
+						deallocate (n_class)
+						goto 10
 					end if
 				end do
 				!deallocate (quantiles_value)
