@@ -94,7 +94,7 @@ contains
 		!Things that are/should already be known should be defined here:
 		!For example the allocation of space for arrays
 		!Also, 
-		n_RT_Ratio = 50
+		n_RT_Ratio = 100
 		n_classes_initial = 20
 		cloud_threshold = 0.0
 		cloud_patch_threshold = 0.0
