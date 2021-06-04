@@ -843,7 +843,7 @@ contains
         interfaceT(i, 1)  = tg_slice(i)
       enddo
 
-      do i=1,imax
+      do i=1,imax-1
         do k=1,kradmax
           layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
           LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
