@@ -821,8 +821,30 @@ contains
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
 
-      do i=1,imax
-        do k=1,krad1
+      do i=1,imax-1
+        ! do k=1,krad1
+          ! co2vmr  (i, k) = co2(k)
+          ! ch4vmr  (i, k) = ch4(k)
+          ! n2ovmr  (i, k) = n2o(k)
+          ! o2vmr   (i, k) = o2(k)
+          ! cfc11vmr(i, k) = cfc11(k)
+          ! cfc12vmr(i, k) = cfc12(k)
+          ! cfc22vmr(i, k) = cfc22(k)
+          ! ccl4vmr (i, k) = ccl4(k)
+
+          ! interfaceP(i,k ) =   presh_input(k)
+        ! enddo
+
+        !!!!! temporary !!!!! interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+        do k=2,krad1
+           interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
+        enddo
+        interfaceT(i, krad2) = 2.*layerT(i, krad1) - interfaceT(i, krad1)
+        interfaceT(i, 1)  = tg_slice(i)
+      enddo
+	  
+	  do i=1,imax
+	    do k=1,krad1
           co2vmr  (i, k) = co2(k)
           ch4vmr  (i, k) = ch4(k)
           n2ovmr  (i, k) = n2o(k)
@@ -834,16 +856,6 @@ contains
 
           interfaceP(i,k ) =   presh_input(k)
         enddo
-
-        !!!!! temporary !!!!! interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
-        do k=2,krad1
-           interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
-        enddo
-        interfaceT(i, krad2) = 2.*layerT(i, krad1) - interfaceT(i, krad1)
-        interfaceT(i, 1)  = tg_slice(i)
-      enddo
-	  
-	  do i=1,imax
 	  	interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
 	  enddo
 
