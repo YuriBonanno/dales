@@ -80,7 +80,6 @@ contains
 		!This variable might nog be necessary
 		real(KIND=kind_rb),dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
 		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)			!Grid containing collumn highest cloud, cloudtop height
-		!Cloud class might be unnecesary
 		integer,dimension(:,:) :: cloud_class(imax, jmax)						!Contains the whole grid with integers showing to which class every collumns belongs
 
 		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax)         !Cloud height distribution	
@@ -95,7 +94,7 @@ contains
 		!Things that are/should already be known should be defined here:
 		!For example the allocation of space for arrays
 		!Also, 
-		n_RT_Ratio = 100
+		n_RT_Ratio = 50
 		n_classes_initial = 20
 		cloud_threshold = 0.0
 		cloud_patch_threshold = 0.0
@@ -700,9 +699,7 @@ contains
 						!____________________
 						if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine 
 						!do i=2,i1
-						!print *, "AAA"
 						lwd(fill_i, fill_j,1) =  -0.8 * boltz * thl0(fill_i, fill_j,1) ** 4.
-						!print *, "AAAA"
 						lwu(fill_i, fill_j,1) =  1.0 * boltz * tskin(fill_i, fill_j) ** 4.
 						!end do
 						end if
@@ -711,24 +708,24 @@ contains
 						swu(fill_i, fill_j,1:k1) =  swUp_slice  (i,1:k1)
 						swd(fill_i, fill_j,1:k1) = -swDown_slice(i,1:k1)
 
-						!print *, "CCCCCC"
+
 						swdir(fill_i, fill_j,1:k1) = -swDownDir_slice(i,1:k1)
 						swdif(fill_i, fill_j,1:k1) = -swDownDif_slice(i,1:k1)
 						lwc  (fill_i, fill_j,1:k1) =  LWP_slice      (i,1:k1)
 
-						!print *, "BBBBBB"
+
 						lwuca(fill_i, fill_j,1:k1) =  lwUpCS_slice  (i,1:k1)
 						lwdca(fill_i, fill_j,1:k1) = -lwDownCS_slice(i,1:k1)
 						swuca(fill_i, fill_j,1:k1) =  swUpCS_slice  (i,1:k1)
 						swdca(fill_i, fill_j,1:k1) = -swDownCS_slice(i,1:k1)
 
-						!print *, "XXXXXX"
+
 						SW_up_TOA (fill_i, fill_j) =  swUp_slice  (i,krad2)
 						SW_dn_TOA (fill_i, fill_j) = -swDown_slice(i,krad2)
 						LW_up_TOA (fill_i, fill_j) =  lwUp_slice  (i,krad2)
 						LW_dn_TOA (fill_i, fill_j) = -lwDown_slice(i,krad2)
 
-						!print *, "ZZZZZZ"
+
 						SW_up_ca_TOA (fill_i, fill_j) =  swUpCS_slice  (i,krad2)
 						SW_dn_ca_TOA (fill_i, fill_j) = -swDownCS_slice(i,krad2)
 						LW_up_ca_TOA (fill_i, fill_j) =  lwUpCS_slice  (i,krad2)
