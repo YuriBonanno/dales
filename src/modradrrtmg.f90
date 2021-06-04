@@ -859,7 +859,7 @@ contains
       liquidRe (:,:) = 0.
       iceRe    (:,:) = 0.
 
-      do i=1,imax
+      do i=1,imax-1
         do k=1,kradmax
 			!Redundant?
           cloudFrac(i,k) = 0.
