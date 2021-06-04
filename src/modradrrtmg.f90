@@ -806,7 +806,8 @@ contains
         enddo
       end if
 
-      do i=1,imax
+		!!-1
+      do i=1,imax - 1
         do k=kmax+1,kradmax
 
            !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
@@ -821,6 +822,7 @@ contains
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
 
+	!!-1
       do i=1,imax - 1
         do k=1,krad1
           co2vmr  (i, k) = co2(k)
@@ -832,7 +834,7 @@ contains
           cfc22vmr(i, k) = cfc22(k)
           ccl4vmr (i, k) = ccl4(k)
 
-          ! interfaceP(i,k ) =   presh_input(k)
+          !CULPRIT interfaceP(i,k ) =   presh_input(k)
         enddo
 
         interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
