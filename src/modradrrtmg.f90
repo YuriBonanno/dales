@@ -237,7 +237,7 @@ contains
 		print *, GLQ_slices
 		print *, "slice_length"
 		print *, slice_length
-		print *, "Starting  GLQ loop"
+		!print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
 			if (j == GLQ_slices .and. slice_length>0) then
 				print*, "slice shortening happened", slice_length
@@ -964,7 +964,7 @@ contains
 
 	!tabs(:,:) = 0.;
 	sstxy(:,:) = 0.
-	tabs_slice(:,:) = 0.; qv_slice(:,:) = 0.; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
+	tabs_slice(:,:) = 0.; qv_slice(:,:) = 1e-18; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
 	rho_slice(:,:) = 0.
 	!!Added these to define the whole array without it being read to be some unknown value and breaking everything
 	o3_slice(:,:) = 0. ; o3vmr(:,:) = 0. ; 
