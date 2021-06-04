@@ -237,7 +237,7 @@ contains
 		print *, GLQ_slices
 		print *, "slice_length"
 		print *, slice_length
-		!print *, "Starting  GLQ loop"
+		print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
 			if (j == GLQ_slices .and. slice_length>0) then
 				print*, "slice shortening happened", slice_length
