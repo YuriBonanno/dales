@@ -855,7 +855,7 @@ contains
           cfc22vmr(i, k) = cfc22(k)
           ccl4vmr (i, k) = ccl4(k)
 
-          interfaceP(i,k ) =   presh_input(k)
+          !interfaceP(i,k ) =   presh_input(k)
         enddo
 	  	!interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
 	  enddo
