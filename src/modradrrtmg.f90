@@ -774,7 +774,7 @@ contains
       enddo
 
      ! Patch sounding on top (no qcl or qci above domain; hard coded)
-      do i=1,imax
+      do i=1,imax-1
       ksounding=npatch_start
       do k=kmax+1,kradmax
          tabs_slice(i,k) =  tsnd(ksounding)
@@ -788,7 +788,7 @@ contains
 
       ! o3 profile provided by user (user03=true) or reference prof from RRTMG
       if (usero3) then
-        do i=1,imax
+        do i=1,imax-1
         ksounding=npatch_start
         do k=kmax+1,kradmax
            o3_slice(i,k) = o3snd(ksounding)
@@ -800,14 +800,14 @@ contains
         o3vmr  (i, krad1)   = o3vmr(i,kradmax)
         enddo
       else
-        do i=1,imax
+        do i=1,imax-1
         do k=1,krad1
             o3vmr   (i, k) = o3(k)
         enddo
         enddo
       end if
 
-      do i=1,imax
+      do i=1,imax-1
         do k=kmax+1,kradmax
 
            !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
@@ -822,7 +822,7 @@ contains
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
 
-      do i=1,imax
+      do i=1,imax-1
         do k=1,krad1
           co2vmr  (i, k) = co2(k)
           ch4vmr  (i, k) = ch4(k)
@@ -844,7 +844,7 @@ contains
         interfaceT(i, 1)  = tg_slice(i)
       enddo
 
-      do i=1,imax
+      do i=1,imax-1
         do k=1,kradmax
           layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
           LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
@@ -860,7 +860,7 @@ contains
       liquidRe (:,:) = 0.
       iceRe    (:,:) = 0.
 
-      do i=1,imax
+      do i=1,imax-1
         do k=1,kradmax
 			!Redundant?
           cloudFrac(i,k) = 0.
