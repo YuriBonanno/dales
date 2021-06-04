@@ -835,7 +835,7 @@ contains
           ! interfaceP(i,k ) =   presh_input(k)
         ! enddo
 
-        !!!!! temporary !!!!! interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+        interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
         do k=2,krad1
            interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
         enddo
@@ -843,6 +843,7 @@ contains
         interfaceT(i, 1)  = tg_slice(i)
       enddo
 	  
+	  !!!!!!1
 	  do i=1,imax
 	    do k=1,krad1
           co2vmr  (i, k) = co2(k)
@@ -856,8 +857,10 @@ contains
 
           interfaceP(i,k ) =   presh_input(k)
         enddo
-	  	interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+	  	!interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
 	  enddo
+	!!!!!!1
+
 
       do i=1,imax
         do k=1,kradmax
