@@ -600,6 +600,7 @@ contains
 							n1 = (GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2
 							n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
 						else
+							print *, "this is not happening right?"
 							n1 = (GLQ_points_clear(n_clear-1) + GLQ_points_clear(n_clear)) / 2
 							n2 = n_clear
 						end if
