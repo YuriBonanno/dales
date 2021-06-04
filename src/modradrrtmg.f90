@@ -971,7 +971,7 @@ contains
 	co2vmr(:,:) = 0. ; ch4vmr(:,:) = 0. ; n2ovmr(:,:) = 0. ; h2ovmr(:,:) = 0. ; o2vmr(:,:) = 0. ; 
 	cfc11vmr(:,:) = 0. ; cfc12vmr(:,:) = 0. ; cfc22vmr(:,:) = 0. ; ccl4vmr(:,:) = 0. ; 
 	layerP(:,:) = 0. ; interfaceP(:,:) = 0. ; layerT(:,:) = 0. ; interfaceT(:,:) = 0. ;
-	layerMass(:,:) = 0. ; LWP_slice(:,:) = 0. ; IWP_slice(:,:) = 0. ; o3_slice(:,:) = 0. ; 
+	layerMass(:,:) = 0. ; LWP_slice(:,:) = 0. ; IWP_slice(:,:) = 0. ; 
 
 	exners = (ps/pref0) ** (rd/cp)
 
