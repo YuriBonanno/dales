@@ -967,8 +967,12 @@ contains
 
 
 	temp_GLQ_point = passed_GLQ_point
+	print *, "temp_GLQ_point, passed_GLQ_point"
+	print *, temp_GLQ_point, passed_GLQ_point
 	
 	do i=1,slice_length
+		print *, "i"
+		print *, i
 		temp_i = GLQ_index_all(temp_GLQ_point,1)
 		temp_j = GLQ_index_all(temp_GLQ_point,2)
 

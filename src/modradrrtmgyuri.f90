@@ -290,7 +290,7 @@ contains
 			call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, n_GLQ_clear)
 		
 			do N_g = 1, n_GLQ_clear
-			  x_index  = int(GLQ_points_clear(N_g))
+			  x_index  = nint(GLQ_points_clear(N_g))
 			  temp_i   = int(original_clear_LWP_indexes(x_index,1))
 			  temp_j   = int(original_clear_LWP_indexes(x_index,2))
 			  GLQ_clear_LWP_indexes(N_g, 1) = temp_i
@@ -412,6 +412,7 @@ contains
 				do i=2,n_classes
 					if (class_size /= n_class(i)) then
 						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
+						!!Maybe not necessary to stop loop?
 						n_classes = n_classes - 1
 						deallocate (quantiles_value)
 						deallocate (n_class)
@@ -482,7 +483,7 @@ contains
 					
 					print *, "bars are set, now placing  in GLQ indexes"
 					!Look at if this works, weird index results
-					x_index = int(GLQ_points_cloudtop(N_g, n))
+					x_index = nint(GLQ_points_cloudtop(N_g, n))
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
@@ -600,7 +601,7 @@ contains
 							n1 = (GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2
 							n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
 						else
-							print *, "this is not happening right?"
+							! print *, "this is not happening right?"
 							n1 = (GLQ_points_clear(n_clear-1) + GLQ_points_clear(n_clear)) / 2
 							n2 = n_clear
 						end if
@@ -649,7 +650,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					!print *, "temp_GLQ_point > n_GLQ_clear"
+					print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
@@ -660,10 +661,10 @@ contains
 					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
 					!cloudtop_GLQ_point = cloudtop_GLQ_point + 1
 					
-					!print *, "class_size"
-					!print *, class_size
-					!print *, "class_number"
-					!print *, class_number
+					print *, "class_size"
+					print *, class_size
+					print *, "class_number"
+					print *, class_number
 					print *, "cloudtop_GLQ_point"
 					print *, cloudtop_GLQ_point
 					if (cloudtop_GLQ_point == 1) then
