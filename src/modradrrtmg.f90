@@ -1092,7 +1092,7 @@ contains
 
 			! interfaceP(i,k) =   presh_input(k)
 		enddo
-		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
+		! interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
 		do k=2,krad1
 		   interfaceT(i,k) = (layerT(i,k-1) + layerT(i,k)) / 2.
 		enddo
@@ -1104,6 +1104,7 @@ contains
 		do k=1,krad1
 			interfaceP(i,k) =   presh_input(k)
 		enddo
+		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
 	enddo
 
 	do i=1,slice_length
