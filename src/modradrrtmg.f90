@@ -821,7 +821,7 @@ contains
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
 
-      do i=1,imax
+      do i=1,imax-1
         do k=1,krad1
           co2vmr  (i, k) = co2(k)
           ch4vmr  (i, k) = ch4(k)
