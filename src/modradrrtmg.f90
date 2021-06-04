@@ -835,7 +835,7 @@ contains
           interfaceP(i,k ) =   presh_input(k)
         enddo
 
-        interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+        !!!!! temporary !!!!! interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
         do k=2,krad1
            interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
         enddo
@@ -843,7 +843,7 @@ contains
         interfaceT(i, 1)  = tg_slice(i)
       enddo
 
-      do i=1,imax-1
+      do i=1,imax
         do k=1,kradmax
           layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
           LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
@@ -859,7 +859,7 @@ contains
       liquidRe (:,:) = 0.
       iceRe    (:,:) = 0.
 
-      do i=1,imax-1
+      do i=1,imax
         do k=1,kradmax
 			!Redundant?
           cloudFrac(i,k) = 0.
