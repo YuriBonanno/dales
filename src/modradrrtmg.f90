@@ -835,6 +835,8 @@ contains
           interfaceP(i,k ) =   presh_input(k)
         enddo
 
+		interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+
         !!!!! temporary !!!!! interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
         do k=2,krad1
            interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
