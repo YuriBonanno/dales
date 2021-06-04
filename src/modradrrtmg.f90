@@ -233,6 +233,10 @@ contains
 
 		current_GLQ_point = 1
 		passed_GLQ_point = current_GLQ_point
+		print *, "GLQ_slices"
+		print *, GLQ_slices
+		print *, "slice_length"
+		print *, slice_length
 		print *, "Starting  GLQ loop"
 		do j = 1, GLQ_slices
 			if (j == GLQ_slices .and. slice_length>0) then
@@ -973,6 +977,7 @@ contains
 	do i=1,slice_length
 		print *, "i"
 		print *, i
+		
 		temp_i = GLQ_index_all(temp_GLQ_point,1)
 		temp_j = GLQ_index_all(temp_GLQ_point,2)
 

@@ -679,7 +679,7 @@ contains
 							n1 = (GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2
 							n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
 						else
-							print *, "this is not happening right?"
+							! print *, "this is not happening right?"
 							n1 = (GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2
 							n2 = n_clouds
 						end if
