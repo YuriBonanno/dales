@@ -835,8 +835,6 @@ contains
           interfaceP(i,k ) =   presh_input(k)
         enddo
 
-		interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
-
         !!!!! temporary !!!!! interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
         do k=2,krad1
            interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
@@ -844,6 +842,10 @@ contains
         interfaceT(i, krad2) = 2.*layerT(i, krad1) - interfaceT(i, krad1)
         interfaceT(i, 1)  = tg_slice(i)
       enddo
+	  
+	  do i=1,imax
+	  	interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+	  enddo
 
       do i=1,imax
         do k=1,kradmax
