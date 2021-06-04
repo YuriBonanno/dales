@@ -846,16 +846,16 @@ contains
 	  !!!!!!1
 	  do i=1,imax
 	    do k=1,krad1
-          co2vmr  (i, k) = co2(k)
-          ch4vmr  (i, k) = ch4(k)
-          n2ovmr  (i, k) = n2o(k)
-          o2vmr   (i, k) = o2(k)
-          cfc11vmr(i, k) = cfc11(k)
-          cfc12vmr(i, k) = cfc12(k)
-          cfc22vmr(i, k) = cfc22(k)
-          ccl4vmr (i, k) = ccl4(k)
+          ! co2vmr  (i, k) = co2(k)
+          ! ch4vmr  (i, k) = ch4(k)
+          ! n2ovmr  (i, k) = n2o(k)
+          ! o2vmr   (i, k) = o2(k)
+          ! cfc11vmr(i, k) = cfc11(k)
+          ! cfc12vmr(i, k) = cfc12(k)
+          ! cfc22vmr(i, k) = cfc22(k)
+          ! ccl4vmr (i, k) = ccl4(k)
 
-          !interfaceP(i,k ) =   presh_input(k)
+          interfaceP(i,k ) =   presh_input(k)
         enddo
 	  	!interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
 	  enddo
