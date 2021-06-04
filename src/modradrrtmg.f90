@@ -246,16 +246,16 @@ contains
 				passed_slice_length = imax
 			end if
 			
-			! passed_GLQ_point = current_GLQ_point
-			! print *, "Starting  setupBarkerSlicesFromProfiles"
-			! call setupBarkerSlicesFromProfiles(npatch_start, &
-			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   ! passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
-			! print *, "Finished  setupBarkerSlicesFromProfiles"
+			passed_GLQ_point = current_GLQ_point
+			print *, "Starting  setupBarkerSlicesFromProfiles"
+			call setupBarkerSlicesFromProfiles(npatch_start, &
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
+			print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-			call setupSlicesFromProfiles &
-			   ( j, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+			! call setupSlicesFromProfiles &
+			   ! ( j, npatch_start, &                                           !input
+			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 			
 			
 			print *, "Starting  radiation"
@@ -821,19 +821,19 @@ contains
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
 
-      do i=1,imax-1
-        ! do k=1,krad1
-          ! co2vmr  (i, k) = co2(k)
-          ! ch4vmr  (i, k) = ch4(k)
-          ! n2ovmr  (i, k) = n2o(k)
-          ! o2vmr   (i, k) = o2(k)
-          ! cfc11vmr(i, k) = cfc11(k)
-          ! cfc12vmr(i, k) = cfc12(k)
-          ! cfc22vmr(i, k) = cfc22(k)
-          ! ccl4vmr (i, k) = ccl4(k)
+      do i=1,imax
+        do k=1,krad1
+          co2vmr  (i, k) = co2(k)
+          ch4vmr  (i, k) = ch4(k)
+          n2ovmr  (i, k) = n2o(k)
+          o2vmr   (i, k) = o2(k)
+          cfc11vmr(i, k) = cfc11(k)
+          cfc12vmr(i, k) = cfc12(k)
+          cfc22vmr(i, k) = cfc22(k)
+          ccl4vmr (i, k) = ccl4(k)
 
-          ! interfaceP(i,k ) =   presh_input(k)
-        ! enddo
+          interfaceP(i,k ) =   presh_input(k)
+        enddo
 
         interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
         do k=2,krad1
@@ -842,25 +842,6 @@ contains
         interfaceT(i, krad2) = 2.*layerT(i, krad1) - interfaceT(i, krad1)
         interfaceT(i, 1)  = tg_slice(i)
       enddo
-	  
-	  !!!!!!1
-	  do i=1,imax
-	    do k=1,krad1
-          ! co2vmr  (i, k) = co2(k)
-          ! ch4vmr  (i, k) = ch4(k)
-          ! n2ovmr  (i, k) = n2o(k)
-          ! o2vmr   (i, k) = o2(k)
-          ! cfc11vmr(i, k) = cfc11(k)
-          ! cfc12vmr(i, k) = cfc12(k)
-          ! cfc22vmr(i, k) = cfc22(k)
-          ! ccl4vmr (i, k) = ccl4(k)
-
-          interfaceP(i,k ) =   presh_input(k)
-        enddo
-	  	!interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
-	  enddo
-	!!!!!!1
-
 
       do i=1,imax
         do k=1,kradmax
@@ -1109,7 +1090,7 @@ contains
 			cfc22vmr(i,k) = cfc22(k)
 			ccl4vmr (i,k) = ccl4(k)
 
-			interfaceP(i,k) =   presh_input(k)
+			! interfaceP(i,k) =   presh_input(k)
 		enddo
 		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
 		do k=2,krad1
@@ -1117,6 +1098,12 @@ contains
 		enddo
 		interfaceT(i,krad2) = 2.*layerT(i,krad1) - interfaceT(i,krad1)
 		interfaceT(i,1)  = tg_slice(i)
+	enddo
+	
+	do i=1,imax
+		do k=1,krad1
+			interfaceP(i,k) =   presh_input(k)
+		enddo
 	enddo
 
 	do i=1,slice_length
