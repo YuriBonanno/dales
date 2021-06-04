@@ -95,10 +95,10 @@ contains
 		!Things that are/should already be known should be defined here:
 		!For example the allocation of space for arrays
 		!Also, 
-		!	n_RT_Ratio = 1000
-		!	n_classes_initial = 20
-		!	cloud_threshold = 0.0
-		!	cloud_patch_threshold = 0.0
+		n_RT_Ratio = 1
+		n_classes_initial = 20
+		cloud_threshold = 0.0
+		cloud_patch_threshold = 0.0
 		
 		
 		qcl_grid(:, :, :) = 0.
@@ -181,8 +181,8 @@ contains
 		!__________________________________________________________
 		!determine specific necessary values
 		!print *, "starting cloud and LWP data"
-		cloud_threshold = 0.0
-		cloud_patch_threshold = 0.0
+		! cloud_threshold = 0.0
+		! cloud_patch_threshold = 0.0
 		
 		
 	    !LWP_grid is not cumulative I think, Also I think it has different values for different z
@@ -216,13 +216,13 @@ contains
 		   end do
 	    end do
 		
-		! if (SUM(cloudtop_distribution).ne.n_clouds) then
-			! print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
+		if (SUM(cloudtop_distribution).ne.n_clouds) then
+			print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
 			! print *, "SUM(cloudtop_distribution)"
 			! print *, SUM(cloudtop_distribution)
 			! print *, "n_clouds"
 			! print *, n_clouds
-		! end if
+		end if
 		
 		n_clear = (imax*jmax)-n_clouds
 		
@@ -283,7 +283,6 @@ contains
 			call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)
 		
 			!Determine the indexes of the Gauss-Legendre points
-			n_GLQ_clear = 30
 			allocate (GLQ_points_clear 	(n_GLQ_clear))
 			allocate (GLQ_weights_clear	(n_GLQ_clear))
 			allocate (GLQ_clear_LWP_indexes (n_GLQ_clear, 2))
@@ -335,7 +334,7 @@ contains
 			!Initialise the classes
 			
 			!allocate(cloud_class(imax, jmax))
-			n_classes_initial = 20
+
 			n_classes = n_classes_initial
 		10	if (n_classes > 1) then
 		    	allocate (quantiles_value(n_classes-1))
@@ -429,7 +428,7 @@ contains
 			end if
 			! print *, "cloud and classes finished"
 			
-			n_RT_Ratio = 1
+
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
