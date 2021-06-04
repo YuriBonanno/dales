@@ -474,13 +474,16 @@ contains
 				n2 = 0
 				do N_g = 1, n_GLQ_cloudtop
 				
-					n1 = n2 + 1
-					if (N_g < n_GLQ_cloudtop) then
-						n2 = (GLQ_points_cloudtop(N_g, n) + GLQ_points_cloudtop(N_g + 1, n)) / 2
-					else
-						n2 = n_class(n)
-					end if
+					!!TODO: NOTHING DONE WITH n here
+					! n1 = n2 + 1
+					! if (N_g < n_GLQ_cloudtop) then
+						! n2 = (GLQ_points_cloudtop(N_g, n) + GLQ_points_cloudtop(N_g + 1, n)) / 2
+					! else
+						! n2 = n_class(n)
+					! end if
 					
+					
+
 					print *, "bars are set, now placing  in GLQ indexes"
 					!Look at if this works, weird index results
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
@@ -597,6 +600,7 @@ contains
 						n1 = 1
 						n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
 					else
+							!!TODO: n_GLQ_clear is fine for now but should change when clear is put into classes
 						if (temp_GLQ_point < n_GLQ_clear) then
 							n1 = (GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2
 							n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
@@ -671,7 +675,8 @@ contains
 						n1 = 1
 						n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
 					else
-						if (cloudtop_GLQ_point < n_class(class_number)) then
+						!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
+						if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
 							n1 = (GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2
 							n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
 						else
