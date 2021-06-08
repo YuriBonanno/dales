@@ -779,7 +779,7 @@ contains
 	  do i=1,imax - 1
       ksounding=npatch_start
       do k=kmax+1,kradmax
-         ! tabs_slice(i,k) =  tsnd(ksounding)
+         !!! tabs_slice(i,k) =  tsnd(ksounding)
          qv_slice  (i,k) =  qsnd(ksounding)
          qcl_slice (i,k) = 0.
          qci_slice (i,k) = 0.
@@ -794,10 +794,10 @@ contains
       ksounding=npatch_start
       do k=kmax+1,kradmax
          tabs_slice(i,k) =  tsnd(ksounding)
-         ! qv_slice  (i,k) =  qsnd(ksounding)
-         ! qcl_slice (i,k) = 0.
-         ! qci_slice (i,k) = 0.
-         ! rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
+         !!! qv_slice  (i,k) =  qsnd(ksounding)
+         !!! qcl_slice (i,k) = 0.
+         !!! qci_slice (i,k) = 0.
+         !!! rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
          ksounding=ksounding+1
       enddo
       enddo
@@ -825,21 +825,38 @@ contains
         enddo
       end if
 
-
-      do i=1,imax
+!!!!!!!!!!!!!
+      do i=1,imax-1
         do k=kmax+1,kradmax
 
            !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
            h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
+           !!! layerP(i,k)       = presf_input (k)
+           !!! layerT(i,k)       = tabs_slice(i,k)
+        enddo
+        ! Properly set boundary conditions
+!        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
+        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+        !!! layerP  (i, krad1)   = 0.5*presh_input(krad1)
+        !!! layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
+      enddo
+
+!!-----------------
+      do i=1,imax
+        do k=kmax+1,kradmax
+
+           !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
+           !!! h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
            layerP(i,k)       = presf_input (k)
            layerT(i,k)       = tabs_slice(i,k)
         enddo
         ! Properly set boundary conditions
 !        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
-        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+        !!! h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
         layerP  (i, krad1)   = 0.5*presh_input(krad1)
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
+!!!!!!!!!!!!!!
 
 	!!-1
       do i=1,imax - 1
