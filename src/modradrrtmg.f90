@@ -1015,7 +1015,7 @@ contains
 	enddo
 	
 	do i=1,imax
-		do j=1,kmax
+		do k=1,kmax
 			layerP  (i,k) = presf_input(k)
 		enddo
 	enddo
