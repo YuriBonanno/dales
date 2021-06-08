@@ -787,7 +787,7 @@ contains
 
       ! o3 profile provided by user (user03=true) or reference prof from RRTMG
       if (usero3) then
-        do i=1,imax
+        do i=1,imax-1
         ksounding=npatch_start
         do k=kmax+1,kradmax
            o3_slice(i,k) = o3snd(ksounding)
@@ -806,28 +806,19 @@ contains
         enddo
       end if
 
-!!!!!!!
-	do i=1,imax
-        do k=1,krad1
-          layerP(i,k)   = presf_input (k)
-        enddo
-		layerP  (i, krad1)   = 0.5*presh_input(krad1)
-      enddo
-!!!!!!!
 
-		!!-1
-      do i=1,imax - 1
+      do i=1,imax
         do k=kmax+1,kradmax
 
            !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
            h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
-           !!! layerP(i,k)       = presf_input (k)
+           layerP(i,k)       = presf_input (k)
            layerT(i,k)       = tabs_slice(i,k)
         enddo
         ! Properly set boundary conditions
 !        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
         h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
-        !!! layerP  (i, krad1)   = 0.5*presh_input(krad1)
+        layerP  (i, krad1)   = 0.5*presh_input(krad1)
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
 
