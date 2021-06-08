@@ -772,14 +772,11 @@ contains
         enddo
       enddo
 
-!!!!!!!!!!!!!!!
-
      ! Patch sounding on top (no qcl or qci above domain; hard coded)
-      !! -1 
-	  do i=1,imax - 1
+	  do i=1,imax
       ksounding=npatch_start
       do k=kmax+1,kradmax
-         !!! tabs_slice(i,k) =  tsnd(ksounding)
+         tabs_slice(i,k) =  tsnd(ksounding)
          qv_slice  (i,k) =  qsnd(ksounding)
          qcl_slice (i,k) = 0.
          qci_slice (i,k) = 0.
@@ -788,25 +785,9 @@ contains
       enddo
       enddo
 
-!!-------------
-     ! Patch sounding on top (no qcl or qci above domain; hard coded)
-      do i=1,imax
-      ksounding=npatch_start
-      do k=kmax+1,kradmax
-         tabs_slice(i,k) =  tsnd(ksounding)
-         !!! qv_slice  (i,k) =  qsnd(ksounding)
-         !!! qcl_slice (i,k) = 0.
-         !!! qci_slice (i,k) = 0.
-         !!! rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
-         ksounding=ksounding+1
-      enddo
-      enddo
-!!!!!!!!!!!!!!!!
-
       ! o3 profile provided by user (user03=true) or reference prof from RRTMG
-	  !! -1
       if (usero3) then
-        do i=1,imax-1
+        do i=1,imax
         ksounding=npatch_start
         do k=kmax+1,kradmax
            o3_slice(i,k) = o3snd(ksounding)
@@ -825,41 +806,24 @@ contains
         enddo
       end if
 
-!!!!!!!!!!!!!
-      do i=1,imax-1
-        do k=kmax+1,kradmax
 
-           !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
-           h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
-           !!! layerP(i,k)       = presf_input (k)
-           !!! layerT(i,k)       = tabs_slice(i,k)
-        enddo
-        ! Properly set boundary conditions
-!        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
-        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
-        !!! layerP  (i, krad1)   = 0.5*presh_input(krad1)
-        !!! layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
-      enddo
-
-!!-----------------
       do i=1,imax
         do k=kmax+1,kradmax
 
            !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
-           !!! h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
+           h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
            layerP(i,k)       = presf_input (k)
            layerT(i,k)       = tabs_slice(i,k)
         enddo
         ! Properly set boundary conditions
 !        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
-        !!! h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
         layerP  (i, krad1)   = 0.5*presh_input(krad1)
         layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
       enddo
-!!!!!!!!!!!!!!
 
-	!!-1
-      do i=1,imax - 1
+
+      do i=1,imax
         do k=1,krad1
           co2vmr  (i, k) = co2(k)
           ch4vmr  (i, k) = ch4(k)
@@ -870,7 +834,7 @@ contains
           cfc22vmr(i, k) = cfc22(k)
           ccl4vmr (i, k) = ccl4(k)
 
-          !CULPRIT interfaceP(i,k ) =   presh_input(k)
+          interfaceP(i,k ) =   presh_input(k)
         enddo
 
         interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
@@ -881,16 +845,7 @@ contains
         interfaceT(i, 1)  = tg_slice(i)
       enddo
 
-!!!!!!!
-	do i=1,imax
-        do k=1,krad1
-          interfaceP(i,k ) =   presh_input(k)
-        enddo
-      enddo
-!!!!!!!
-
-
-      do i=1,imax
+      do i=1,imax - 1
         do k=1,kradmax
           layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
           LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
@@ -1079,11 +1034,19 @@ contains
 		! temp_GLQ_point = temp_GLQ_point + 1
 	! enddo
 
+!!!!UNO
 	! Patch sounding on top (no qcl or qci above domain; hard coded)
-	do i=1,slice_length
+	do i=1, imax
 		ksounding=npatch_start
 		do k=kmax+1,kradmax
 			tabs_slice(i,k) =  tsnd(ksounding)
+			ksounding=ksounding+1
+		enddo
+	enddo
+
+	do i=1,slice_length
+		ksounding=npatch_start
+		do k=kmax+1,kradmax
 			qv_slice  (i,k) =  qsnd(ksounding)
 			qcl_slice (i,k) = 0.
 			qci_slice (i,k) = 0.
@@ -1091,6 +1054,8 @@ contains
 			ksounding=ksounding+1
 		enddo
 	enddo
+!!!!
+
 
 	! o3 profile provided by user (user03=true) or reference prof from RRTMG
 	if (usero3) then
@@ -1114,18 +1079,27 @@ contains
 	end if
 
 
-	do i=1,slice_length
+!!!!UNO
+	do i=1,imax
 		do k=kmax+1,kradmax
-			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
 			layerP	(i,k)    = presf_input (k)
 			layerT	(i,k)    = tabs_slice(i,k)
 		enddo
 			!! Properly set boundary conditions
-		h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
 		layerP  (i, krad1)   = 0.5*presh_input(krad1)
 		layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
 	enddo
 
+	do i=1,slice_length
+		do k=kmax+1,kradmax
+			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
+		enddo
+			!! Properly set boundary conditions
+		h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+	enddo
+!!!!
+
+!!!!UNO
 	do i=1,slice_length
 		do k=1,krad1
 			co2vmr  (i,k) = co2(k)
@@ -1137,7 +1111,7 @@ contains
 			cfc22vmr(i,k) = cfc22(k)
 			ccl4vmr (i,k) = ccl4(k)
 
-			interfaceP(i,k) =   presh_input(k)
+			!!! interfaceP(i,k) =   presh_input(k)
 		enddo
 		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
 		do k=2,krad1
@@ -1146,6 +1120,14 @@ contains
 		interfaceT(i,krad2) = 2.*layerT(i,krad1) - interfaceT(i,krad1)
 		interfaceT(i,1)  = tg_slice(i)
 	enddo
+
+	do i=1,imax
+        do k=1,krad1
+          interfaceP(i,k ) =   presh_input(k)
+        enddo
+    enddo
+!!!!
+
 
 	do i=1,slice_length
 		do k=1,kradmax
