@@ -989,7 +989,7 @@ contains
 	print *, temp_GLQ_point, passed_GLQ_point
 	
 	do i=1,imax
-		if (i < =slice_length) then
+		if (i <= slice_length) then
 			temp_i = GLQ_index_all(temp_GLQ_point,1)
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
 		end if
