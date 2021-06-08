@@ -773,7 +773,7 @@ contains
       enddo
 
      ! Patch sounding on top (no qcl or qci above domain; hard coded)
-      do i=1,imax
+      do i=1,imax-1
       ksounding=npatch_start
       do k=kmax+1,kradmax
          tabs_slice(i,k) =  tsnd(ksounding)
