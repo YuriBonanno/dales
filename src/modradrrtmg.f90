@@ -246,16 +246,16 @@ contains
 				passed_slice_length = imax
 			end if
 			
-			! passed_GLQ_point = current_GLQ_point
-			! print *, "Starting  setupBarkerSlicesFromProfiles"
-			! call setupBarkerSlicesFromProfiles(npatch_start, &
-			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   ! passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
-			! print *, "Finished  setupBarkerSlicesFromProfiles"
+			passed_GLQ_point = current_GLQ_point
+			print *, "Starting  setupBarkerSlicesFromProfiles"
+			call setupBarkerSlicesFromProfiles(npatch_start, &
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
+			print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-			call setupSlicesFromProfiles &
-			   ( j, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+			! call setupSlicesFromProfiles &
+			   ! ( j, npatch_start, &                                           !input
+			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 			
 			
 			print *, "Starting  radiation"
@@ -845,7 +845,7 @@ contains
         interfaceT(i, 1)  = tg_slice(i)
       enddo
 
-      do i=1,imax - 1
+      do i=1,imax
         do k=1,kradmax
           layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
           LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
