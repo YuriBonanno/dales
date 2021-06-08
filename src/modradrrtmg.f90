@@ -988,12 +988,11 @@ contains
 	print *, "temp_GLQ_point, passed_GLQ_point"
 	print *, temp_GLQ_point, passed_GLQ_point
 	
-	do i=1,slice_length
-		print *, "i"
-		print *, i
-		
-		temp_i = GLQ_index_all(temp_GLQ_point,1)
-		temp_j = GLQ_index_all(temp_GLQ_point,2)
+	do i=1,imax
+		if (i < =slice_length) then
+			temp_i = GLQ_index_all(temp_GLQ_point,1)
+			temp_j = GLQ_index_all(temp_GLQ_point,2)
+		end if
 
 		tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
 		do k=1,kmax
@@ -1009,50 +1008,17 @@ contains
 
 			h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
 			layerT  (i,k) = tabs_slice(i,k)
-			!!! layerP  (i,k) = presf_input(k)
+			layerP  (i,k) = presf_input(k)
 		enddo
 		temp_GLQ_point = temp_GLQ_point + 1
 	enddo
-	
-	do i=1,imax
-		do k=1,kmax
-			layerP  (i,k) = presf_input(k)
-		enddo
-	enddo
 
-	! temp_GLQ_point = passed_GLQ_point
-	! do i=1,slice_length
-		! temp_i = GLQ_index_all(temp_GLQ_point,1)
-		! temp_j = GLQ_index_all(temp_GLQ_point,2)
 
-		! tg_slice(i) = tskin(temp_i+1,temp_j+1) * exners  ! Note: tskin = thlskin...
-		! do k=1,kmax
-			!!+1 in j must be checked with Stephan
-			! qv_slice  (i,k) = max(qt0(temp_i+1,temp_j+1,k) - ql0(temp_i+1,temp_j+1,k),1e-18) !avoid RRTMG reading negative initial values 
-			! qcl_slice (i,k) = ql0(temp_i+1,temp_j+1,k)
-			! qci_slice (i,k) = 0.
-			! o3_slice  (i,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
-
-			! h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
-			! layerT  (i,k) = tabs_slice(i,k)
-			! layerP  (i,k) = presf_input(k)
-		! enddo
-		! temp_GLQ_point = temp_GLQ_point + 1
-	! enddo
-
-!!!!UNO
 	! Patch sounding on top (no qcl or qci above domain; hard coded)
 	do i=1, imax
 		ksounding=npatch_start
 		do k=kmax+1,kradmax
 			tabs_slice(i,k) =  tsnd(ksounding)
-			ksounding=ksounding+1
-		enddo
-	enddo
-
-	do i=1,slice_length
-		ksounding=npatch_start
-		do k=kmax+1,kradmax
 			qv_slice  (i,k) =  qsnd(ksounding)
 			qcl_slice (i,k) = 0.
 			qci_slice (i,k) = 0.
@@ -1060,12 +1026,11 @@ contains
 			ksounding=ksounding+1
 		enddo
 	enddo
-!!!!
 
 
 	! o3 profile provided by user (user03=true) or reference prof from RRTMG
 	if (usero3) then
-		do i=1,slice_length
+		do i=1,imax
 			ksounding=npatch_start
 			do k=kmax+1,kradmax
 				o3_slice(i,k) = o3snd(ksounding)
@@ -1077,7 +1042,7 @@ contains
 			o3vmr  (i,krad1)   = o3vmr(i,kradmax)
 		enddo
 	else
-		do i=1,slice_length
+		do i=1,imax
 			do k=1,krad1
 				o3vmr   (i,k) = o3(k)
 			enddo
@@ -1085,28 +1050,22 @@ contains
 	end if
 
 
-!!!!UNO
 	do i=1,imax
 		do k=kmax+1,kradmax
+			!h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
+			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
 			layerP	(i,k)    = presf_input (k)
 			layerT	(i,k)    = tabs_slice(i,k)
 		enddo
 			!! Properly set boundary conditions
+			!        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
+        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
 		layerP  (i, krad1)   = 0.5*presh_input(krad1)
 		layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
 	enddo
 
-	do i=1,slice_length
-		do k=kmax+1,kradmax
-			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
-		enddo
-			!! Properly set boundary conditions
-		h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
-	enddo
-!!!!
 
-!!!!UNO
-	do i=1,slice_length
+	do i=1,imax
 		do k=1,krad1
 			co2vmr  (i,k) = co2(k)
 			ch4vmr  (i,k) = ch4(k)
@@ -1117,8 +1076,9 @@ contains
 			cfc22vmr(i,k) = cfc22(k)
 			ccl4vmr (i,k) = ccl4(k)
 
-			!!! interfaceP(i,k) =   presh_input(k)
+			interfaceP(i,k) =   presh_input(k)
 		enddo
+		
 		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
 		do k=2,krad1
 		   interfaceT(i,k) = (layerT(i,k-1) + layerT(i,k)) / 2.
@@ -1127,15 +1087,8 @@ contains
 		interfaceT(i,1)  = tg_slice(i)
 	enddo
 
+
 	do i=1,imax
-        do k=1,krad1
-          interfaceP(i,k ) =   presh_input(k)
-        enddo
-    enddo
-!!!!
-
-
-	do i=1,slice_length
 		do k=1,kradmax
 			layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
 			LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
@@ -1151,7 +1104,7 @@ contains
 	liquidRe (:,:) = 0.
 	iceRe    (:,:) = 0.
 
-	do i=1,slice_length
+	do i=1,imax
 		do k=1,kradmax
 			if (LWP_slice(i,k).gt.0.) then
 				cloudFrac(i,k) = 1.
