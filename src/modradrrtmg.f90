@@ -772,11 +772,14 @@ contains
         enddo
       enddo
 
+!!!!!!!!!!!!!!!
+
      ! Patch sounding on top (no qcl or qci above domain; hard coded)
-      do i=1,imax
+      !! -1 
+	  do i=1,imax - 1
       ksounding=npatch_start
       do k=kmax+1,kradmax
-         tabs_slice(i,k) =  tsnd(ksounding)
+         ! tabs_slice(i,k) =  tsnd(ksounding)
          qv_slice  (i,k) =  qsnd(ksounding)
          qcl_slice (i,k) = 0.
          qci_slice (i,k) = 0.
@@ -785,7 +788,23 @@ contains
       enddo
       enddo
 
+!!-------------
+     ! Patch sounding on top (no qcl or qci above domain; hard coded)
+      do i=1,imax
+      ksounding=npatch_start
+      do k=kmax+1,kradmax
+         tabs_slice(i,k) =  tsnd(ksounding)
+         ! qv_slice  (i,k) =  qsnd(ksounding)
+         ! qcl_slice (i,k) = 0.
+         ! qci_slice (i,k) = 0.
+         ! rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
+         ksounding=ksounding+1
+      enddo
+      enddo
+!!!!!!!!!!!!!!!!
+
       ! o3 profile provided by user (user03=true) or reference prof from RRTMG
+	  !! -1
       if (usero3) then
         do i=1,imax-1
         ksounding=npatch_start
