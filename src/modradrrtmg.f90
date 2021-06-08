@@ -1009,9 +1009,15 @@ contains
 
 			h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
 			layerT  (i,k) = tabs_slice(i,k)
-			layerP  (i,k) = presf_input(k)
+			!!! layerP  (i,k) = presf_input(k)
 		enddo
 		temp_GLQ_point = temp_GLQ_point + 1
+	enddo
+	
+	do i=1,imax
+		do i=1,kmax
+			layerP  (i,k) = presf_input(k)
+		enddo
 	enddo
 
 	! temp_GLQ_point = passed_GLQ_point
