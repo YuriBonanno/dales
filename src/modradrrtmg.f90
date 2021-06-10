@@ -16,7 +16,7 @@ contains
     use modsurfdata ,  only : tskin
 ! Added myself ------------------
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
-	use modradrrtmgyuri, only : writetofile
+	use modradrrtmgyuriroutines, only : writetofile
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
