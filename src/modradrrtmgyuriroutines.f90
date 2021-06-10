@@ -176,13 +176,17 @@ contains
 			open(11, file=filename, status="new", action="write")
 		end if
 		
+		print *, "going to print"
+		
 		if (dims == 1) then
+			print *, "dims == 1"
 			!do i=1,imax
 				write(11, *) dataset(:,1,1)
 			!end do
 		end if
 			
 		if (dims == 2) then
+			print *, "dims == 2"
 			!do i=1,imax
 				do j=1,jmax
 					write(11, *) dataset(:,j,1)
@@ -191,6 +195,7 @@ contains
 		end if
 		
 		if (dims == 3) then
+			print *, "dims == 3"
 			!do i=1,imax
 				do j=1,jmax
 					do k=1,kmax
