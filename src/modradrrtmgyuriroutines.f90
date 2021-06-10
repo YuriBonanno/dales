@@ -166,8 +166,8 @@ contains
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
-		call execute_command_line ('mkdir -p ' // makedir)
-		!filename = trim(makedir) // '/' // trim(filename)
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		filename = trim(makedir) // '/' // trim(filename)
 		print *, filename
 		
 
