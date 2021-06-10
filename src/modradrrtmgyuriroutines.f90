@@ -177,6 +177,7 @@ contains
 		end if
 		
 		print *, "going to print"
+		print *, filename
 		
 		if (dims == 1) then
 			print *, "dims == 1"
