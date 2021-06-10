@@ -94,7 +94,7 @@ contains
 		!Things that are/should already be known should be defined here:
 		!For example the allocation of space for arrays
 		!Also, 
-		n_RT_Ratio = 100
+		n_RT_Ratio = 1
 		n_classes_initial = 20
 		cloud_threshold = 0.0
 		cloud_patch_threshold = 0.0
@@ -279,8 +279,11 @@ contains
 					if (LWP_flattened(i,j) <= cloud_threshold) then
 						counter = counter + 1
 						clear_LWP_ordered(counter) = LWP_flattened(i,j)
-						original_clear_LWP_indexes(counter, 1) = i
-						original_clear_LWP_indexes(counter, 2) = j
+						!!Shift with a single index due to i=1 and j=1 being boundary values
+						original_clear_LWP_indexes(counter, 1) = i + 1
+						original_clear_LWP_indexes(counter, 2) = j + 1
+						! original_clear_LWP_indexes(counter, 1) = i
+						! original_clear_LWP_indexes(counter, 2) = j
 					end if
 				end do
 			end do
@@ -469,8 +472,11 @@ contains
 						if (cloud_class(i,j) == n) then
 							counter = counter + 1
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
-							original_cloudtop_LWP_indexes(counter, 1, n) = i
-							original_cloudtop_LWP_indexes(counter, 2, n) = j
+							!!Shift with a single index due to i=1 and j=1 being boundary values
+							original_cloudtop_LWP_indexes(counter, 1, n) = i + 1
+							original_cloudtop_LWP_indexes(counter, 2, n) = j + 1
+							! original_cloudtop_LWP_indexes(counter, 1, n) = i
+							! original_cloudtop_LWP_indexes(counter, 2, n) = j
 						end if
 					end do
 				end do

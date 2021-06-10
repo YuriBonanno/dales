@@ -297,7 +297,7 @@ contains
 			
 			passed_GLQ_point = current_GLQ_point
 		enddo
-	else
+	!!! SHOULD remove :else
 ! End Added myself ------------------
 		do j=2,j1
 		  call setupSlicesFromProfiles &
