@@ -712,6 +712,8 @@ contains
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
 						
 						print *, "A"
+						print *, fill_i
+						print *, fill_j
 						lwu(fill_i, fill_j,1:k1) =  lwUp_slice  (i,1:k1)
 						lwd(fill_i, fill_j,1:k1) = -lwDown_slice(i,1:k1)
 						print *, "AA"
