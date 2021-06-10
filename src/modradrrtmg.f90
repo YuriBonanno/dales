@@ -260,12 +260,12 @@ contains
 			   ! ( j, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			call writetofile("tg_slice", tg_slice, 2)
-			call writetofile("cloudFrac", cloudFrac, 2)
-			call writetofile("IWP_slice", IWP_slice, 2)
-			call writetofile("LWP_slice", LWP_slice, 2)
-			call writetofile("iceRe", iceRe, 2)
-			call writetofile("liquidRe", liquidRe, 2)
+			call writetofile("tg_slice_barker", tg_slice, 2)
+			call writetofile("cloudFrac_barker", cloudFrac, 2)
+			call writetofile("IWP_slice_barker", IWP_slice, 2)
+			call writetofile("LWP_slice_barker", LWP_slice, 2)
+			call writetofile("iceRe_barker", iceRe, 2)
+			call writetofile("liquidRe_barker", liquidRe, 2)
 			
 			print *, "Starting  radiation"
 			if (rad_longw) then
@@ -313,12 +313,12 @@ contains
 
 		  !!
 		  
-			call writetofile("tg_slice", tg_slice, 2)
-			call writetofile("cloudFrac", cloudFrac, 2)
-			call writetofile("IWP_slice", IWP_slice, 2)
-			call writetofile("LWP_slice", LWP_slice, 2)
-			call writetofile("iceRe", iceRe, 2)
-			call writetofile("liquidRe", liquidRe, 2)
+			call writetofile("tg_slice_stephan", tg_slice, 2)
+			call writetofile("cloudFrac_stephan", cloudFrac, 2)
+			call writetofile("IWP_slice_stephan", IWP_slice, 2)
+			call writetofile("LWP_slice_stephan", LWP_slice, 2)
+			call writetofile("iceRe_stephan", iceRe, 2)
+			call writetofile("liquidRe_stephan", liquidRe, 2)
 
 
 		  if (rad_shortw) then
