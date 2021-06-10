@@ -163,7 +163,7 @@ contains
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 
 		makedir = "datadir"
-		makedirqq(makedir)
+		call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir(1.) ) ) )
 
 		!__________________________________________________________
 		!Make and write to files
