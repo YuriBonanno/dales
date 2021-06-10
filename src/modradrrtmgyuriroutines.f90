@@ -158,7 +158,7 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(len = 16) :: filename
+		character(len = 64) :: filename
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 
 		!__________________________________________________________
