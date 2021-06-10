@@ -676,11 +676,11 @@ contains
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
 					!!!
-					! class_number = cloudtop_GLQ_point/class_size
-					! if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
-						! class_number = class_number + 1
-					! end if
-					! cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
+					class_number = cloudtop_GLQ_point/class_size
+					if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
+						class_number = class_number + 1
+					end if
+					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
 					!!cloudtop_GLQ_point = cloudtop_GLQ_point + 1
 					
 					! print *, "class_size"
