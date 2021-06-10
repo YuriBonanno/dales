@@ -473,6 +473,9 @@ contains
 							counter = counter + 1
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
 							!!Shift with a single index due to i=1 and j=1 being boundary values
+							print *, counter
+							print *, i + 1
+							print *, j + 1
 							original_cloudtop_LWP_indexes(counter, 1, n) = i + 1
 							original_cloudtop_LWP_indexes(counter, 2, n) = j + 1
 							! original_cloudtop_LWP_indexes(counter, 1, n) = i
