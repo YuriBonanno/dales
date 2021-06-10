@@ -260,12 +260,12 @@ contains
 			   ! ( j, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			call writetofile("tg_slice", tg_slice, 3)
-			call writetofile("cloudFrac", cloudFrac, 3)
-			call writetofile("IWP_slice", IWP_slice, 3)
-			call writetofile("LWP_slice", LWP_slice, 3)
-			call writetofile("iceRe", iceRe, 3)
-			call writetofile("liquidRe", liquidRe, 3)
+			call writetofile("tg_slice", tg_slice, 2)
+			call writetofile("cloudFrac", cloudFrac, 2)
+			call writetofile("IWP_slice", IWP_slice, 2)
+			call writetofile("LWP_slice", LWP_slice, 2)
+			call writetofile("iceRe", iceRe, 2)
+			call writetofile("liquidRe", liquidRe, 2)
 			
 			print *, "Starting  radiation"
 			if (rad_longw) then
@@ -313,12 +313,12 @@ contains
 
 		  !!
 		  
-			call writetofile("tg_slice", tg_slice, 3)
-			call writetofile("cloudFrac", cloudFrac, 3)
-			call writetofile("IWP_slice", IWP_slice, 3)
-			call writetofile("LWP_slice", LWP_slice, 3)
-			call writetofile("iceRe", iceRe, 3)
-			call writetofile("liquidRe", liquidRe, 3)
+			call writetofile("tg_slice", tg_slice, 2)
+			call writetofile("cloudFrac", cloudFrac, 2)
+			call writetofile("IWP_slice", IWP_slice, 2)
+			call writetofile("LWP_slice", LWP_slice, 2)
+			call writetofile("iceRe", iceRe, 2)
+			call writetofile("liquidRe", liquidRe, 2)
 
 
 		  if (rad_shortw) then
@@ -997,7 +997,6 @@ contains
 	layerP(:,:) = 0. ; interfaceP(:,:) = 0. ; layerT(:,:) = 0. ; interfaceT(:,:) = 0. ;
 	layerMass(:,:) = 0. ; LWP_slice(:,:) = 0. ; IWP_slice(:,:) = 0. ; 
 	tg_slice(:) = 0.
-
 
 	exners = (ps/pref0) ** (rd/cp)
 
