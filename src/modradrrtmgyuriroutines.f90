@@ -159,7 +159,11 @@ contains
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
 		character(len = 64) :: filename
+		character(len = 16) :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
+
+		makedir = "datadir"
+		makedirqq(makedir)
 
 		!__________________________________________________________
 		!Make and write to files
