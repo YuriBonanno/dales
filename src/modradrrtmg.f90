@@ -16,6 +16,7 @@ contains
     use modsurfdata ,  only : tskin
 ! Added myself ------------------
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
+	use modradrrtmgyuri, only : writetofile
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
@@ -311,6 +312,14 @@ contains
 		  end if
 
 		  !!
+		  
+			call writetofile("tg_slice", tg_slice, 3)
+			call writetofile("cloudFrac", cloudFrac, 3)
+			call writetofile("IWP_slice", IWP_slice, 3)
+			call writetofile("LWP_slice", LWP_slice, 3)
+			call writetofile("iceRe", iceRe, 3)
+			call writetofile("liquidRe", liquidRe, 3)
+
 
 		  if (rad_shortw) then
 			 call setupSW(sunUp)
