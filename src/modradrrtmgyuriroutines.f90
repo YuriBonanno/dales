@@ -159,6 +159,7 @@ contains
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
 		character(len = 64) :: filename
+		character(len = 64) :: fullpath
 		character(len = 16) :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 		
@@ -167,8 +168,8 @@ contains
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
 		call execute_command_line ('mkdir -p ' // trim(makedir))
-		filename = trim(makedir) // '/' // trim(filename)
-		print *, filename
+		fullpath = trim(makedir) // '/' // trim(filename)
+		print *, fullpath
 		
 
 		!__________________________________________________________
@@ -178,16 +179,16 @@ contains
 			return
 		end if
 		
-		inquire(file=filename, exist=fileexists)
+		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
 		if (fileexists) then
-			open(11, file=filename, status="old", position="append", action="write")
+			open(11, file=fullpath, status="old", position="append", action="write")
 		else
-			open(11, file=filename, status="new", action="write")
+			open(11, file=fullpath, status="new", action="write")
 		end if
 		
 		print *, "going to print"
-		print *, filename
+		print *, fullpath
 		
 		if (dims == 1) then
 			print *, "dims == 1"
