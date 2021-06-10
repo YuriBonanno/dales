@@ -498,7 +498,7 @@ contains
 					
 					
 
-					print *, "bars are set, now placing  in GLQ indexes"
+					!!print *, "bars are set, now placing  in GLQ indexes"
 					!Look at if this works, weird index results
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
@@ -538,7 +538,7 @@ contains
 			enddo
 		enddo
 
-		print *, GLQ_points_cloudtop(:, 1)
+		!!!print *, GLQ_points_cloudtop(:, 1)
 		!print *, GLQ_index_all(:, :)
 		
 		print *, "finished GLQ to long total array"
