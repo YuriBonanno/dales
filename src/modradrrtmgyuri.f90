@@ -176,6 +176,13 @@ contains
 	    layerMass_grid(1:imax,1:jmax,krad1) = 100.*( interfaceP_grid(1:imax,1:jmax,krad1) - interfaceP_grid(1:imax,1:jmax,krad2) ) / grav
         !784
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
+		
+		call writetofile("qcl_grid", qcl_grid, 3)
+		call writetofile("layerP_grid", layerP_grid, 3)
+		call writetofile("interfaceP_grid", interfaceP_grid, 3)
+		call writetofile("layerMass_grid", layerMass_grid, 3)
+		call writetofile("LWP_grid", LWP_grid, 3)
+		
 		!print *, "finished Define all field values"
 		!__________________________________________________________
 		!determine specific necessary values
@@ -453,6 +460,8 @@ contains
 				print *, "gauleg"
 				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
 				
+				
+				
 				print *, "placing in original indexes"
 				counter = 0
 				do i = 1, imax
@@ -657,33 +666,37 @@ contains
 					!cloudtop
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
-					class_number = cloudtop_GLQ_point/class_size
-					if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
-						class_number = class_number + 1
-					end if
-					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
-					!cloudtop_GLQ_point = cloudtop_GLQ_point + 1
+					!!!
+					! class_number = cloudtop_GLQ_point/class_size
+					! if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
+						! class_number = class_number + 1
+					! end if
+					! cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
+					!!cloudtop_GLQ_point = cloudtop_GLQ_point + 1
 					
-					print *, "class_size"
-					print *, class_size
-					print *, "class_number"
-					print *, class_number
-					print *, "cloudtop_GLQ_point"
-					print *, cloudtop_GLQ_point
-					if (cloudtop_GLQ_point == 1) then
-						n1 = 1
-						n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
-					else
-						!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
-						if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
-							n1 = (GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2
-							n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
-						else
-							! print *, "this is not happening right?"
-							n1 = (GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2
-							n2 = n_clouds
-						end if
-					end if
+					! print *, "class_size"
+					! print *, class_size
+					! print *, "class_number"
+					! print *, class_number
+					! print *, "cloudtop_GLQ_point"
+					! print *, cloudtop_GLQ_point
+					! if (cloudtop_GLQ_point == 1) then
+						! n1 = 1
+						! n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
+					! else
+						!!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
+						! if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
+							! n1 = (GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2
+							! n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
+						! else
+							!! print *, "this is not happening right?"
+							! n1 = (GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2
+							! n2 = n_clouds
+						! end if
+					! end if
+					!!!
+					n1 = cloudtop_GLQ_point
+					n2 = cloudtop_GLQ_point
 					
 					print *, "start through LWP indexes"
 					print *, "n1", n1

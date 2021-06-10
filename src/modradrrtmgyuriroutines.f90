@@ -177,27 +177,27 @@ contains
 		end if
 		
 		if (dims == 1) then
-			do i=1,imax
-				write(11, *) dataset(i,1,1)
-			end do
+			!do i=1,imax
+				write(11, *) dataset(:,1,1)
+			!end do
 		end if
 			
 		if (dims == 2) then
-			do i=1,imax
+			!do i=1,imax
 				do j=1,jmax
-					write(11, *) dataset(i,j,1)
+					write(11, *) dataset(:,j,1)
 				end do
-			end do
+			!end do
 		end if
 		
 		if (dims == 3) then
-			do i=1,imax
+			!do i=1,imax
 				do j=1,jmax
 					do k=1,kmax
-						write(11, *) dataset(i,j,k)
+						write(11, *) dataset(:,j,k)
 					end do
 				end do
-			end do
+			!end do
 		end if
 
 		close(11)

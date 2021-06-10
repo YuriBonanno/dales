@@ -211,6 +211,8 @@ contains
  	barker_method=.true.
  	if (barker_method) then
 
+		!TODO: door alles heen om te kijken of het daadwerkelijk gebeurt zoals het hoort
+
 		!Finds the GLQ points used for filling the 
 
 		print *, "Starting  findGLQPoints"
@@ -256,7 +258,13 @@ contains
 			! call setupSlicesFromProfiles &
 			   ! ( j, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
-			
+		
+			call writetofile("tg_slice", tg_slice, 3)
+			call writetofile("cloudFrac", cloudFrac, 3)
+			call writetofile("IWP_slice", IWP_slice, 3)
+			call writetofile("LWP_slice", LWP_slice, 3)
+			call writetofile("iceRe", iceRe, 3)
+			call writetofile("liquidRe", liquidRe, 3)
 			
 			print *, "Starting  radiation"
 			if (rad_longw) then
