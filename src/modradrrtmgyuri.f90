@@ -223,11 +223,11 @@ contains
 	    end do
 		
 		if (SUM(cloudtop_distribution).ne.n_clouds) then
-			print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
-			print *, "SUM(cloudtop_distribution)"
-			print *, SUM(cloudtop_distribution)
-			print *, "n_clouds"
-			print *, n_clouds
+			! print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
+			! print *, "SUM(cloudtop_distribution)"
+			! print *, SUM(cloudtop_distribution)
+			! print *, "n_clouds"
+			! print *, n_clouds
 		end if
 		
 		n_clear = (imax*jmax)-n_clouds
@@ -242,12 +242,12 @@ contains
 		! print *, "sorted cloudtop_distribution"
 		! print *, cloudtop_distribution
 		
-		print *, "n_clouds"
-		print *, n_clouds
-		print *, "n_clear"
-		print *, n_clear
-		print *, "total_cloud_fraction"
-		print *, total_cloud_fraction
+		! print *, "n_clouds"
+		! print *, n_clouds
+		! print *, "n_clear"
+		! print *, n_clear
+		! print *, "total_cloud_fraction"
+		! print *, total_cloud_fraction
 		
 		!Determined:
 		!   Cloud_fraction
@@ -257,8 +257,8 @@ contains
 		!   n_clear
 		!   LWP_flattened
 		
-		print *, "finished cloud and LWP data"
-		print *, "starting cloudless collumns"
+		! print *, "finished cloud and LWP data"
+		! print *, "starting cloudless collumns"
 		
 		n_GLQ_clear = 0
 		
@@ -268,7 +268,7 @@ contains
 			if (n_GLQ_clear < n_clear) then
 				n_GLQ_clear = n_clear
 			end if
-			print *, "n_clear > 0"
+			! print *, "n_clear > 0"
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
@@ -312,14 +312,14 @@ contains
 			!deallocate (GLQ_points_clear)
 			!deallocate (GLQ_weights_clear)
 		end if
-		print *, "finished cloudless collumns"
+		! print *, "finished cloudless collumns"
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Cloudy Sky Gauss-Legendre
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Select only the collumns with a nonzero cloudratio
-		print *, "starting clouded collumns"
+		! print *, "starting clouded collumns"
 		if (n_clouds > 0) then
-			print *, "n_clouds > 0"
+			! print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 
 			counter = 0
@@ -335,8 +335,8 @@ contains
 			!Determined:
 			!   cloudtop_height_ordered
 
-			print *, "cloudtop_height_ordered"
-			print *, cloudtop_height_ordered
+			! print *, "cloudtop_height_ordered"
+			! print *, cloudtop_height_ordered
 			
 			write(*,*)
 
@@ -352,8 +352,8 @@ contains
 
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
 
-				print *, "quantiles_value"
-				print *, quantiles_value
+				! print *, "quantiles_value"
+				! print *, quantiles_value
 
 				allocate (n_class(n_classes))
 				n_class(:) = 0
@@ -436,36 +436,36 @@ contains
 				class_size = n_class(1)
 				cloud_class(:,:) = n_classes
 			end if
-			print *, "cloud and classes finished"
+			! print *, "cloud and classes finished"
 			
 
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
-			print *, "GLQ_points_cloudtop"
+			! print *, "GLQ_points_cloudtop"
 			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
-			print *, "GLQ_weight_cloudtop"
+			! print *, "GLQ_weight_cloudtop"
 			allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
 			
-			print *, "cloudtop_LWP_ordered"
+			! print *, "cloudtop_LWP_ordered"
 			allocate (cloudtop_LWP_ordered(class_size, n_classes))
-			print *, "original_cloudtop_LWP_indexes"
+			! print *, "original_cloudtop_LWP_indexes"
 			allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
 			
-			print *, "GLQ_cloudtop_LWP_indexes"
+			! print *, "GLQ_cloudtop_LWP_indexes"
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
-			print *, "start going through classes"
+			! print *, "start going through classes"
 			do n = 1, n_classes
-				print *, "n"
-				print *, n
+				! print *, "n"
+				! print *, n
 				
-				print *, "gauleg"
+				! print *, "gauleg"
 				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
 				
 				
 				
-				print *, "placing in original indexes"
+				! print *, "placing in original indexes"
 				counter = 0
 				do i = 1, imax
 					do j = 1, jmax
@@ -473,9 +473,9 @@ contains
 							counter = counter + 1
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
 							!!Shift with a single index due to i=1 and j=1 being boundary values
-							print *, counter
-							print *, i + 1
-							print *, j + 1
+							! print *, counter
+							! print *, i + 1
+							! print *, j + 1
 							original_cloudtop_LWP_indexes(counter, 1, n) = i + 1
 							original_cloudtop_LWP_indexes(counter, 2, n) = j + 1
 							! original_cloudtop_LWP_indexes(counter, 1, n) = i
@@ -484,10 +484,10 @@ contains
 					end do
 				end do
 				
-				print *, "quicksortindexes"
+				! print *, "quicksortindexes"
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
 			
-				print *, "save GLQ points"
+				! print *, "save GLQ points"
 				n2 = 0
 				do N_g = 1, n_GLQ_cloudtop
 				
@@ -514,17 +514,17 @@ contains
 			end do
 
 		end if
-		print *, "finished clouded collumns"
+		! print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
-		print *, "starting GLQ to long total array"
+		! print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
-		print *, "allocating this amount of points", total_amount_GLQ_points
+		! print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		print *, "GLQ clear"
+		! print *, "GLQ clear"
 		if (n_GLQ_clear>0) then
 			do i =1, n_GLQ_clear
 				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
@@ -532,7 +532,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded"
+		! print *, "GLQ clouded"
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
 				GLQ_counter = GLQ_counter + 1
@@ -544,7 +544,7 @@ contains
 		!!!print *, GLQ_points_cloudtop(:, 1)
 		!print *, GLQ_index_all(:, :)
 		
-		print *, "finished GLQ to long total array"
+		! print *, "finished GLQ to long total array"
 		!!!!!RADIATION!!!!!
 		
 		!__________________________________________________________
@@ -607,9 +607,9 @@ contains
 			
 			! N_g = MODULO(temp_GLQ_point, passed_slice_length) + 1 !This is just i?
 			if (temp_GLQ_point <= total_amount_GLQ_points) then
-				print *, "temp_GLQ_point <= total_amount_GLQ_points"
+				! print *, "temp_GLQ_point <= total_amount_GLQ_points"
 				if (temp_GLQ_point <= n_GLQ_clear) then
-					print *, "temp_GLQ_point <= n_GLQ_clear"
+					! print *, "temp_GLQ_point <= n_GLQ_clear"
 				!!!!!!!!!!!!!!!!!!!!!
 					!Cloudless
 					!n1 and n2 could be saved..., so you dont have to redetermine the n1 and n2
@@ -671,7 +671,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					print *, "temp_GLQ_point > n_GLQ_clear"
+					! print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
@@ -707,21 +707,21 @@ contains
 					n1 = cloudtop_GLQ_point
 					n2 = cloudtop_GLQ_point
 					
-					print *, "start through LWP indexes"
-					print *, "class_number", class_number
-					print *, "n1", n1
-					print *, "n2", n2
+					! print *, "start through LWP indexes"
+					! print *, "class_number", class_number
+					! print *, "n1", n1
+					! print *, "n2", n2
 					do n = n1, n2
-						print *, "n", n
+						! print *, "n", n
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
 						
-						print *, "A"
-						print *, fill_i
-						print *, fill_j
+						! print *, "A"
+						! print *, fill_i
+						! print *, fill_j
 						lwu(fill_i, fill_j,1:k1) =  lwUp_slice  (i,1:k1)
 						lwd(fill_i, fill_j,1:k1) = -lwDown_slice(i,1:k1)
-						print *, "AA"
+						! print *, "AA"
 						!____________________
 						if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine 
 						!do i=2,i1
@@ -730,28 +730,28 @@ contains
 						!end do
 						end if
 						!____________________
-						print *, "FFFFFF"
+						! print *, "FFFFFF"
 						swu(fill_i, fill_j,1:k1) =  swUp_slice  (i,1:k1)
 						swd(fill_i, fill_j,1:k1) = -swDown_slice(i,1:k1)
 
-						print *, "BBBBBB"
+						! print *, "BBBBBB"
 						swdir(fill_i, fill_j,1:k1) = -swDownDir_slice(i,1:k1)
 						swdif(fill_i, fill_j,1:k1) = -swDownDif_slice(i,1:k1)
 						lwc  (fill_i, fill_j,1:k1) =  LWP_slice      (i,1:k1)
 
-						print *, "KKKKKK"
+						! print *, "KKKKKK"
 						lwuca(fill_i, fill_j,1:k1) =  lwUpCS_slice  (i,1:k1)
 						lwdca(fill_i, fill_j,1:k1) = -lwDownCS_slice(i,1:k1)
 						swuca(fill_i, fill_j,1:k1) =  swUpCS_slice  (i,1:k1)
 						swdca(fill_i, fill_j,1:k1) = -swDownCS_slice(i,1:k1)
 
-						print *, "NNNNNN"
+						! print *, "NNNNNN"
 						SW_up_TOA (fill_i, fill_j) =  swUp_slice  (i,krad2)
 						SW_dn_TOA (fill_i, fill_j) = -swDown_slice(i,krad2)
 						LW_up_TOA (fill_i, fill_j) =  lwUp_slice  (i,krad2)
 						LW_dn_TOA (fill_i, fill_j) = -lwDown_slice(i,krad2)
 
-						print *, "AAAAAA"
+						! print *, "AAAAAA"
 						SW_up_ca_TOA (fill_i, fill_j) =  swUpCS_slice  (i,krad2)
 						SW_dn_ca_TOA (fill_i, fill_j) = -swDownCS_slice(i,krad2)
 						LW_up_ca_TOA (fill_i, fill_j) =  lwUpCS_slice  (i,krad2)
