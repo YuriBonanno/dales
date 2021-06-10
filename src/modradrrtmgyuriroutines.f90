@@ -159,7 +159,7 @@ contains
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
 		character(len = 16) :: filename
-		real(kind=kind_rb) :: dataset (imax, jmax, kmax)
+		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 
 		!__________________________________________________________
 		!Make and write to files
