@@ -249,16 +249,16 @@ contains
 				passed_slice_length = imax
 			end if
 			
-			passed_GLQ_point = current_GLQ_point
-			print *, "Starting  setupBarkerSlicesFromProfiles"
-			call setupBarkerSlicesFromProfiles(npatch_start, &
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
-			print *, "Finished  setupBarkerSlicesFromProfiles"
+			! passed_GLQ_point = current_GLQ_point
+			! print *, "Starting  setupBarkerSlicesFromProfiles"
+			! call setupBarkerSlicesFromProfiles(npatch_start, &
+			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+			   ! passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
+			! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-			! call setupSlicesFromProfiles &
-			   ! ( j, npatch_start, &                                           !input
-			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+			call setupSlicesFromProfiles &
+			   ( j, npatch_start, &                                           !input
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
 			call writetofile("tg_slice_barker", tg_slice, 2)
 			call writetofile("cloudFrac_barker", cloudFrac, 2)
