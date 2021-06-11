@@ -17,6 +17,7 @@ contains
 		use modglobal, only: imax, jmax, kmax, i1, j1, k1, kind_rb, grav, zf, zh
 		use modfields, only: ql0
 		use modradrrtmgyuriroutines
+		use modradrrtmgyuriroutines, only : writetofiledefinedsize
 		
 		implicit none
 		
