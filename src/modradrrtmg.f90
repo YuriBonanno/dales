@@ -257,7 +257,7 @@ contains
 			! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
 			call setupSlicesFromProfiles &
-			   ( j, npatch_start, &                                           !input
+			   ( j+1, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
 			call writetofile("tg_slice_barker", tg_slice, 2)
