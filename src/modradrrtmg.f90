@@ -260,12 +260,14 @@ contains
 			   ( j+1, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			call writetofile("tg_slice_barker", tg_slice, 2)
-			call writetofile("cloudFrac_barker", cloudFrac, 2)
-			call writetofile("IWP_slice_barker", IWP_slice, 2)
-			call writetofile("LWP_slice_barker", LWP_slice, 2)
-			call writetofile("iceRe_barker", iceRe, 2)
-			call writetofile("liquidRe_barker", liquidRe, 2)
+			!This works till here!!!
+		
+			! call writetofile("tg_slice_barker", tg_slice, 2)
+			! call writetofile("cloudFrac_barker", cloudFrac, 2)
+			! call writetofile("IWP_slice_barker", IWP_slice, 2)
+			! call writetofile("LWP_slice_barker", LWP_slice, 2)
+			! call writetofile("iceRe_barker", iceRe, 2)
+			! call writetofile("liquidRe_barker", liquidRe, 2)
 			
 			! print *, "Starting  radiation"
 			if (rad_longw) then
@@ -284,6 +286,19 @@ contains
 				end if
 			end if
 			! print *, "finished  radiation"
+
+			call writetofile("lwUp_slice_barker", lwUp_slice, 2)
+			call writetofile("-lwDown_slice_barker", -lwDown_slice, 2)
+			call writetofile("swUp_slice_barker", swUp_slice, 2)
+			call writetofile("-swDown_slice_barker", -swDown_slice, 2)
+			call writetofile("-swDownDir_barker", -swDownDir, 2)
+			call writetofile("-swDownDif_barker", -swDownDif, 2)
+			call writetofile("LWP_slice_barker", LWP_slice, 2)
+			call writetofile("lwUpCS_slice_barker", lwUpCS_slice, 2)
+			call writetofile("-lwDownCS_slice_barker", -lwDownCS_slice, 2)
+			call writetofile("lwUp_slice_barker", lwUp_slice, 2)
+			call writetofile("-swDownCS_barker",-swDownCS, 2)
+
 
 			passed_GLQ_point = current_GLQ_point
 			! print *, "Starting  reshuffleValues"
@@ -305,12 +320,12 @@ contains
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 
-			call writetofile("tg_slice_stephan", tg_slice, 2)
-			call writetofile("cloudFrac_stephan", cloudFrac, 2)
-			call writetofile("IWP_slice_stephan", IWP_slice, 2)
-			call writetofile("LWP_slice_stephan", LWP_slice, 2)
-			call writetofile("iceRe_stephan", iceRe, 2)
-			call writetofile("liquidRe_stephan", liquidRe, 2)
+			! call writetofile("tg_slice_stephan", tg_slice, 2)
+			! call writetofile("cloudFrac_stephan", cloudFrac, 2)
+			! call writetofile("IWP_slice_stephan", IWP_slice, 2)
+			! call writetofile("LWP_slice_stephan", LWP_slice, 2)
+			! call writetofile("iceRe_stephan", iceRe, 2)
+			! call writetofile("liquidRe_stephan", liquidRe, 2)
 
 		  if (rad_longw) then
 			call rrtmg_lw &
@@ -327,6 +342,18 @@ contains
 					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
 			 end if
 		  end if
+
+			call writetofile("lwUp_slice_stephan", lwUp_slice, 2)
+			call writetofile("-lwDown_slice_stephan", -lwDown_slice, 2)
+			call writetofile("swUp_slice_stephan", swUp_slice, 2)
+			call writetofile("-swDown_slice_stephan", -swDown_slice, 2)
+			call writetofile("-swDownDir_stephan", -swDownDir, 2)
+			call writetofile("-swDownDif_stephan", -swDownDif, 2)
+			call writetofile("LWP_slice_stephan", LWP_slice, 2)
+			call writetofile("lwUpCS_slice_stephan", lwUpCS_slice, 2)
+			call writetofile("-lwDownCS_slice_stephan", -lwDownCS_slice, 2)
+			call writetofile("lwUp_slice_stephan", lwUp_slice, 2)
+			call writetofile("-swDownCS_stephan",-swDownCS, 2)
 
 		  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
 		  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
