@@ -288,17 +288,17 @@ contains
 			end if
 			! print *, "finished  radiation"
 
-			call writetofiledefinedsize("lwUp_slice_barker", lwUp_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-lwDown_slice_barker", -lwDown_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("swUp_slice_barker", swUp_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDown_slice_barker", -swDown_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDownDir_slice_barker", -swDownDir_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDownDif_slice_barker", -swDownDif_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("LWP_slice_barker", LWP_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("lwUpCS_slice_barker", lwUpCS_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-lwDownCS_slice_barker", -lwDownCS_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("lwUp_slice_barker", lwUp_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDownCS_slice_barker", -swDownCS_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("lwUp_slice_barker", lwUp_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-lwDown_slice_barker", -lwDown_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("swUp_slice_barker", swUp_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDown_slice_barker", -swDown_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDownDir_slice_barker", -swDownDir_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDownDif_slice_barker", -swDownDif_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("LWP_slice_barker", LWP_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("lwUpCS_slice_barker", lwUpCS_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-lwDownCS_slice_barker", -lwDownCS_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("lwUp_slice_barker", lwUp_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDownCS_slice_barker", -swDownCS_slice, 2, imax, krad2, 1)
 
 
 			passed_GLQ_point = current_GLQ_point
@@ -315,29 +315,29 @@ contains
 			passed_GLQ_point = current_GLQ_point
 		enddo
 		
-		xsize = i1+ih - (2-ih) + 1
-		ysize = j1+jh - (2-jh) + 1
-		zsize = k1
+		! xsize = i1+ih - (2-ih) + 1
+		! ysize = j1+jh - (2-jh) + 1
+		! zsize = k1
 		
-		call writetofiledefinedsize("lwu_barker", lwu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwd_barker", lwd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swu_barker", swu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swd_barker", swd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdir_barker", swdir(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdif_barker", swdif(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwc_barker", lwc(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwuca_barker", lwuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwdca_barker", lwdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swuca_barker", swuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdca_barker", swdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("SW_up_TOA_barker", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_dn_TOA_barker", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_up_TOA_barker", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_dn_TOA_barker", LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_up_ca_TOA_barker", SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_dn_ca_TOA_barker", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("lwu_barker", lwu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwd_barker", lwd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swu_barker", swu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swd_barker", swd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swdir_barker", swdir(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swdif_barker", swdif(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwc_barker", lwc(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwuca_barker", lwuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwdca_barker", lwdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swuca_barker", swuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swdca_barker", swdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("SW_up_TOA_barker", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("SW_dn_TOA_barker", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_up_TOA_barker", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_dn_TOA_barker", LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("SW_up_ca_TOA_barker", SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("SW_dn_ca_TOA_barker", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 
 	!!! Must remove : else
 	
@@ -371,17 +371,17 @@ contains
 			 end if
 		  end if
 
-			call writetofiledefinedsize("lwUp_slice_stephan", lwUp_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-lwDown_slice_stephan", -lwDown_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("swUp_slice_stephan", swUp_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDown_slice_stephan", -swDown_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDownDir_slice_stephan", -swDownDir_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDownDif_slice_stephan", -swDownDif_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("LWP_slice_stephan", LWP_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("lwUpCS_slice_stephan", lwUpCS_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-lwDownCS_slice_stephan", -lwDownCS_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("lwUp_slice_stephan", lwUp_slice, 2, imax, krad2, 1)
-			call writetofiledefinedsize("-swDownCS_slice_stephan", -swDownCS_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("lwUp_slice_stephan", lwUp_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-lwDown_slice_stephan", -lwDown_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("swUp_slice_stephan", swUp_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDown_slice_stephan", -swDown_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDownDir_slice_stephan", -swDownDir_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDownDif_slice_stephan", -swDownDif_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("LWP_slice_stephan", LWP_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("lwUpCS_slice_stephan", lwUpCS_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-lwDownCS_slice_stephan", -lwDownCS_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("lwUp_slice_stephan", lwUp_slice, 2, imax, krad2, 1)
+			! call writetofiledefinedsize("-swDownCS_slice_stephan", -swDownCS_slice, 2, imax, krad2, 1)
 
 		  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
 		  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
@@ -417,29 +417,29 @@ contains
 ! Added myself ------------------
 	end if
 	
-		xsize = i1+ih - (2-ih) + 1
-		ysize = j1+jh - (2-jh) + 1
-		zsize = k1
+		! xsize = i1+ih - (2-ih) + 1
+		! ysize = j1+jh - (2-jh) + 1
+		! zsize = k1
 	
-		call writetofiledefinedsize("lwu_stephan", lwu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwd_stephan", lwd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swu_stephan", swu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swd_stephan", swd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdir_stephan", swdir(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdif_stephan", swdif(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwc_stephan", lwc(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwuca_stephan", lwuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("SW_up_TOA_stephan", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_dn_TOA_stephan", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_up_TOA_stephan", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_dn_TOA_stephan", LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_up_ca_TOA_stephan", SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_dn_ca_TOA_stephan", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_up_ca_TOA_stephan", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("lwu_stephan", lwu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwd_stephan", lwd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swu_stephan", swu(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swd_stephan", swd(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swdir_stephan", swdir(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swdif_stephan", swdif(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwc_stephan", lwc(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwuca_stephan", lwuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,k1), 3, xsize, ysize, zsize)
+		! call writetofiledefinedsize("SW_up_TOA_stephan", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("SW_dn_TOA_stephan", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_up_TOA_stephan", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_dn_TOA_stephan", LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("SW_up_ca_TOA_stephan", SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("SW_dn_ca_TOA_stephan", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_up_ca_TOA_stephan", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		! call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		
 !End Added myself ------------------	
     do k=1,kmax
@@ -1070,12 +1070,12 @@ contains
 	tabs_slice(:,:) = 0.; qv_slice(:,:) = 1e-18; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
 	rho_slice(:,:) = 0.
 	!!Added these to define the whole array without it being read to be some unknown value and breaking everything
-	o3_slice(:,:) = 0. ; o3vmr(:,:) = 0. ; 
-	co2vmr(:,:) = 0. ; ch4vmr(:,:) = 0. ; n2ovmr(:,:) = 0. ; h2ovmr(:,:) = 0. ; o2vmr(:,:) = 0. ; 
-	cfc11vmr(:,:) = 0. ; cfc12vmr(:,:) = 0. ; cfc22vmr(:,:) = 0. ; ccl4vmr(:,:) = 0. ; 
-	layerP(:,:) = 0. ; interfaceP(:,:) = 0. ; layerT(:,:) = 0. ; interfaceT(:,:) = 0. ;
-	layerMass(:,:) = 0. ; LWP_slice(:,:) = 0. ; IWP_slice(:,:) = 0. ; 
-	tg_slice(:) = 0.
+	! o3_slice(:,:) = 0. ; o3vmr(:,:) = 0. ; 
+	! co2vmr(:,:) = 0. ; ch4vmr(:,:) = 0. ; n2ovmr(:,:) = 0. ; h2ovmr(:,:) = 0. ; o2vmr(:,:) = 0. ; 
+	! cfc11vmr(:,:) = 0. ; cfc12vmr(:,:) = 0. ; cfc22vmr(:,:) = 0. ; ccl4vmr(:,:) = 0. ; 
+	! layerP(:,:) = 0. ; interfaceP(:,:) = 0. ; layerT(:,:) = 0. ; interfaceT(:,:) = 0. ;
+	! layerMass(:,:) = 0. ; LWP_slice(:,:) = 0. ; IWP_slice(:,:) = 0. ; 
+	! tg_slice(:) = 0.
 
 	exners = (ps/pref0) ** (rd/cp)
 
