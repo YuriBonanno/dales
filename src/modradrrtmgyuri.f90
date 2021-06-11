@@ -332,7 +332,7 @@ contains
 				end do
 			end do
 			
-			writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, k1, 1, 1)
+			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, k1, 1, 1)
 			
 			!Determined:
 			!   cloudtop_height_ordered
