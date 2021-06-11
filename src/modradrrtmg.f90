@@ -258,8 +258,8 @@ contains
 			!!! print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length,
-			   testArrayIndexes)
+			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length, &
+			   testArrayIndexes, j)
 			!!! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
 			! call setupSlicesFromProfiles &
@@ -351,7 +351,7 @@ contains
 		do j=2,j1
 		  call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe,
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 				testArrayIndexes)             !output
 
 			call writetofiledefinedsize("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
@@ -865,7 +865,7 @@ contains
         im=i-1
 		
 		!!!!
-		testArrayIndexes(i, j) = i + 100*j
+		testArrayIndexes(i-1, j-1) = i + 100*j
         !!!!
 		
 		!tg_slice  (im)   = sst
@@ -1031,7 +1031,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length, testArrayIndexes)
+		   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length, testArrayIndexes, j)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -1072,6 +1072,7 @@ contains
   real , parameter :: rho_liq = 1000.
 
 	  !!!! temp
+	  integer :: j
 	  integer,allocatable, dimension(:,:) :: testArrayIndexes
 	  !!!! temp
 
