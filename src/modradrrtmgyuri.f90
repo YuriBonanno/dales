@@ -103,7 +103,6 @@ contains
 		qcl_grid(:, :, :) = 0.
 		!Maybe shift all instances of gl0
 		
-		
 		!Deze sequence kan efficienter maar voor nu zoveel mogelijk gescheiden om implosies te voorkomen
 		
 		!Moet j ook nog verschoven worden of niet? Want hier laat ik j lopen van 1 tot jmax, maar is dat de bedoeling?
@@ -177,11 +176,11 @@ contains
         !784
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 		
-		call writetofile("qcl_grid", qcl_grid, 3)
-		call writetofile("layerP_grid", layerP_grid, 3)
-		call writetofile("interfaceP_grid", interfaceP_grid, 3)
-		call writetofile("layerMass_grid", layerMass_grid, 3)
-		call writetofile("LWP_grid", LWP_grid, 3)
+		! call writetofile("qcl_grid", qcl_grid, 3)
+		! call writetofile("layerP_grid", layerP_grid, 3)
+		! call writetofile("interfaceP_grid", interfaceP_grid, 3)
+		! call writetofile("layerMass_grid", layerMass_grid, 3)
+		! call writetofile("LWP_grid", LWP_grid, 3)
 		
 		!print *, "finished Define all field values"
 		!__________________________________________________________
@@ -332,6 +331,9 @@ contains
 					counter2 = counter2 - 1
 				end do
 			end do
+			
+			writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, k1, 1, 1)
+			
 			!Determined:
 			!   cloudtop_height_ordered
 
@@ -485,7 +487,8 @@ contains
 				end do
 				
 				! print *, "quicksortindexes"
-				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
+				!Removed this for tests
+				!!call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
 			
 				! print *, "save GLQ points"
 				n2 = 0
