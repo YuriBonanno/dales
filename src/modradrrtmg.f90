@@ -217,10 +217,10 @@ contains
 		!Finds the GLQ points used for filling the 
 
 		! print *, "Starting  findGLQPoints"
-		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-			n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
-			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+		! call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
+			! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+			! n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
+			! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
 		! Function that Create n <= j1 slices with the necessary info.
@@ -228,26 +228,26 @@ contains
 			! For all these collumns, the following variables have to be known
 				!LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe
 
-		GLQ_slices = total_amount_GLQ_points/imax
-		slice_length = MODULO(total_amount_GLQ_points, imax)
-		if (slice_length>0) then
-			GLQ_slices = GLQ_slices + 1 
-		end if
+		! GLQ_slices = total_amount_GLQ_points/imax
+		! slice_length = MODULO(total_amount_GLQ_points, imax)
+		! if (slice_length>0) then
+			! GLQ_slices = GLQ_slices + 1 
+		! end if
 
-		current_GLQ_point = 1
-		passed_GLQ_point = current_GLQ_point
+		! current_GLQ_point = 1
+		! passed_GLQ_point = current_GLQ_point
 		! print *, "GLQ_slices"
 		! print *, GLQ_slices
 		! print *, "slice_length"
 		! print *, slice_length
 		! print *, "Starting  GLQ loop"
-		do j = 1, GLQ_slices
-			if (j == GLQ_slices .and. slice_length>0) then
+		! do j = 1, GLQ_slices
+			! if (j == GLQ_slices .and. slice_length>0) then
 				! print*, "slice shortening happened", slice_length
-				passed_slice_length = slice_length
-			else
-				passed_slice_length = imax
-			end if
+				! passed_slice_length = slice_length
+			! else
+				! passed_slice_length = imax
+			! end if
 			
 			! passed_GLQ_point = current_GLQ_point
 			! print *, "Starting  setupBarkerSlicesFromProfiles"
@@ -256,54 +256,61 @@ contains
 			   ! passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
 			! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-			call setupSlicesFromProfiles &
-			   ( j+1, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+			! call setupSlicesFromProfiles &
+			   ! ( j+1, npatch_start, &                                           !input
+			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			call writetofile("tg_slice_barker", tg_slice, 2)
-			call writetofile("cloudFrac_barker", cloudFrac, 2)
-			call writetofile("IWP_slice_barker", IWP_slice, 2)
-			call writetofile("LWP_slice_barker", LWP_slice, 2)
-			call writetofile("iceRe_barker", iceRe, 2)
-			call writetofile("liquidRe_barker", liquidRe, 2)
+			! call writetofile("tg_slice_barker", tg_slice, 2)
+			! call writetofile("cloudFrac_barker", cloudFrac, 2)
+			! call writetofile("IWP_slice_barker", IWP_slice, 2)
+			! call writetofile("LWP_slice_barker", LWP_slice, 2)
+			! call writetofile("iceRe_barker", iceRe, 2)
+			! call writetofile("liquidRe_barker", liquidRe, 2)
 			
 			! print *, "Starting  radiation"
-			if (rad_longw) then
-				call rrtmg_lw &
-					 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+			! if (rad_longw) then
+				! call rrtmg_lw &
+					 ! ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
 				!if(myid==0) write(*,*) 'after call to rrtmg_lw'
-			end if
+			! end if
 
 			  !!
 
-			if (rad_shortw) then
-				call setupSW(sunUp)
-				if (sunUp) then
-					call rrtmg_sw &
-						( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
-				end if
-			end if
+			! if (rad_shortw) then
+				! call setupSW(sunUp)
+				! if (sunUp) then
+					! call rrtmg_sw &
+						! ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+				! end if
+			! end if
 			! print *, "finished  radiation"
 
-			passed_GLQ_point = current_GLQ_point
+			! passed_GLQ_point = current_GLQ_point
 			! print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
 			!!!Need to shift j??			
-			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
-				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
-				original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+			! call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
+				! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+				! n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
+				! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 			! print *, "Finished  reshuffleValues"
-			current_GLQ_point = current_GLQ_point + passed_slice_length
+			! current_GLQ_point = current_GLQ_point + passed_slice_length
 			
-			passed_GLQ_point = current_GLQ_point
-		enddo
+			! passed_GLQ_point = current_GLQ_point
+		! enddo
 	!!! SHOULD remove :else
 ! End Added myself ------------------
 		do j=2,j1
 		  call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+
+			call writetofile("tg_slice_stephan", tg_slice, 2)
+			call writetofile("cloudFrac_stephan", cloudFrac, 2)
+			call writetofile("IWP_slice_stephan", IWP_slice, 2)
+			call writetofile("LWP_slice_stephan", LWP_slice, 2)
+			call writetofile("iceRe_stephan", iceRe, 2)
+			call writetofile("liquidRe_stephan", liquidRe, 2)
 
 		  if (rad_longw) then
 			call rrtmg_lw &
@@ -312,14 +319,6 @@ contains
 		  end if
 
 		  !!
-		  
-			call writetofile("tg_slice_stephan", tg_slice, 2)
-			call writetofile("cloudFrac_stephan", cloudFrac, 2)
-			call writetofile("IWP_slice_stephan", IWP_slice, 2)
-			call writetofile("LWP_slice_stephan", LWP_slice, 2)
-			call writetofile("iceRe_stephan", iceRe, 2)
-			call writetofile("liquidRe_stephan", liquidRe, 2)
-
 
 		  if (rad_shortw) then
 			 call setupSW(sunUp)
