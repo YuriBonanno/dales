@@ -794,7 +794,7 @@ contains
 ! ==============================================================================;
 
   subroutine setupSlicesFromProfiles(j,npatch_start, &
-           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe)
+           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, testArrayIndexes)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -1031,7 +1031,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length)
+		   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length, testArrayIndexes)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
