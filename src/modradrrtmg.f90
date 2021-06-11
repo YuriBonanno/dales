@@ -291,13 +291,13 @@ contains
 			call writetofile("-lwDown_slice_barker", lwDown_slice, 2)
 			call writetofile("swUp_slice_barker", swUp_slice, 2)
 			call writetofile("-swDown_slice_barker", swDown_slice, 2)
-			call writetofile("-swDownDir_barker", swDownDir, 2)
-			call writetofile("-swDownDif_barker", swDownDif, 2)
+			call writetofile("-swDownDir_slice_barker", swDownDir_slice, 2)
+			call writetofile("-swDownDif_slice_barker", swDownDif_slice, 2)
 			call writetofile("LWP_slice_barker", LWP_slice, 2)
 			call writetofile("lwUpCS_slice_barker", lwUpCS_slice, 2)
 			call writetofile("-lwDownCS_slice_barker", lwDownCS_slice, 2)
 			call writetofile("lwUp_slice_barker", lwUp_slice, 2)
-			call writetofile("-swDownCS_barker",swDownCS, 2)
+			call writetofile("-swDownCS_slice_barker",swDownCS_slice, 2)
 
 
 			passed_GLQ_point = current_GLQ_point
@@ -347,13 +347,13 @@ contains
 			call writetofile("-lwDown_slice_stephan", lwDown_slice, 2)
 			call writetofile("swUp_slice_stephan", swUp_slice, 2)
 			call writetofile("-swDown_slice_stephan", swDown_slice, 2)
-			call writetofile("-swDownDir_stephan", swDownDir, 2)
-			call writetofile("-swDownDif_stephan", swDownDif, 2)
+			call writetofile("-swDownDir_slice_stephan", swDownDir_slice, 2)
+			call writetofile("-swDownDif_slice_stephan", swDownDif_slice, 2)
 			call writetofile("LWP_slice_stephan", LWP_slice, 2)
 			call writetofile("lwUpCS_slice_stephan", lwUpCS_slice, 2)
 			call writetofile("-lwDownCS_slice_stephan", lwDownCS_slice, 2)
 			call writetofile("lwUp_slice_stephan", lwUp_slice, 2)
-			call writetofile("-swDownCS_stephan",swDownCS, 2)
+			call writetofile("-swDownCS_slice_stephan",swDownCS_slice, 2)
 
 		  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
 		  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
