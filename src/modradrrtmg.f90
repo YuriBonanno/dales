@@ -43,6 +43,7 @@ contains
 	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
 	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 
 
 	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
@@ -209,6 +210,9 @@ contains
     lwDown_slice = 0
     lwUpCS_slice = 0
     lwDownCS_slice = 0
+	
+	allocate(testArrayIndexes(imax, jmax))
+	
 ! Added myself ------------------
  	barker_method=.true.
  	if (barker_method) then
@@ -254,21 +258,22 @@ contains
 			!!! print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length)
+			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length,
+			   testArrayIndexes)
 			!!! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
 			! call setupSlicesFromProfiles &
 			   ! ( j+1, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			!This works till here!!!
+			call writetofiledefinedsize("testArrayIndexes_barker", testArrayIndexes, 2, imax, jmax, 1)
 		
-			call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
-			call writetofiledefinedsize("cloudFrac_barker", cloudFrac, 2, imax, krad1, 1)
-			call writetofiledefinedsize("IWP_slice_barker", IWP_slice, 2, imax, krad1, 1)
-			call writetofiledefinedsize("LWP_slice_barker", LWP_slice, 2, imax, krad1, 1)
-			call writetofiledefinedsize("iceRe_barker", iceRe, 2, imax, krad1, 1)
-			call writetofiledefinedsize("liquidRe_barker", liquidRe, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
+			! call writetofiledefinedsize("cloudFrac_barker", cloudFrac, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("IWP_slice_barker", IWP_slice, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("LWP_slice_barker", LWP_slice, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("iceRe_barker", iceRe, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("liquidRe_barker", liquidRe, 2, imax, krad1, 1)
 			
 			! print *, "Starting  radiation"
 			if (rad_longw) then
@@ -346,14 +351,17 @@ contains
 		do j=2,j1
 		  call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe,
+				testArrayIndexes)             !output
 
-			call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
-			call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
-			call writetofiledefinedsize("IWP_slice_stephan", IWP_slice, 2, imax, krad1, 1)
-			call writetofiledefinedsize("LWP_slice_stephan", LWP_slice, 2, imax, krad1, 1)
-			call writetofiledefinedsize("iceRe_stephan", iceRe, 2, imax, krad1, 1)
-			call writetofiledefinedsize("liquidRe_stephan", liquidRe, 2, imax, krad1, 1)
+			call writetofiledefinedsize("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
+
+			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
+			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("IWP_slice_stephan", IWP_slice, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("LWP_slice_stephan", LWP_slice, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("iceRe_stephan", iceRe, 2, imax, krad1, 1)
+			! call writetofiledefinedsize("liquidRe_stephan", liquidRe, 2, imax, krad1, 1)
 
 		  if (rad_longw) then
 			call rrtmg_lw &
@@ -821,6 +829,10 @@ contains
       real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
       real , parameter :: rho_liq = 1000.
 
+	  !!!! temp
+	  integer,allocatable, dimension(:,:) :: testArrayIndexes
+	  !!!! temp
+
       real :: reff_factor
       real :: ilratio
       real :: tempC  !temperature in celsius
@@ -851,8 +863,12 @@ contains
 
       do i=2,i1
         im=i-1
-
-        !tg_slice  (im)   = sst
+		
+		!!!!
+		testArrayIndexes(i, j) = i + 100*j
+        !!!!
+		
+		!tg_slice  (im)   = sst
         tg_slice  (im)   = tskin(i,j) * exners  ! Note: tskin = thlskin...
 
         do k=1,kmax
@@ -1055,6 +1071,10 @@ contains
   real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
   real , parameter :: rho_liq = 1000.
 
+	  !!!! temp
+	  integer,allocatable, dimension(:,:) :: testArrayIndexes
+	  !!!! temp
+
   real :: reff_factor
   real :: ilratio
   real :: tempC  !temperature in celsius
@@ -1088,6 +1108,11 @@ contains
 			temp_i = GLQ_index_all(temp_GLQ_point,1)
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
 		end if
+		
+		!!!!
+		testArrayIndexes(i, j) = temp_i + 100*temp_j
+        !!!!
+		
 
 		tg_slice(i) = tskin(temp_i,temp_j) * exners  ! Note: tskin = thlskin...
 		do k=1,kmax
