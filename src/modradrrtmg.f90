@@ -10,7 +10,7 @@ contains
   subroutine radrrtmg
     use modglobal,     only : cp,rlv,dzf,&
                               imax,jmax,kmax,i1,j1,k1,&
-                              kind_rb,SHR_KIND_R4,boltz
+                              kind_rb,SHR_KIND_R4,boltz , ih, jh !Added ih and jh myself (yuri)
     use modmpi,        only : myid
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
