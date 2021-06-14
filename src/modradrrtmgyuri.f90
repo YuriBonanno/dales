@@ -547,6 +547,8 @@ contains
 		end if
 		GLQ_counter = n_GLQ_clear
 		! print *, "GLQ clouded"
+		
+		call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, total_amount_GLQ_points, 2, 1)
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
 				GLQ_counter = GLQ_counter + 1
@@ -556,7 +558,6 @@ contains
 		enddo
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
-		print *, GLQ_index_all(:, :)
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		! print *, "finished GLQ to long total array"
 		!!!!!RADIATION!!!!!

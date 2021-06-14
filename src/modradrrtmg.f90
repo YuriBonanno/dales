@@ -865,9 +865,6 @@ contains
       do i=2,i1
         im=i-1
 		
-		print *, "i1"
-		print *, i1
-		
 		!!!!
 		testArrayIndexes(i-1, j-1) = i + 100*j
         !!!!
@@ -1114,10 +1111,10 @@ contains
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
 		end if
 		
-		print *, "temp_i"
-		print *, temp_i
-		print *, "temp_j"
-		print *, temp_j
+		! print *, "temp_i"
+		! print *, temp_i
+		! print *, "temp_j"
+		! print *, temp_j
 		
 		!!!!
 		! testArrayIndexes(i, j) = temp_i + 100*temp_j
