@@ -228,7 +228,7 @@ contains
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
-		call writetofiledefinedsize("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 
 		! Function that Create n <= j1 slices with the necessary info.
 			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
@@ -268,7 +268,7 @@ contains
 			   ! ( j+1, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			call writetofiledefinedsize("testArrayIndexes_barker", testArrayIndexes, 2, imax, jmax, 1)
+			call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, imax, jmax, 1)
 		
 			! call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_barker", cloudFrac, 2, imax, krad1, 1)
@@ -356,7 +356,7 @@ contains
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 				testArrayIndexes)             !output
 
-			call writetofiledefinedsize("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
+			call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
 
 			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
