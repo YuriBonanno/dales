@@ -493,8 +493,8 @@ contains
 				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
 				call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 3, class_size, 2, n_classes)
 				
-				print *, "original_cloudtop_LWP_indexes"
-				print *, original_cloudtop_LWP_indexes
+				! print *, "original_cloudtop_LWP_indexes"
+				! print *, original_cloudtop_LWP_indexes
 				
 				! print *, "quicksortindexes"
 				!Removed this for tests
