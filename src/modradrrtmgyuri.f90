@@ -213,7 +213,7 @@ contains
 						!if (ql0(i,j,inverse_k)>cloud_patch_threshold) then
 						if (LWP_grid(i,j,inverse_k)>cloud_patch_threshold) then
 							ztop_field(i,j) = zf(inverse_k) 
-							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1
+							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1.0
 							EXIT
 						end if
 					end do
