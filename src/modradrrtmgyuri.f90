@@ -598,7 +598,7 @@ contains
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 	integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
-	!integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	! integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
 	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of cloudtop_LWP_ordered

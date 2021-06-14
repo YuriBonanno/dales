@@ -1064,7 +1064,7 @@ contains
   integer :: total_amount_GLQ_points
   integer :: passed_GLQ_point, temp_GLQ_point
   integer :: slice_length
-  integer, allocatable ,dimension(:,:) :: GLQ_index_all (total_amount_GLQ_points, 2)
+  integer, allocatable ,dimension(:,:) :: GLQ_index_all
   real (KIND=kind_rb) :: exners
   real(KIND=kind_rb) :: layerMass(imax,krad1)
   !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
@@ -1111,10 +1111,10 @@ contains
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
 		end if
 		
-		! print *, "temp_i"
-		! print *, temp_i
-		! print *, "temp_j"
-		! print *, temp_j
+		print *, "temp_i"
+		print *, temp_i
+		print *, "temp_j"
+		print *, temp_j
 		
 		!!!!
 		testArrayIndexes(i, j) = temp_i + 100*temp_j
