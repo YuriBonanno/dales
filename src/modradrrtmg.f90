@@ -1120,7 +1120,8 @@ contains
 		print *, temp_j
 		
 		!!!!
-		testArrayIndexes(i, j) = temp_i + 100*temp_j
+		! testArrayIndexes(i, j) = temp_i + 100*temp_j
+		testArrayIndexes(j, i) = temp_i + 100*temp_j
         !!!!
 		
 
