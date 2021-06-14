@@ -228,6 +228,8 @@ contains
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
+		call writetofiledefinedsize("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
+
 		! Function that Create n <= j1 slices with the necessary info.
 			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
 			! For all these collumns, the following variables have to be known
