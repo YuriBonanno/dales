@@ -1121,7 +1121,8 @@ contains
 		
 		!!!!
 		! testArrayIndexes(i, j) = temp_i + 100*temp_j
-		testArrayIndexes(j, i) = temp_i + 100*temp_j
+		!!testArrayIndexes(j, i) = temp_i + 100*temp_j !!Dit klopt wel?
+		testArrayIndexes(i, j) = i + 100*j
         !!!!
 		
 

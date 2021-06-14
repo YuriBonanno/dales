@@ -557,7 +557,7 @@ contains
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
 		print *, GLQ_index_all(:, :)
-		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, imax, jmax, 1)
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		! print *, "finished GLQ to long total array"
 		!!!!!RADIATION!!!!!
 		
