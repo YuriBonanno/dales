@@ -865,6 +865,9 @@ contains
       do i=2,i1
         im=i-1
 		
+		print *, "i1"
+		print *, i1
+		
 		!!!!
 		testArrayIndexes(i-1, j-1) = i + 100*j
         !!!!
