@@ -277,6 +277,71 @@ contains
 
 
 	end subroutine
+	
+		! write to file with defined size
+	subroutine writetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize)
+	use modraddata
+	use modglobal, only: imax, jmax, kmax, kind_rb
+
+	implicit none
+
+	!Files
+		logical :: fileexists=.false.
+		integer :: dims, i, j, k
+		character(len = 64) :: filename
+		character(len = 64) :: fullpath
+		character(len = 16) :: makedir
+		integer :: xsize, ysize, zsize
+		integer :: dataset (xsize, ysize, zsize)
+
+		makedir = "datadir"
+		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		fullpath = trim(makedir) // '/' // trim(filename)
+		
+		!__________________________________________________________
+		!Make and write to files
+		if (dims<1 .or. dims>3) then
+			print *, "writing to file failed because of erroneous dimensions"
+			return
+		end if
+		
+		inquire(file=fullpath, exist=fileexists)
+		!print *, fileexists
+		if (fileexists) then
+			open(11, file=fullpath, status="old", position="append", action="write")
+		else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		if (dims == 1) then
+			!do i=1,imax
+				write(11, *) dataset(:,1,1)
+			!end do
+		end if
+			
+		if (dims == 2) then
+			!do i=1,imax
+				do j=1,ysize
+					write(11, *) dataset(:,j,1)
+				end do
+			!end do
+		end if
+		
+		if (dims == 3) then
+			!do i=1,imax
+				do j=1,ysize
+					do k=1,zsize
+						write(11, *) dataset(:,j,k)
+					end do
+				end do
+			!end do
+		end if
+
+		close(11)
+
+
+	end subroutine
 
 end module modradrrtmgyuriroutines
 
