@@ -448,9 +448,6 @@ contains
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
-			print *, "n_GLQ_cloudtop"
-			print *, n_GLQ_cloudtop
-			
 			! print *, "GLQ_points_cloudtop"
 			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
 			! print *, "GLQ_weight_cloudtop"
@@ -493,6 +490,9 @@ contains
 					end do
 				end do
 				
+				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
+				call writetofiledefinedsize("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 1, class_size, 2, 1)
+				
 				! print *, "quicksortindexes"
 				!Removed this for tests
 				!!call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
@@ -513,7 +513,8 @@ contains
 
 					!!print *, "bars are set, now placing  in GLQ indexes"
 					!Look at if this works, weird index results
-					x_index = nint(GLQ_points_cloudtop(N_g, n))
+					!!!x_index = nint(GLQ_points_cloudtop(N_g, n))
+					x_index = N_g
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
