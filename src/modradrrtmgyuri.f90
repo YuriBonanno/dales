@@ -277,8 +277,8 @@ contains
 			
 			counter = 0
 			!!This could be moved up
-			do i = 1, imax
-				do j = 1, jmax
+			do j = 1, jmax
+				do i = 1, imax
 					if (LWP_flattened(i,j) <= cloud_threshold) then
 						counter = counter + 1
 						clear_LWP_ordered(counter) = LWP_flattened(i,j)
@@ -473,8 +473,8 @@ contains
 				
 				! print *, "placing in original indexes"
 				counter = 0
-				do i = 1, imax
-					do j = 1, jmax
+				do j = 1, jmax
+					do i = 1, imax
 						if (cloud_class(i,j) == n) then
 							counter = counter + 1
 							cloudtop_LWP_ordered(counter, n) = LWP_flattened(i, j)
