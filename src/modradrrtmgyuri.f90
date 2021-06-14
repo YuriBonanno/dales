@@ -239,8 +239,8 @@ contains
 		
 		!!Cloudtop distribution might be unccecessary
 		!!!~The sorting is bad, also you should not pass integers to quicksort!
-		print *, "cloudtop_distribution"
-		print *, cloudtop_distribution
+		! print *, "cloudtop_distribution"
+		! print *, cloudtop_distribution
 		!call quicksort(cloudtop_distribution, 1, k1, k1)
 		! print *, "sorted cloudtop_distribution"
 		! print *, cloudtop_distribution
@@ -336,7 +336,7 @@ contains
 				end do
 			end do
 			
-			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, k1, 1, 1)
+			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, n_clouds, 1, 1)
 			
 			!Determined:
 			!   cloudtop_height_ordered
