@@ -556,8 +556,8 @@ contains
 		enddo
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
-		!print *, GLQ_index_all(:, :)
-		
+		print *, GLQ_index_all(:, :)
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, imax, jmax, 1)
 		! print *, "finished GLQ to long total array"
 		!!!!!RADIATION!!!!!
 		
