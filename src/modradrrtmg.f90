@@ -267,7 +267,6 @@ contains
 			   ! ( j+1, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
 		
-			call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, imax, jmax, 1)
 		
 			! call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_barker", cloudFrac, 2, imax, krad1, 1)
@@ -321,6 +320,8 @@ contains
 			passed_GLQ_point = current_GLQ_point
 		enddo
 		
+		call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, imax, jmax, 1)
+		
 		! xsize = i1+ih - (2-ih) + 1
 		! ysize = j1+jh - (2-jh) + 1
 		! zsize = k1
@@ -354,8 +355,6 @@ contains
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 				testArrayIndexes)             !output
-
-			call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
 
 			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
@@ -424,6 +423,7 @@ contains
 
 		end do ! Large loop over j=2,j1
 ! Added myself ------------------
+	call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
 	end if
 	
 		! xsize = i1+ih - (2-ih) + 1
