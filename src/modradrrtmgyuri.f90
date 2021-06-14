@@ -176,11 +176,11 @@ contains
         !784
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 		
-		call writetofile("qcl_grid", qcl_grid, 3)
-		call writetofile("layerP_grid", layerP_grid, 3)
-		call writetofile("interfaceP_grid", interfaceP_grid, 3)
-		call writetofile("layerMass_grid", layerMass_grid, 3)
-		call writetofile("LWP_grid", LWP_grid, 3)
+		call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax)
+		call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1)
+		call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2)
+		call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1)
+		call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax, krad1)
 		
 		!print *, "finished Define all field values"
 		!__________________________________________________________
@@ -232,6 +232,10 @@ contains
 		n_clear = (imax*jmax)-n_clouds
 		
 		total_cloud_fraction = float(n_clouds)/float(imax*jmax)
+		
+		
+		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1)
+		call writetofiledefinedsize("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1)
 		
 		!!Cloudtop distribution might be unccecessary
 		!!!~The sorting is bad, also you should not pass integers to quicksort!
