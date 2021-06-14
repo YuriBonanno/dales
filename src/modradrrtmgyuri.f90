@@ -448,6 +448,9 @@ contains
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
+			print *, "n_GLQ_cloudtop"
+			print *, n_GLQ_cloudtop
+			
 			! print *, "GLQ_points_cloudtop"
 			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
 			! print *, "GLQ_weight_cloudtop"
