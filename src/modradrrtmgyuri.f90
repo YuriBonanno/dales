@@ -176,11 +176,11 @@ contains
         !784
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 		
-		! call writetofile("qcl_grid", qcl_grid, 3)
-		! call writetofile("layerP_grid", layerP_grid, 3)
-		! call writetofile("interfaceP_grid", interfaceP_grid, 3)
-		! call writetofile("layerMass_grid", layerMass_grid, 3)
-		! call writetofile("LWP_grid", LWP_grid, 3)
+		call writetofile("qcl_grid", qcl_grid, 3)
+		call writetofile("layerP_grid", layerP_grid, 3)
+		call writetofile("interfaceP_grid", interfaceP_grid, 3)
+		call writetofile("layerMass_grid", layerMass_grid, 3)
+		call writetofile("LWP_grid", LWP_grid, 3)
 		
 		!print *, "finished Define all field values"
 		!__________________________________________________________
