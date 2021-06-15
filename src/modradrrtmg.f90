@@ -226,7 +226,7 @@ contains
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
-		allocate(testArrayIndexes(GLQ_index_all, 2))
+		allocate(testArrayIndexes(total_amount_GLQ_points, 2))
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 
 
