@@ -9,8 +9,8 @@ contains
 !__________________________________________________________
 !__________________________________________________________
 !Important Routine
-	subroutine findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+	subroutine findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
 		original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	
@@ -472,8 +472,8 @@ contains
 	end subroutine findGLQPoints
 	
 	!Only the values in the radiation or also the field values in modraddata?
-	subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+	subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
 		original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	

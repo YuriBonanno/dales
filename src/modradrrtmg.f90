@@ -38,9 +38,9 @@ contains
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
-	integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
+	! integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
+	! integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
 	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
@@ -220,8 +220,8 @@ contains
 		!Finds the GLQ points used for filling the 
 
 		! print *, "Starting  findGLQPoints"
-		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 			n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
@@ -311,8 +311,8 @@ contains
 			! print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
 			!!!Need to shift j??			
-			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, GLQ_clear_LWP_indexes, n_clear, &
-				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, GLQ_cloudtop_LWP_indexes, n_clouds, &
+			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
 				original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 			! print *, "Finished  reshuffleValues"
