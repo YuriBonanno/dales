@@ -321,7 +321,7 @@ contains
 			passed_GLQ_point = current_GLQ_point
 		enddo
 		
-		call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, imax, jmax, 1)
+		call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 		
 		xsize = i1+ih - (2-ih) + 1
 		ysize = j1+jh - (2-jh) + 1
@@ -426,7 +426,7 @@ contains
 
 		end do ! Large loop over j=2,j1
 ! Added myself ------------------
-		call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, imax, jmax, 1)
+		call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 		
 		xsize = i1+ih - (2-ih) + 1
 		ysize = j1+jh - (2-jh) + 1
