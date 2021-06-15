@@ -212,7 +212,6 @@ contains
     lwDownCS_slice = 0
 	
 ! Added myself ------------------
-	allocate(testArrayIndexes(imax, jmax))
  	barker_method=.true.
  	if (barker_method) then
 		print *, "barker true"
@@ -227,7 +226,9 @@ contains
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
+		allocate(testArrayIndexes(GLQ_index_all, 2))
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
+
 
 		! Function that Create n <= j1 slices with the necessary info.
 			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
@@ -259,7 +260,7 @@ contains
 			!!! print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, passed_slice_length, &
+			   passed_GLQ_point, GLQ_index_all, passed_slice_length, &
 			   testArrayIndexes, j)
 			!!! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
@@ -349,11 +350,13 @@ contains
 	!!! Must remove : else
 	
 ! End Added myself ------------------
+		current_GLQ_point = 1
 		print *, "barker false"
 		do j=2,j1
 		  call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, &
 				testArrayIndexes)             !output
 
 			call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
@@ -451,7 +454,6 @@ contains
 	
 	end if
 	
-
 		
 !End Added myself ------------------	
     do k=1,kmax
@@ -798,7 +800,8 @@ contains
 ! ==============================================================================;
 
   subroutine setupSlicesFromProfiles(j,npatch_start, &
-           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, testArrayIndexes)
+           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
+		   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, testArrayIndexes)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -835,6 +838,9 @@ contains
 
 	  !!!! temp
 	  integer,allocatable, dimension(:,:) :: testArrayIndexes
+	  integer,allocatable,dimension(:,:):: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	  integer :: total_amount_GLQ_points
+	  integer :: current_GLQ_point
 	  !!!! temp
 
       real :: reff_factor
@@ -869,7 +875,11 @@ contains
         im=i-1
 		
 		!!!!
-		testArrayIndexes(i-1, j-1) = i + 100*j
+		if ( (i == GLQ_index_all(current_GLQ_point, 1)) .and. (j == GLQ_index_all(current_GLQ_point, 2))) then
+			testArrayIndexes(current_GLQ_point, 1) = i
+			testArrayIndexes(current_GLQ_point, 2) = j
+			current_GLQ_point = current_GLQ_point + 1
+		end if
         !!!!
 		
 		!tg_slice  (im)   = sst
@@ -1035,7 +1045,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   passed_GLQ_point, total_amount_GLQ_points, GLQ_index_all, slice_length, testArrayIndexes, j)
+		   passed_GLQ_point, GLQ_index_all, slice_length, testArrayIndexes, j)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -1064,7 +1074,6 @@ contains
 									   liquidRe (imax,krad1), &
 									   iceRe    (imax,krad1)
   integer :: i,k,ksounding, temp_i, temp_j
-  integer :: total_amount_GLQ_points
   integer :: passed_GLQ_point, temp_GLQ_point
   integer :: slice_length
   integer, allocatable ,dimension(:,:) :: GLQ_index_all
@@ -1112,11 +1121,13 @@ contains
 		if (i <= slice_length) then
 			temp_i = GLQ_index_all(temp_GLQ_point,1)
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
+			!!!!
+			testArrayIndexes(temp_GLQ_point, 1) = temp_i
+			testArrayIndexes(temp_GLQ_point, 2) = temp_j
+			!!!!	
 		end if
 		
-		!!!!
-		testArrayIndexes(i, j) = temp_i + 100*temp_j
-        !!!!	
+
 
 		tg_slice(i) = tskin(temp_i,temp_j) * exners  ! Note: tskin = thlskin...
 		do k=1,kmax
