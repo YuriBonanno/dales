@@ -95,7 +95,7 @@ contains
 		!For example the allocation of space for arrays
 		!Also, 
 		n_RT_Ratio = 100
-0		n_classes_initial = 20
+		n_classes_initial = 20
 		cloud_threshold = 0.0
 		cloud_patch_threshold = 0.0
 		
