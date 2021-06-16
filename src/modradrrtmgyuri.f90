@@ -466,7 +466,11 @@ contains
 		enddo
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
+		call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, n_GLQ_clear, 2, 1)
+		call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
+		call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
+		call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
 		! print *, "finished GLQ to long total array"
 
 	end subroutine findGLQPoints
@@ -526,10 +530,12 @@ contains
 							!!TODO: n_GLQ_clear is fine for now but should change when clear is put into classes
 						if (temp_GLQ_point < n_GLQ_clear) then
 							n1 = (GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2
+							n1 = n1 + 1
 							n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
 						else
 							! print *, "this is not happening right?"
 							n1 = (GLQ_points_clear(n_clear-1) + GLQ_points_clear(n_clear)) / 2
+							n1 = n1 + 1
 							n2 = n_clear
 						end if
 					end if
@@ -600,9 +606,11 @@ contains
 						!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
 						if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
 							n1 = (GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2
+							n1 = n1 + 1
 							n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
 						else
 							n1 = (GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2
+							n1 = n1 + 1
 							n2 = n_clouds
 						end if
 					end if
