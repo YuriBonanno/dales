@@ -488,7 +488,7 @@ contains
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsizeint("n_GLQ_clear", n_GLQ_clear, 1, 1, 1, 1)
-		call writetofiledefinedsizeint("n_GLQ_clouds", n_GLQ_clouds, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_GLQ_cloudtop", n_GLQ_cloudtop, 1, 1, 1, 1)
 		call writetofiledefinedsizeint("n_clear", n_clear, 1, 1, 1, 1)
 		call writetofiledefinedsizeint("n_clouds", n_clouds, 1, 1, 1, 1)
 		call writetofiledefinedsizeint("n_classes", n_classes, 1, 1, 1, 1)
