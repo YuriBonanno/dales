@@ -121,7 +121,7 @@ contains
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
 
-	   use modglobal only: kind_rb
+	   use modglobal, only: kind_rb
 	   implicit none
 	   integer :: k, n_s, n_quantiles, index_11, index_12, index_q, index_median
 	   real(kind=kind_rb) :: confidence_1
