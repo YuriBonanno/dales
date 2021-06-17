@@ -15,12 +15,13 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksortindexes(a, first, last, indexes, length)
+	use modglobal only: kind_rb
 	implicit none
 	integer first, last, length
 	integer i, j
 	integer temp_hor_index, temp_ver_index
 	integer indexes(length, 2)
-	real  	a(length), x, t
+	real(kind=kind_rb) :: a(length), x, t
 	
 	  x = a( (first+last) / 2 )
 	  i = first
@@ -53,7 +54,7 @@ contains
 	implicit none
 	integer first, last, length
 	integer i, j
-	real  a(length), x, t
+	real(kind=kind_rb) :: a(length), x, t
 
 	  x = a( (first+last) / 2 )
 	  i = first
@@ -79,8 +80,10 @@ contains
 	!+-------------------------------------------------------------------
 		  SUBROUTINE gauleg(x1,x2,x,w,n)
 	!+-------------------------------------------------------------------
+		  use modglobal only: kind_rb
+		  implicit none
 		  INTEGER n
-		  REAL x1,x2,x(n),w(n)
+		  REAL(kind=kind_rb) :: x1,x2,x(n),w(n)
 		  DOUBLE PRECISION EPS
 		  PARAMETER (EPS=3.d-14)
 		  INTEGER i,j,m
@@ -117,10 +120,12 @@ contains
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
 
+	   use modglobal only: kind_rb
+	   implicit none
 	   integer :: k, n_s, n_quantiles, index_11, index_12, index_q, index_median
-	   real :: confidence_1
-	   real :: x(n_s)
-	   real :: q(n_quantiles)
+	   real(kind=kind_rb) :: confidence_1
+	   real(kind=kind_rb) :: x(n_s)
+	   real(kind=kind_rb) :: q(n_quantiles)
 	   logical :: std
 
 
