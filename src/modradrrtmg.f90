@@ -416,11 +416,13 @@ contains
 
 		  SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
 		  SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
+		  !!FAILS
 		  LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
 		  LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
 
 		  SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
 		  SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
+		  !!FAILS
 		  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
 		  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
 

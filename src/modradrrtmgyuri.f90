@@ -40,6 +40,8 @@ contains
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 		integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+		!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
+		integer,allocatable,dimension(:,:):: original_index_all
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
 		
@@ -414,7 +416,6 @@ contains
 				end do
 				
 				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
-				call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 3, class_size, 2, n_classes)
 				
 				! print *, "quicksortindexes"
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
@@ -456,7 +457,6 @@ contains
 		GLQ_counter = n_GLQ_clear
 		! print *, "GLQ clouded"
 		
-		call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, total_amount_GLQ_points, 2, 1)
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
 				GLQ_counter = GLQ_counter + 1
@@ -465,12 +465,40 @@ contains
 			enddo
 		enddo
 
-		!!!print *, GLQ_points_cloudtop(:, 1)
-		call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, n_GLQ_clear, 2, 1)
-		call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)
+		allocate(original_index_all(n_clear + n_clouds, 2))
+		! print *, "GLQ clear"
+		if (n_GLQ_clear>0) then
+			do i =1, n_clear
+				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
+				Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
+			enddo
+		end if
+		GLQ_counter = n_clear
+		! print *, "GLQ clouded"
+		if (n_GLQ_cloudtop>0) then
+			do i=1,n_classes
+				do j= 1,n_GLQ_cloudtop
+					GLQ_counter = GLQ_counter + 1
+					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
+					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
+				enddo
+			enddo
+		end if
+
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
-		call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
-		call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
+		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
+		call writetofiledefinedsizeint("n_GLQ_clear", n_GLQ_clear, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_GLQ_clouds", n_GLQ_clouds, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_clear", n_clear, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_clouds", n_clouds, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_classes", n_classes, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("class_size", class_size, 1, 1, 1, 1)
+
+		!!!print *, GLQ_points_cloudtop(:, 1)
+		! call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, n_GLQ_clear, 2, 1)
+		! call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)
+		! call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
+		! call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
 		! print *, "finished GLQ to long total array"
 
 	end subroutine findGLQPoints
@@ -570,11 +598,13 @@ contains
 
 						SW_up_TOA (fill_i, fill_j) =  swUp_slice  (i,krad2)
 						SW_dn_TOA (fill_i, fill_j) = -swDown_slice(i,krad2)
+						!!FAILS
 						LW_up_TOA (fill_i, fill_j) =  lwUp_slice  (i,krad2)
 						LW_dn_TOA (fill_i, fill_j) = -lwDown_slice(i,krad2)
 
 						SW_up_ca_TOA (fill_i, fill_j) =  swUpCS_slice  (i,krad2)
 						SW_dn_ca_TOA (fill_i, fill_j) = -swDownCS_slice(i,krad2)
+						!!FAILS
 						LW_up_ca_TOA (fill_i, fill_j) =  lwUpCS_slice  (i,krad2)
 						LW_dn_ca_TOA (fill_i, fill_j) = -lwDownCS_slice(i,krad2)
 						
@@ -611,7 +641,7 @@ contains
 						else
 							n1 = (GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2
 							n1 = n1 + 1
-							n2 = n_clouds
+							n2 = class_size
 						end if
 					end if
 					
