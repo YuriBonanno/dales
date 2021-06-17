@@ -477,7 +477,7 @@ contains
 		! print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
-				do j= 1,n_GLQ_cloudtop
+				do j= 1,n_clouds
 					GLQ_counter = GLQ_counter + 1
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
