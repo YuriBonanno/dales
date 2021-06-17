@@ -15,7 +15,7 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksortindexes(a, first, last, indexes, length)
-	use modglobal only: kind_rb
+	use modglobal, only: kind_rb
 	implicit none
 	integer first, last, length
 	integer i, j
@@ -51,6 +51,7 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksort(a, first, last, length)
+	use modglobal, only: kind_rb
 	implicit none
 	integer first, last, length
 	integer i, j
@@ -80,7 +81,7 @@ contains
 	!+-------------------------------------------------------------------
 		  SUBROUTINE gauleg(x1,x2,x,w,n)
 	!+-------------------------------------------------------------------
-		  use modglobal only: kind_rb
+		  use modglobal, only: kind_rb
 		  implicit none
 		  INTEGER n
 		  REAL(kind=kind_rb) :: x1,x2,x(n),w(n)
