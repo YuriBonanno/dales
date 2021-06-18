@@ -23,7 +23,7 @@ contains
 	real(kind=kind_rb), dimension(:) :: a(length)
 	real(kind=kind_rb) :: x, t
 	
-	  x = a( nint((first+last) / 2 ))
+	  x = a( (first+last) / 2 )
 	  i = first
 	  j = last
 	  do
