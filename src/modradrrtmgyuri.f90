@@ -221,7 +221,7 @@ contains
 		
 		
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1)
-		call writetofiledefinedsize("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1)
+		call writetofiledefinedsizeint("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1)
 		
 		!Determined:
 		!   Cloud_fraction
@@ -271,6 +271,8 @@ contains
 			allocate (GLQ_clear_LWP_indexes (n_GLQ_clear, 2))
 		
 			call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, n_GLQ_clear)
+		
+			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, n_GLQ_clear, 1, 1)
 		
 			do N_g = 1, n_GLQ_clear
 			  x_index  = nint(GLQ_points_clear(N_g))
@@ -324,6 +326,8 @@ contains
 
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
 
+				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1)
+				
 				! print *, "quantiles_value"
 				! print *, quantiles_value
 
@@ -435,7 +439,7 @@ contains
 				end do
 				
 			end do
-
+			call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1)
 		end if
 		! print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
