@@ -415,10 +415,10 @@ contains
 					end do
 				end do
 				
-				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
-				
 				! print *, "quicksortindexes"
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
+			
+				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
 			
 				! print *, "save GLQ points"
 				n2 = 0

@@ -1,5 +1,5 @@
 module modradrrtmgyuriroutines
-
+use modglobal, only: kind_rb
 implicit none
 
 contains
@@ -15,15 +15,15 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksortindexes(a, first, last, indexes, length)
-	use modglobal, only: kind_rb
 	implicit none
 	integer first, last, length
 	integer i, j
 	integer temp_hor_index, temp_ver_index
 	integer indexes(length, 2)
-	real(kind=kind_rb) :: a(length), x, t
+	real(kind=kind_rb), dimension(:) :: a(length)
+	real(kind=kind_rb) :: x, t
 	
-	  x = a( (first+last) / 2 )
+	  x = a( nint((first+last) / 2 ))
 	  i = first
 	  j = last
 	  do
@@ -51,7 +51,6 @@ contains
 	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
 	!!
 	recursive subroutine quicksort(a, first, last, length)
-	use modglobal, only: kind_rb
 	implicit none
 	integer first, last, length
 	integer i, j
@@ -81,7 +80,6 @@ contains
 	!+-------------------------------------------------------------------
 		  SUBROUTINE gauleg(x1,x2,x,w,n)
 	!+-------------------------------------------------------------------
-		  use modglobal, only: kind_rb
 		  implicit none
 		  INTEGER n
 		  REAL(kind=kind_rb) :: x1,x2,x(n),w(n)
@@ -120,8 +118,6 @@ contains
 		  
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
-
-	   use modglobal, only: kind_rb
 	   implicit none
 	   integer :: k, n_s, n_quantiles, index_11, index_12, index_q, index_median
 	   real(kind=kind_rb) :: confidence_1
