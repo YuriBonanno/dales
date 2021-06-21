@@ -294,6 +294,8 @@ contains
 		!____________________!!!!!!!!!!!!!!!!!_____________________
 		!Select only the collumns with a nonzero cloudratio
 		! print *, "starting clouded collumns"
+		n_classes = 0
+		n_GLQ_cloudtop = 0
 		if (n_clouds > 0) then
 			! print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
