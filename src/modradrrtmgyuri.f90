@@ -498,7 +498,7 @@ contains
 			do i = 1, n_GLQ_clear
 				GLQ_points_all(i) = GLQ_points_clear(i)
 			enddo
-		enddo
+		end if
 		GLQ_counter = n_GLQ_clear
 		! print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
