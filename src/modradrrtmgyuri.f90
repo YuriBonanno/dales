@@ -503,7 +503,7 @@ contains
 		! print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
-				do j= 1,n_clouds
+				do j= 1,n_GLQ_cloudtop
 					GLQ_counter = GLQ_counter + 1
 					GLQ_points_all(GLQ_counter) = GLQ_points_cloudtop(j, i)
 				enddo
