@@ -203,7 +203,6 @@ contains
 							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1.0
 							EXIT
 						end if
-						
 					end do
 				end if
 		   end do
@@ -241,7 +240,7 @@ contains
 
 		if (n_clear > 0) then
 			n_GLQ_clear = 30
-			if (n_GLQ_clear < n_clear) then
+			if (n_GLQ_clear > n_clear) then
 				n_GLQ_clear = n_clear
 			end if
 			! print *, "n_clear > 0"
@@ -295,6 +294,7 @@ contains
 		!Select only the collumns with a nonzero cloudratio
 		! print *, "starting clouded collumns"
 		n_classes = 0
+		class_size = 0
 		n_GLQ_cloudtop = 0
 		if (n_clouds > 0) then
 			! print *, "n_clouds > 0"
