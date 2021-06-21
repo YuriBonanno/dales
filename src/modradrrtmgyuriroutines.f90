@@ -180,7 +180,7 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (fileexists) then
+		if (.not. fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
 		! else
 			open(11, file=fullpath, status="new", action="write")
@@ -245,7 +245,7 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (fileexists) then
+		if (.not. fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
 		! else
 			open(11, file=fullpath, status="new", action="write")
