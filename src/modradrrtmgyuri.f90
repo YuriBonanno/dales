@@ -444,7 +444,7 @@ contains
 				
 			end do
 		end if
-		print *, "finished clouded collumns"
+		! print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
@@ -452,10 +452,10 @@ contains
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		!!GLQ_indexes
-		print *, "allocating this amount of points", total_amount_GLQ_points
+		! print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		print *, "GLQ clear"
+		! print *, "GLQ clear"
 		if (n_GLQ_clear>0) then
 			do i =1, n_GLQ_clear
 				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
@@ -463,7 +463,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded"
+		! print *, "GLQ clouded"
 		
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
@@ -484,7 +484,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_clear
-		print *, "GLQ clouded"
+		! print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_clouds
@@ -503,7 +503,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded"
+		! print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_GLQ_cloudtop
@@ -529,7 +529,7 @@ contains
 		! call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)
 		! call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
 		! call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
-		print *, "finished GLQ to long total array"
+		! print *, "finished GLQ to long total array"
 
 	end subroutine findGLQPoints
 	
@@ -577,7 +577,7 @@ contains
 			if (temp_GLQ_point <= total_amount_GLQ_points) then
 				! print *, "temp_GLQ_point <= total_amount_GLQ_points"
 				if (temp_GLQ_point <= n_GLQ_clear) then
-					print *, "temp_GLQ_point <= n_GLQ_clear"
+					! print *, "temp_GLQ_point <= n_GLQ_clear"
 				!!!!!!!!!!!!!!!!!!!!!
 					!Cloudless
 					!n1 and n2 could be saved..., so you dont have to redetermine the n1 and n2
@@ -642,7 +642,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					print *, "temp_GLQ_point > n_GLQ_clear"
+					! print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
