@@ -99,7 +99,7 @@ contains
 		!Also, 
 		n_RT_Ratio = 100
 		n_classes_initial = 20
-		cloud_threshold = 0.0
+		cloud_threshold = 200.0
 		cloud_patch_threshold = 0.0
 		
 		
@@ -203,6 +203,7 @@ contains
 							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1.0
 							EXIT
 						end if
+						
 					end do
 				end if
 		   end do
