@@ -505,7 +505,7 @@ contains
 			do i=1,n_classes
 				do j= 1,n_clouds
 					GLQ_counter = GLQ_counter + 1
-					Original_index_all(GLQ_counter) = original_cloudtop_LWP_indexes(j, i)
+					GLQ_points_all(GLQ_counter) = GLQ_points_cloudtop(j, i)
 				enddo
 			enddo
 		end if
