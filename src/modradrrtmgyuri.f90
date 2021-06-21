@@ -476,7 +476,7 @@ contains
 
 		!!Original Indexes
 		allocate(original_index_all(n_clear + n_clouds, 2))
-		print *, "GLQ clear"
+		! print *, "GLQ clear"
 		if (n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
