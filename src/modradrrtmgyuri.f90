@@ -42,6 +42,7 @@ contains
 		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 		!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
 		integer,allocatable,dimension(:,:):: original_index_all
+		real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
 		
@@ -439,7 +440,6 @@ contains
 				end do
 				
 			end do
-			call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1)
 		end if
 		! print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
@@ -448,6 +448,7 @@ contains
 		! print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
+		!!GLQ_indexes
 		! print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
@@ -469,6 +470,8 @@ contains
 			enddo
 		enddo
 
+
+		!!Original Indexes
 		allocate(original_index_all(n_clear + n_clouds, 2))
 		! print *, "GLQ clear"
 		if (n_GLQ_clear>0) then
@@ -488,9 +491,29 @@ contains
 				enddo
 			enddo
 		end if
+		
+		!! Original GLQ points
+		allocate(GLQ_points_all(total_amount_GLQ_points))
+		if (n_GLQ_clear>0) then
+			do i = 1, n_GLQ_clear
+				GLQ_points_all(i) = GLQ_points_clear(i)
+			enddo
+		enddo
+		GLQ_counter = n_GLQ_clear
+		! print *, "GLQ clouded"
+		if (n_GLQ_cloudtop>0) then
+			do i=1,n_classes
+				do j= 1,n_clouds
+					GLQ_counter = GLQ_counter + 1
+					Original_index_all(GLQ_counter) = original_cloudtop_LWP_indexes(j, i)
+				enddo
+			enddo
+		end if
+		
 
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
+		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
 		call writetofiledefinedsizeint("n_GLQ_clear", n_GLQ_clear, 1, 1, 1, 1)
 		call writetofiledefinedsizeint("n_GLQ_cloudtop", n_GLQ_cloudtop, 1, 1, 1, 1)
 		call writetofiledefinedsizeint("n_clear", n_clear, 1, 1, 1, 1)
@@ -557,16 +580,16 @@ contains
 					!n1 and n2 could be saved..., so you dont have to redetermine the n1 and n2
 					if (temp_GLQ_point == 1) then
 						n1 = 1
-						n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
+						n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
 					else
 							!!TODO: n_GLQ_clear is fine for now but should change when clear is put into classes
 						if (temp_GLQ_point < n_GLQ_clear) then
-							n1 = (GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2
+							n1 = nint((GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2)
 							n1 = n1 + 1
-							n2 = (GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2
+							n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
 						else
 							! print *, "this is not happening right?"
-							n1 = (GLQ_points_clear(n_GLQ_clear-1) + GLQ_points_clear(n_GLQ_clear)) / 2
+							n1 = nint((GLQ_points_clear(n_GLQ_clear-1) + GLQ_points_clear(n_GLQ_clear)) / 2)
 							n1 = n1 + 1
 							n2 = n_clear
 						end if
@@ -635,15 +658,15 @@ contains
 					! print *, cloudtop_GLQ_point
 					if (cloudtop_GLQ_point == 1) then
 						n1 = 1
-						n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
+						n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
 					else
 						!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
 						if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
-							n1 = (GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2
+							n1 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2)
 							n1 = n1 + 1
-							n2 = (GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2
+							n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
 						else
-							n1 = (GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2
+							n1 = nint((GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2)
 							n1 = n1 + 1
 							n2 = class_size
 						end if

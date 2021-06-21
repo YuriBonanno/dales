@@ -840,7 +840,7 @@ contains
 
 	  !!!! temp
 	  integer,allocatable, dimension(:,:) :: testArrayIndexes
-	  integer,allocatable,dimension(:,:):: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	  integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 	  integer :: total_amount_GLQ_points
 	  integer :: current_GLQ_point
 	  !!!! temp
