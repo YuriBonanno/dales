@@ -99,7 +99,7 @@ contains
 		!Also, 
 		n_RT_Ratio = 100
 		n_classes_initial = 20
-		cloud_threshold = 0.0
+		cloud_threshold = 220.0
 		cloud_patch_threshold = 0.0
 		
 		
@@ -442,7 +442,7 @@ contains
 				
 			end do
 		end if
-		! print *, "finished clouded collumns"
+		print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
