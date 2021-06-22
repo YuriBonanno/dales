@@ -29,7 +29,7 @@ contains
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
 	! Added myself ------------------
-	logical :: barker_method
+	logical :: barker_method											!Boolean for doing the barker_method or regular method
 	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
@@ -213,12 +213,14 @@ contains
 	
 ! Added myself ------------------
  	barker_method=.true.
+	!This is the "Barker method" where a set of points (i,j) are chosen to represent the whole set.
+	!The points are chosen on basis of Gauss-Legendre Quadrature
+	!These points are then passed to the radiation functions for calculations.
+	!The results are then placed into the (i,j) points that were not chosen for the GLQ
  	if (barker_method) then
 		print *, "barker true"
-		!TODO: door alles heen om te kijken of het daadwerkelijk gebeurt zoals het hoort
-
-		!Finds the GLQ points used for filling the 
-
+		
+		!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
 		! print *, "Starting  findGLQPoints"
 		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
 			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
@@ -226,29 +228,34 @@ contains
 			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
+		!Allocate the testArrayIndexes for testing
 		allocate(testArrayIndexes(total_amount_GLQ_points, 2))
+		
+		!Write the GLQ indexes to file, this file can then be used to validate whether code works correctly
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 
 
-		! Function that Create n <= j1 slices with the necessary info.
-			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
-			! For all these collumns, the following variables have to be known
-				!LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe
-
+		!Piece of code that determines how many slices have to be read.
+		!This is because amount of GLQ points <= imax*jmax
 		GLQ_slices = total_amount_GLQ_points/imax
 		slice_length = MODULO(total_amount_GLQ_points, imax)
 		if (slice_length>0) then
 			GLQ_slices = GLQ_slices + 1 
 		end if
+		current_GLQ_point = 1					!Initialise GLQ point
+		passed_GLQ_point = current_GLQ_point	!GLQ point that is passed to functions, generally a multitude of imax.
 
-		current_GLQ_point = 1
-		passed_GLQ_point = current_GLQ_point
+
 		! print *, "GLQ_slices"
 		! print *, GLQ_slices
 		! print *, "slice_length"
 		! print *, slice_length
 		! print *, "Starting  GLQ loop"
+		
+		! Function that Create n <= j1 slices with the necessary fields.
+			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
 		do j = 1, GLQ_slices
+			!Shorten slices if imax the amount of GLQ points left is smaller than imax
 			if (j == GLQ_slices .and. slice_length>0) then
 				! print*, "slice shortening happened", slice_length
 				passed_slice_length = slice_length
@@ -256,6 +263,7 @@ contains
 				passed_slice_length = imax
 			end if
 			
+			!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 			passed_GLQ_point = current_GLQ_point
 			! print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
@@ -264,10 +272,6 @@ contains
 			   testArrayIndexes, j)
 			! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
-			! call setupSlicesFromProfiles &
-			   ! ( j+1, npatch_start, &                                           !input
-			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe )             !output
-		
 		
 			! call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_barker", cloudFrac, 2, imax, krad1, 1)
@@ -277,6 +281,7 @@ contains
 			! call writetofiledefinedsize("liquidRe_barker", liquidRe, 2, imax, krad1, 1)
 			
 			! print *, "Starting  radiation"
+			!Radiation routines
 			if (rad_longw) then
 				call rrtmg_lw &
 					 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -306,11 +311,10 @@ contains
 			! call writetofiledefinedsize("lwUp_slice_barker", lwUp_slice, 2, imax, krad2, 1)
 			! call writetofiledefinedsize("-swDownCS_slice_barker", -swDownCS_slice, 2, imax, krad2, 1)
 
-
+			
 			passed_GLQ_point = current_GLQ_point
 			! print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
-			!!!Need to shift j??			
 			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
 				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
@@ -1058,6 +1062,7 @@ contains
   ! The variables are stored in modraddata.f90 and allocated in the subroutine  !
   ! from which setupSlicesFromProfiles is called (radrrtmg)                     !
   ! JvdDussen, 24-6-2010                                                        !
+  ! This code is edited to just take the GLQ points passed onto this function   !
   ! ============================================================================!
 
   use modglobal, only: imax,jmax,kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
@@ -1119,6 +1124,7 @@ contains
 	! print *, "temp_GLQ_point, passed_GLQ_point"
 	! print *, temp_GLQ_point, passed_GLQ_point
 	
+	!This piece of code is for test purposes, it puts all the values into a testarray
 	do i=1,imax
 		if (i <= slice_length) then
 			temp_i = GLQ_index_all(temp_GLQ_point,1)

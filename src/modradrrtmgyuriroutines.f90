@@ -23,6 +23,7 @@ contains
 	real(kind=kind_rb), dimension(:) :: a(length)
 	real(kind=kind_rb) :: x, t
 	
+	!Determine the middle of the class
 	  x = a( (first+last) / 2 )
 	  i = first
 	  j = last
@@ -35,12 +36,14 @@ contains
 		 end do
 		 if (i >= j) exit
 		 t = a(i);  a(i) = a(j);  a(j) = t
+		 !Also move the indexes
 		 temp_hor_index = indexes(i,1); indexes(i,1) = indexes(j,1); indexes(j,1) = temp_hor_index
 		 temp_ver_index = indexes(i,2); indexes(i,2) = indexes(j,2); indexes(j,2) = temp_ver_index
 		 i=i+1
 		 j=j-1
 	  end do
 
+	!Recursively go through this subrotuine to order the array
 	  if (first < i-1) call quicksortindexes(a, first, i-1, indexes, length)
 	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes, length)
 	end subroutine quicksortindexes
@@ -55,7 +58,8 @@ contains
 	integer first, last, length
 	integer i, j
 	real(kind=kind_rb) :: a(length), x, t
-
+	
+	!Determine the middle of the class
 	  x = a( (first+last) / 2 )
 	  i = first
 	  j = last
@@ -72,11 +76,13 @@ contains
 		 i=i+1
 		 j=j-1
 	  end do
+	!Recursively go through this subrotuine to order the array
 	  if (first < i-1) call quicksort(a, first, i-1, length)
 	  if (j+1 < last)  call quicksort(a, j+1, last, length)
 	end subroutine quicksort
 
 
+	!This function determines the Gauss-Legendre Quadrature points
 	!+-------------------------------------------------------------------
 		  SUBROUTINE gauleg(x1,x2,x,w,n)
 	!+-------------------------------------------------------------------
@@ -116,6 +122,8 @@ contains
 		  return
 		  END
 		  
+		  
+	! This function determines the quantiles for the clouded classes, these quantiles are evenly spaced over the amount of points
 	!  +-----------------------------------------------------------------
 	   subroutine quantiles (n_s, n_quantiles, std, x, q)
 	   implicit none
@@ -151,7 +159,7 @@ contains
 	   return
 	   end
 
-	! write to file with assumed size imax, jmax, kradmax
+	! write to file with real(kind=kind_rb) with assumed size imax, jmax, kradmax
 	subroutine writetofile(filename, dataset, dims)
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
@@ -215,7 +223,7 @@ contains
 
 	end subroutine
 
-	! write to file with defined size
+	! write to file with real(kind=kind_rb) with defined size
 	subroutine writetofiledefinedsize(filename, dataset, dims, xsize, ysize, zsize)
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
@@ -280,7 +288,7 @@ contains
 
 	end subroutine
 	
-		! write to file with defined size
+	! write to file with integers with defined size
 	subroutine writetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize)
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
