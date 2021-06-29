@@ -144,6 +144,38 @@ SAVE
                                                    delta,     &  ! Solar declination angle in rad
                                                    eccf          ! Earth-sun distance factor (ie. (1/r)**2)
 
+
+
+	!!Added by Yuri
+	!----------------------------------------
+	
+	integer :: n_GLQ_cloudtop											!Amount of points for GLQ
+	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
+	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
+	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+
+	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+	integer :: class_size							!Amount of clouds in individual class
+	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
+	integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
+	
+	!These values should be read form file
+	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
+	integer :: n_GLQ_clear = 30 							!Amount of points for GLQ
+	integer :: n_classes_initial = 20            			!maximum number of cloudtop altitude classes
+	integer :: n_RT_Ratio = 100								!Ratio of Radiative transfer acceleration
+	real(kind=kind_rb) :: cloud_threshold = 0.0				!for the definition of a clouded collumn
+	real(kind=kind_rb) :: cloud_patch_threshold = 0.0		!for the definition of cloud top
+	
+	!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
+	integer,allocatable,dimension(:,:):: original_index_all
+	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
+
+	!----------------------------------------
+	
   real,parameter :: mwdry = 28.966, &
                     mwh2o = 18.016, &
                     mwo3  = 47.998

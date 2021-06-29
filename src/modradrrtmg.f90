@@ -14,7 +14,7 @@ contains
     use modmpi,        only : myid
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
-! Added myself ------------------
+	! Added myself ------------------
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
 	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint
 	!End Added myself ------------------
@@ -29,32 +29,27 @@ contains
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
 	! Added myself ------------------
-	logical :: barker_method											!Boolean for doing the barker_method or regular method
 	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
-	integer :: current_GLQ_point, passed_GLQ_point													!GLQ point counter for the barker method
-	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
-	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
-	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
-	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
-	! integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
-	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	! integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
-	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
+	
+	! logical :: barker_method											!Boolean for doing the barker_method or regular method	
+	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
+	! integer :: current_GLQ_point, passed_GLQ_point													!GLQ point counter for the barker method
+	! integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
+	! integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
+	! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
+	! integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	! integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+	! integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 
-
-	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
-	integer :: class_size							!Amount of clouds in individual class
-	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
-	integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
-	integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
-	real    :: cloud_threshold 						!for the definition of a clouded collumn
-	real    :: cloud_patch_threshold 				!for the definition of cloud top
-
-
+	! integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+	! integer :: class_size							!Amount of clouds in individual class
+	! integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
+	! integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
 
 	!End Added myself ------------------
     real(SHR_KIND_R4),save ::  eccen, & ! Earth's eccentricity factor (unitless) (typically 0 to 0.1)
@@ -212,7 +207,6 @@ contains
     lwDownCS_slice = 0
 	
 ! Added myself ------------------
- 	barker_method=.true.
 	!This is the "Barker method" where a set of points (i,j) are chosen to represent the whole set.
 	!The points are chosen on basis of Gauss-Legendre Quadrature
 	!These points are then passed to the radiation functions for calculations.
@@ -222,10 +216,11 @@ contains
 		
 		!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
 		! print *, "Starting  findGLQPoints"
-		call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
-			n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
-			n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
-			original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+		call findGLQPoints()
+		! call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+			! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
+			! n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
+			! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 		! print *, "Finished  findGLQPoints"
 
 		!Allocate the testArrayIndexes for testing
@@ -268,7 +263,7 @@ contains
 			! print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   passed_GLQ_point, GLQ_index_all, passed_slice_length, &
+			   passed_GLQ_point, passed_slice_length, &
 			   testArrayIndexes, j)
 			! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
@@ -315,10 +310,11 @@ contains
 			passed_GLQ_point = current_GLQ_point
 			! print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
-			call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
-				n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
-				n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
-				original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+			call reshuffleValues(passed_GLQ_point, passed_slice_length)
+			! call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+				! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
+				! n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
+				! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 			! print *, "Finished  reshuffleValues"
 			current_GLQ_point = current_GLQ_point + passed_slice_length
 			
@@ -351,7 +347,7 @@ contains
 		call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 
-	!!! Must remove : else
+	else
 	
 ! End Added myself ------------------
 		current_GLQ_point = 1

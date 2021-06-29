@@ -9,10 +9,11 @@ contains
 !__________________________________________________________
 !__________________________________________________________
 !Important Routine
-	subroutine findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
-		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
-		n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
-		original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+	! subroutine findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+		! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
+		! n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
+		! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+	subroutine findGLQPoints()
 	
 		use modglobal, only: imax, jmax, kmax, i1, j1, k1, kind_rb, grav, zf, zh
 		use modfields, only: ql0
@@ -23,45 +24,52 @@ contains
 		integer :: i,j,k,inverse_k, n
 		
 		!acceleration
-		integer :: n_RT_Ratio 						!Ratio of Radiative transfer acceleration
 		integer :: n_RT != nx * ny / n_RT_Ratio		!Actual number of Radtiative transfer calculations
 		
 		!Gauss-Legendre Quadrature
 		integer :: N_g															!Loops through GLQ_points
 		integer :: x_index														!Index of GLQ x_i
 		integer :: temp_i, temp_j												!Temporary placeholders for i and j in sorting and ordering
-		integer :: n_GLQ_cloudtop, n_GLQ_clear									!Amount of points for GLQ (cloudtop is per class)
 		integer :: GLQ_counter													!counter necessary for full list of GLQ indexes
-		integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
-		real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
-		real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 		integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
-		integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
-		integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-		integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
-		!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
-		integer,allocatable,dimension(:,:):: original_index_all
-		real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
+		
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
 		
+		!!Contained in modraddata
+		!----------------------------------------------
+		! integer :: n_GLQ_cloudtop, n_GLQ_clear									!Amount of points for GLQ (cloudtop is per class)
+		! integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+		! integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+		! integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+		! integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+		! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
+		! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
+		
+		! integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+		! integer :: class_size							!Amount of clouds in individual class
+		! integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
+		! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
+		! real(kind=kind_rb)    	:: cloud_threshold 						!for the definition of a clouded collumn
+		! real(kind=kind_rb)    	:: cloud_patch_threshold 				!for the definition of cloud top
+		
+		!!This is for testpurposes, this makes it possible to check whether the program functions nicely
+		! integer,allocatable,dimension(:,:):: original_index_all
+		! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
+		!----------------------------------------------
+		
 		!Cloud ordering
 		integer :: n1, n2								!Boundaries of start and end within GLQ
-		integer :: class_size							!Amount of clouds in individual class
-		integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 		integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
-		integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
 		integer :: min_class							!amount of clouds in smallest cloud class
 		integer :: counter,counter2						!counter that allows for cloud_top ordering
-		real(kind=kind_rb)    	:: cloud_threshold 						!for the definition of a clouded collumn
-		real(kind=kind_rb)    	:: cloud_patch_threshold 				!for the definition of cloud top
 		real(kind=kind_rb)		:: min_thresh							!Minimal size a cloud class has to have
 		
 		!Cloud ordering
 		!integer,allocatable,dimension(:) :: clear_LWP_distribution					!Possibly very unnecessary
 		!integer,allocatable,dimension(:) :: LWP_distribution						!Possibly very unneccesary
-		integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+
 		
 		real(kind=kind_rb),allocatable,dimension(:) :: quantiles_value 					!= n_classes - 1, could be integer but must be real for quicksort
 		!This definition not necessary because it is defined later
@@ -69,7 +77,6 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
-		!real(kind=kind_rb),allocatable,dimension(:,:) :: subset_holder !!???
 		
 		!Grid data
 		real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
@@ -96,12 +103,7 @@ contains
 		
 		!Things that are/should already be known should be defined here:
 		!For example the allocation of space for arrays
-		!Also, 
-		n_RT_Ratio = 100
-		n_classes_initial = 20
-		cloud_threshold = 220.0
-		cloud_patch_threshold = 0.0
-		
+		!Also, 		
 		
 		qcl_grid(:, :, :) = 0.
 		!Maybe shift all instances of gl0
@@ -221,9 +223,8 @@ contains
 		! print *, "starting cloudless collumns"
 		
 		!Perform the finding of GLQ points for the cloudless collumns
-		n_GLQ_clear = 0
+		
 		if (n_clear > 0) then
-			n_GLQ_clear = 30
 			!Reduce the amount of GLQ points  if there are not enough clear collumns to house the GLQ points
 			if (n_GLQ_clear > n_clear) then
 				n_GLQ_clear = n_clear
@@ -273,6 +274,8 @@ contains
 		
 			!deallocate (GLQ_points_clear)
 			!deallocate (GLQ_weights_clear)
+		else
+			n_GLQ_clear = 0
 		end if
 		! print *, "finished cloudless collumns"
 
@@ -539,10 +542,11 @@ contains
 	!Only the values in the radiation or also the field values in modraddata?
 	
 	!This subroutine places all the calculated values of GLQ points into the other points in the array
-	subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
-		n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
-		n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
-		original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+	! subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
+		! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
+		! n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
+		! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
+	subroutine reshuffleValues(passed_GLQ_point, passed_slice_length)
 	
 	use modglobal, only: k1, boltz
 	use modfields, only: thl0
@@ -550,32 +554,35 @@ contains
 	use modraddata
 	
 	integer :: i
-	!integer :: GLQ_i, GLQ_j
 	integer :: fill_i, fill_j
 	integer :: n, n1, n2
 	integer :: class_number															!Counter for the cloudtop classes
 	integer :: passed_GLQ_point, temp_GLQ_point									!GLQ point counter for the barker method
 	integer :: cloudtop_GLQ_point													!Reduced GLQ point counter for 
-	integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
-	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
 	integer :: passed_slice_length
-	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
-	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
-	! integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
+	
+	!!Contained in modraddata
+	!----------------------------------------------
+	! integer :: n_GLQ_cloudtop, n_GLQ_clear									!Amount of points for GLQ (cloudtop is per class)
+	! integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
 	! integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	! integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
-	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of cloudtop_LWP_ordered
-
-
-	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
-	integer :: class_size							!Amount of clouds in individual class
-	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
-	integer :: n_classes		            		!actual amount of used classes, can be less then initial classes
-	integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
-	real    :: cloud_threshold 						!for the definition of a clouded collumn
-	real    :: cloud_patch_threshold 				!for the definition of cloud top
-		
+	! integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
+	! integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
+	! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
+	
+	! integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+	! integer :: class_size							!Amount of clouds in individual class
+	! integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
+	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
+	! real(kind=kind_rb)    	:: cloud_threshold 						!for the definition of a clouded collumn
+	! real(kind=kind_rb)    	:: cloud_patch_threshold 				!for the definition of cloud top
+	
+	!!This is for testpurposes, this makes it possible to check whether the program functions nicely
+	! integer,allocatable,dimension(:,:):: original_index_all
+	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
+	!----------------------------------------------
+	
 		temp_GLQ_point = passed_GLQ_point
 		!This loop passes through the slice and assigns values of a certain GLQ point to the pointss around that GLQ point as seen onm basis of cloud height and collumn LWP
 		do i=1,passed_slice_length

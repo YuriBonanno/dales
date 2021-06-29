@@ -68,7 +68,8 @@ contains
     use modradiation,      only : initradiation
     use modraddata,        only : irad,iradiation,&
                                   rad_ls,rad_longw,rad_shortw,rad_smoke,useMcICA,&
-                                  timerad,rka,dlwtop,dlwbot,sw0,gc,reff,isvsmoke,lcloudshading
+                                  timerad,rka,dlwtop,dlwbot,sw0,gc,reff,isvsmoke,lcloudshading,&
+								  barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold
     use modtimedep,        only : inittimedep,ltimedep,ltimedepuv
     use modtimedepsv,      only : inittimedepsv,ltimedepsv
     use modtestbed,        only : inittestbed
@@ -104,7 +105,12 @@ contains
         llsadv,  lqlnr, lambda_crit, cu, cv, ibas_prf, iadv_mom, iadv_tke, iadv_thl, iadv_qt, iadv_sv, lnoclouds
     namelist/SOLVER/ &
         solver_id, maxiter, tolerance, n_pre, n_post, precond
-
+	!BarkerBonanno Method
+	! ---------------------------
+	namelist/BARBON/ &
+        barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold
+	! ---------------------------
+	!BarkerBonanno Method
 
     ! get myid
     ! call MPI_INIT(mpierr)
@@ -145,6 +151,14 @@ contains
       read (ifnamopt,SOLVER,iostat=ierr)
       call checknamelisterror(ierr, ifnamopt, 'SOLVER')
       write(6 ,SOLVER)
+	  !BarkerBonanno Method
+		! ---------------------------
+		rewind(ifnamopt)
+		read (ifnamopt,BARBON,iostat=ierr)
+		call checknamelisterror(ierr, ifnamopt, 'BARBON')
+		write(6 ,BARBON)
+		! ---------------------------
+	  !BarkerBonanno Method
       close(ifnamopt)
     end if
 
@@ -257,6 +271,20 @@ contains
     call MPI_BCAST(tolerance,1,MY_REAL,0,commwrld,mpierr)
     call MPI_BCAST(precond,1,MPI_INTEGER,0,commwrld,mpierr)
     
+	!broadcast namelists BARBON
+	!BarkerBonanno Method
+	! ---------------------------
+	call MPI_BCAST(barker_method,1,MPI_LOGICAL,0,commwrld,mpierr)
+    call MPI_BCAST(n_GLQ_clear,1,MPI_INTEGER,0,commwrld,mpierr)
+    call MPI_BCAST(n_RT_Ratio,1,MPI_INTEGER,0,commwrld,mpierr)
+    call MPI_BCAST(n_classes_initial,1,MPI_INTEGER,0,commwrld,mpierr)
+    call MPI_BCAST(cloud_threshold,1,MY_REAL,0,commwrld,mpierr)
+    call MPI_BCAST(cloud_patch_threshold,1,MY_REAL,0,commwrld,mpierr)
+	! ---------------------------
+	!BarkerBonanno Method
+	
+	
+	
     call testwctime
     ! Allocate and initialize core modules
     call initglobal
