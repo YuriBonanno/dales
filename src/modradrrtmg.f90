@@ -347,7 +347,7 @@ contains
 		call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 
-	else
+	! else
 	
 ! End Added myself ------------------
 		current_GLQ_point = 1
@@ -356,8 +356,12 @@ contains
 		  call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, &
+			   current_GLQ_point, total_amount_GLQ_points, &
 				testArrayIndexes)             !output
+				
+		  ! call setupSlicesFromProfiles &
+			   ! ( j, npatch_start, &                                           !input
+			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
 			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
@@ -803,7 +807,7 @@ contains
 
   subroutine setupSlicesFromProfiles(j,npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   current_GLQ_point, total_amount_GLQ_points, GLQ_index_all, testArrayIndexes)
+		   current_GLQ_point, total_amount_GLQ_points, testArrayIndexes)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -839,10 +843,10 @@ contains
       real , parameter :: rho_liq = 1000.
 
 	  !!!! temp
-	  integer,allocatable, dimension(:,:) :: testArrayIndexes
-	  integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	  integer :: total_amount_GLQ_points
-	  integer :: current_GLQ_point
+	  ! integer,allocatable, dimension(:,:) :: testArrayIndexes
+	  ! integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	  ! integer :: total_amount_GLQ_points
+	  ! integer :: current_GLQ_point
 	  !!!! temp
 
       real :: reff_factor
@@ -1047,7 +1051,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   passed_GLQ_point, GLQ_index_all, slice_length, testArrayIndexes, j)
+		   passed_GLQ_point, slice_length, testArrayIndexes, j)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
