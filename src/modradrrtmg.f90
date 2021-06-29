@@ -32,12 +32,12 @@ contains
 	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
+	! integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	
 	! logical :: barker_method											!Boolean for doing the barker_method or regular method	
 	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
-	! integer :: current_GLQ_point, passed_GLQ_point													!GLQ point counter for the barker method
 	! integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
 	! integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
 	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
