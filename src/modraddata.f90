@@ -164,11 +164,11 @@ SAVE
 	
 	!These values should be read form file
 	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
-	integer :: n_GLQ_clear = 30 							!Amount of points for GLQ
-	integer :: n_classes_initial = 20            			!maximum number of cloudtop altitude classes
-	integer :: n_RT_Ratio = 100								!Ratio of Radiative transfer acceleration
-	real(kind=kind_rb) :: cloud_threshold = 0.0				!for the definition of a clouded collumn
-	real(kind=kind_rb) :: cloud_patch_threshold = 0.0		!for the definition of cloud top
+	integer :: n_GLQ_clear != 30 							!Amount of points for GLQ
+	integer :: n_classes_initial != 20            			!maximum number of cloudtop altitude classes
+	integer :: n_RT_Ratio != 100								!Ratio of Radiative transfer acceleration
+	real(kind=kind_rb) :: cloud_threshold != 0.0				!for the definition of a clouded collumn
+	real(kind=kind_rb) :: cloud_patch_threshold != 0.0		!for the definition of cloud top
 	
 	!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
 	integer,allocatable,dimension(:,:):: original_index_all
