@@ -844,8 +844,8 @@ contains
 
 	  !!!! temp
 	  integer,allocatable, dimension(:,:) :: testArrayIndexes
-	  integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	  integer :: total_amount_GLQ_points
+	  ! integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	  ! integer :: total_amount_GLQ_points
 	  integer :: current_GLQ_point
 	  !!!! temp
 
@@ -1083,7 +1083,6 @@ contains
   integer :: i,k,ksounding, temp_i, temp_j
   integer :: passed_GLQ_point, temp_GLQ_point
   integer :: slice_length
-  integer, allocatable ,dimension(:,:) :: GLQ_index_all
   real (KIND=kind_rb) :: exners
   real(KIND=kind_rb) :: layerMass(imax,krad1)
   !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
