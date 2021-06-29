@@ -350,17 +350,17 @@ contains
 	else
 	
 ! End Added myself ------------------
-		current_GLQ_point = 1
+		! current_GLQ_point = 1
 		print *, "barker false"
 		do j=2,j1
-		  call setupSlicesFromProfiles &
-			   ( j, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   current_GLQ_point, testArrayIndexes)             !output
-				
 		  ! call setupSlicesFromProfiles &
 			   ! ( j, npatch_start, &                                           !input
-			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
+			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+			   ! current_GLQ_point, testArrayIndexes)             !output
+				
+		  call setupSlicesFromProfiles &
+			   ( j, npatch_start, &                                           !input
+			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
 			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
@@ -805,8 +805,8 @@ contains
 ! ==============================================================================;
 
   subroutine setupSlicesFromProfiles(j,npatch_start, &
-           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   current_GLQ_point, testArrayIndexes)
+           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe)!, &
+		   ! current_GLQ_point, testArrayIndexes)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -842,10 +842,10 @@ contains
       real , parameter :: rho_liq = 1000.
 
 	  !!!! temp
-	  integer,allocatable, dimension(:,:) :: testArrayIndexes
-	  ! integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	  ! integer :: total_amount_GLQ_points
-	  integer :: current_GLQ_point
+	  ! integer,allocatable, dimension(:,:) :: testArrayIndexes
+	  !! integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+	  !! integer :: total_amount_GLQ_points
+	  ! integer :: current_GLQ_point
 	  !!!! temp
 
       real :: reff_factor
@@ -880,11 +880,11 @@ contains
         im=i-1
 		
 		!!!!
-		if ( (i == GLQ_index_all(current_GLQ_point, 1)) .and. (j == GLQ_index_all(current_GLQ_point, 2))) then
-			testArrayIndexes(current_GLQ_point, 1) = i
-			testArrayIndexes(current_GLQ_point, 2) = j
-			current_GLQ_point = current_GLQ_point + 1
-		end if
+		! if ( (i == GLQ_index_all(current_GLQ_point, 1)) .and. (j == GLQ_index_all(current_GLQ_point, 2))) then
+			! testArrayIndexes(current_GLQ_point, 1) = i
+			! testArrayIndexes(current_GLQ_point, 2) = j
+			! current_GLQ_point = current_GLQ_point + 1
+		! end if
         !!!!
 		
 		!tg_slice  (im)   = sst
