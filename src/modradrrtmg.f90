@@ -1127,6 +1127,7 @@ contains
 	!This piece of code is for test purposes, it puts all the values into a testarray
 	do i=1,imax
 		print *, "looking at GLQ index all"
+		print *, GLQ_index_all
 		if (i <= slice_length) then
 			temp_i = GLQ_index_all(temp_GLQ_point,1)
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
