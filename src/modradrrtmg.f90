@@ -32,7 +32,7 @@ contains
 	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
-	! integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
+	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	
