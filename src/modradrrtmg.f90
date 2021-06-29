@@ -356,8 +356,7 @@ contains
 		  call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   current_GLQ_point, total_amount_GLQ_points, &
-				testArrayIndexes)             !output
+			   current_GLQ_point, testArrayIndexes)             !output
 				
 		  ! call setupSlicesFromProfiles &
 			   ! ( j, npatch_start, &                                           !input
@@ -807,7 +806,7 @@ contains
 
   subroutine setupSlicesFromProfiles(j,npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   current_GLQ_point, total_amount_GLQ_points, testArrayIndexes)
+		   current_GLQ_point, testArrayIndexes)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
