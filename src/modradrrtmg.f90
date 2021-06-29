@@ -215,13 +215,13 @@ contains
 		print *, "barker true"
 		
 		!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
-		print *, "Starting  findGLQPoints"
+		! print *, "Starting  findGLQPoints"
 		call findGLQPoints()
 		! call findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
 			! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 			! n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
 			! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
-		print *, "Finished  findGLQPoints"
+		! print *, "Finished  findGLQPoints"
 
 		!Allocate the testArrayIndexes for testing
 		allocate(testArrayIndexes(total_amount_GLQ_points, 2))
@@ -260,12 +260,12 @@ contains
 			
 			!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 			passed_GLQ_point = current_GLQ_point
-			print *, "Starting  setupBarkerSlicesFromProfiles"
+			! print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 			   passed_GLQ_point, passed_slice_length, &
 			   testArrayIndexes, j)
-			print *, "Finished  setupBarkerSlicesFromProfiles"
+			! print *, "Finished  setupBarkerSlicesFromProfiles"
 			
 		
 			! call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
@@ -1124,8 +1124,8 @@ contains
 	
 	!This piece of code is for test purposes, it puts all the values into a testarray
 	do i=1,imax
-		print *, "looking at GLQ index all"
-		print *, GLQ_index_all
+		! print *, "looking at GLQ index all"
+		! print *, GLQ_index_all
 		if (i <= slice_length) then
 			temp_i = GLQ_index_all(temp_GLQ_point,1)
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
@@ -1134,7 +1134,7 @@ contains
 			testArrayIndexes(temp_GLQ_point, 2) = temp_j
 			!!!!	
 		end if
-		print *, "succesful looking at GLQ index all"
+		! print *, "succesful looking at GLQ index all"
 		
 
 
