@@ -169,9 +169,9 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(*) :: filename
-		character(*) :: fullpath
-		character(*) :: makedir
+		character(:) :: filename
+		character(:) :: fullpath
+		character(:) :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 
 		makedir = "datadir"
@@ -233,9 +233,9 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(*) :: filename
-		character(*) :: fullpath
-		character(*) :: makedir
+		character(:) :: filename
+		character(:) :: fullpath
+		character(:) :: makedir
 		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 
@@ -298,9 +298,9 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(*) :: filename
-		character(*) :: fullpath
-		character(*) :: makedir
+		character(:) :: filename
+		character(:) :: fullpath
+		character(:) :: makedir
 		integer :: xsize, ysize, zsize
 		integer :: dataset (xsize, ysize, zsize)
 
