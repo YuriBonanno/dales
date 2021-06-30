@@ -164,7 +164,7 @@ contains
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
 
-	implicit none
+	! implicit none
 
 	!Files
 		logical :: fileexists=.false.
@@ -228,7 +228,7 @@ contains
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
 
-	implicit none
+	! implicit none
 
 	!Files
 		logical :: fileexists=.false.
@@ -293,7 +293,7 @@ contains
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
 
-	implicit none
+	! implicit none
 
 	!Files
 		logical :: fileexists=.false.
