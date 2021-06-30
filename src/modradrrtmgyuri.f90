@@ -88,7 +88,7 @@ contains
 		real(kind=kind_rb),dimension(:,:,:) :: qcl_grid			(imax, jmax, kradmax)	!actually just ql0
 
 		!This variable might nog be necessary
-		real(KIND=kind_rb),dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
+		integer,dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
 		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)			!Grid containing collumn highest cloud, cloudtop height
 		integer,dimension(:,:) :: cloud_class(imax, jmax)						!Contains the whole grid with integers showing to which class every collumns belongs
 
@@ -187,7 +187,7 @@ contains
 						!if (ql0(i,j,inverse_k)>cloud_patch_threshold) then
 						if (LWP_grid(i,j,inverse_k)>cloud_patch_threshold) then
 							ztop_field(i,j) = zf(inverse_k) 
-							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1.0
+							cloudtop_distribution(inverse_k) = cloudtop_distribution(inverse_k)+1
 							EXIT
 						end if
 					end do
@@ -523,12 +523,12 @@ contains
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
-		call writetofiledefinedsizeint("n_GLQ_clear", n_GLQ_clear, 1, 1, 1, 1)
-		call writetofiledefinedsizeint("n_GLQ_cloudtop", n_GLQ_cloudtop, 1, 1, 1, 1)
-		call writetofiledefinedsizeint("n_clear", n_clear, 1, 1, 1, 1)
-		call writetofiledefinedsizeint("n_clouds", n_clouds, 1, 1, 1, 1)
-		call writetofiledefinedsizeint("n_classes", n_classes, 1, 1, 1, 1)
-		call writetofiledefinedsizeint("class_size", class_size, 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_GLQ_clear", n_GLQ_clear(*), 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_GLQ_cloudtop", n_GLQ_cloudtop(*), 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_clear", n_clear(*), 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_clouds", n_clouds(*), 1, 1, 1, 1)
+		call writetofiledefinedsizeint("n_classes", n_classes(*), 1, 1, 1, 1)
+		call writetofiledefinedsizeint("class_size", class_size(*), 1, 1, 1, 1)
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
 		! call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, n_GLQ_clear, 2, 1)
