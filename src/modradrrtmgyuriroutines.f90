@@ -169,7 +169,7 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(*), allocatable :: filename
+		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
@@ -233,7 +233,7 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(*), allocatable :: filename
+		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		integer :: xsize, ysize, zsize
@@ -298,7 +298,7 @@ contains
 	!Files
 		logical :: fileexists=.false.
 		integer :: dims, i, j, k
-		character(*), allocatable :: filename
+		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		integer :: xsize, ysize, zsize
