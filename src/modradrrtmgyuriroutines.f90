@@ -225,8 +225,8 @@ contains
 
 	! write to file with real(kind=kind_rb) with defined size
 	subroutine writetofiledefinedsize(filename, dataset, dims, xsize, ysize, zsize)
-	use modraddata
-	use modglobal, only: imax, jmax, kmax, kind_rb
+	! use modraddata
+	use modglobal, only: kind_rb
 
 	! implicit none
 
@@ -290,10 +290,10 @@ contains
 	
 	! write to file with integers with defined size
 	subroutine writetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize)
-	use modraddata
-	use modglobal, only: imax, jmax, kmax, kind_rb
+	! use modraddata
+	! use modglobal, only: imax, jmax, kmax, kind_rb
 
-	! implicit none
+	implicit none
 
 	!Files
 		logical :: fileexists=.false.
@@ -347,6 +347,43 @@ contains
 				end do
 			!end do
 		end if
+
+		close(11)
+
+
+	end subroutine
+
+	! write single ints to file
+	subroutine writeinttofile(filename, intvalue)
+	! use modraddata
+
+	implicit none
+
+	!Files
+		logical :: fileexists=.false.
+		integer :: i, j, k
+		character(*) :: filename
+		character(:), allocatable :: fullpath
+		character(:), allocatable :: makedir
+		integer :: intvalue
+
+		makedir = "datadir"
+		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		fullpath = trim(makedir) // '/' // trim(filename)
+		
+		!__________________________________________________________
+		!Make and write to files
+	
+		inquire(file=fullpath, exist=fileexists)
+		!print *, fileexists
+		if (.not. fileexists) then
+			! open(11, file=fullpath, status="old", position="append", action="write")
+		! else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		write(11, *) intvalue
 
 		close(11)
 
