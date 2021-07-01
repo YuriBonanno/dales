@@ -272,7 +272,7 @@ contains
 			  GLQ_clear_LWP_indexes(N_g, 2) = temp_j
 			end do
 		
-			!deallocate (GLQ_points_clear)
+			deallocate (clear_LWP_ordered (n_clear))
 			!deallocate (GLQ_weights_clear)
 		else
 			n_GLQ_clear = 0
@@ -376,7 +376,7 @@ contains
 						goto 10
 					end if
 				end do
-				!deallocate (quantiles_value)
+				deallocate (quantiles_value)
 			else
 				allocate (n_class(n_classes))
 				n_class(:) = 0
@@ -529,6 +529,12 @@ contains
 		call writeinttofile("n_clouds", n_clouds)
 		call writeinttofile("n_classes", n_classes)
 		call writeinttofile("class_size", class_size)
+
+
+		deallocate(GLQ_clear_LWP_indexes)
+		deallocate(GLQ_cloudtop_LWP_indexes)
+		deallocate(cloudtop_height_ordered)
+		deallocate(cloudtop_LWP_ordered)
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
 		! call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, n_GLQ_clear, 2, 1)

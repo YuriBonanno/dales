@@ -257,6 +257,8 @@ contains
 			else
 				passed_slice_length = imax
 			end if
+			print *, "passed_slice_length"
+			print *, passed_slice_length
 			
 			!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 			passed_GLQ_point = current_GLQ_point
@@ -321,7 +323,23 @@ contains
 			passed_GLQ_point = current_GLQ_point
 		enddo
 		
+		deallocate(GLQ_points_clear)
+		deallocate(GLQ_weights_clear)
+		
+		deallocate(GLQ_points_cloudtop)
+		deallocate(GLQ_weights_cloudtop)
+		
+		deallocate(GLQ_index_all)
+		deallocate(original_clear_LWP_indexes)
+		deallocate(original_cloudtop_LWP_indexes)
+		
+		deallocate(n_class)
+		deallocate(original_index_all)
+		deallocate(GLQ_points_all)
+		
 		call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
+		
+		deallocate(testArrayIndexes)
 		
 		xsize = i1+ih - (2-ih) + 1
 		ysize = j1+jh - (2-jh) + 1
