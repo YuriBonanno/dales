@@ -327,13 +327,13 @@ contains
 			deallocate(GLQ_points_clear)
 			deallocate(GLQ_weights_clear)
 			deallocate(original_clear_LWP_indexes)
-			deallocate(n_class)
 		end if
 		
 		if (n_clouds>0) then
 			deallocate(GLQ_points_cloudtop)
 			deallocate(GLQ_weights_cloudtop)
 			deallocate(original_cloudtop_LWP_indexes)
+			deallocate(n_class)
 		end if
 
 		deallocate(original_index_all)
