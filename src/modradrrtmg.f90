@@ -323,19 +323,22 @@ contains
 			passed_GLQ_point = current_GLQ_point
 		enddo
 		
-		deallocate(GLQ_points_clear)
-		deallocate(GLQ_weights_clear)
+		if (n_clear>0) then
+			deallocate(GLQ_points_clear)
+			deallocate(GLQ_weights_clear)
+			deallocate(original_clear_LWP_indexes)
+		end
 		
-		deallocate(GLQ_points_cloudtop)
-		deallocate(GLQ_weights_cloudtop)
-		
-		deallocate(GLQ_index_all)
-		deallocate(original_clear_LWP_indexes)
-		deallocate(original_cloudtop_LWP_indexes)
+		if (n_clouds>0) then
+			deallocate(GLQ_points_cloudtop)
+			deallocate(GLQ_weights_cloudtop)
+			deallocate(original_cloudtop_LWP_indexes)
+		end
 		
 		deallocate(n_class)
 		deallocate(original_index_all)
 		deallocate(GLQ_points_all)
+		deallocate(GLQ_index_all)
 		
 		call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 		
