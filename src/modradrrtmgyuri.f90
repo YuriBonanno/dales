@@ -288,7 +288,7 @@ contains
 		n_GLQ_cloudtop = 0
 		!Perform the finding of GLQ points for the clouded collumns
 		if (n_clouds > 0) then
-			! print *, "n_clouds > 0"
+			print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 			
 			!Place the clouds in order on basis of cloudtop height from low to high.
