@@ -272,7 +272,7 @@ contains
 			  GLQ_clear_LWP_indexes(N_g, 2) = temp_j
 			end do
 		
-			deallocate (clear_LWP_ordered (n_clear))
+			deallocate (clear_LWP_ordered)
 			!deallocate (GLQ_weights_clear)
 		else
 			n_GLQ_clear = 0
