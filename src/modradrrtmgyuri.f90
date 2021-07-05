@@ -530,6 +530,7 @@ contains
 		call writeinttofile("n_RT", n_RT)
 		call writeinttofile("n_GLQ_clear", n_GLQ_clear)
 		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop)
+		call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear)
 		call writeinttofile("n_clouds", n_clouds)
 		call writeinttofile("n_classes", n_classes)
