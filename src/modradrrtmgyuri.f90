@@ -602,22 +602,26 @@ contains
 					! print *, "temp_GLQ_point <= n_GLQ_clear"
 					!Cloudless
 					!Determine GLQ bin edges for replacing
-					if (temp_GLQ_point == 1) then
-						n1 = 1
-						n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
+					if (n_GLQ_cloudtop == 1) then
+						n1=1
+						n2=n_clear
 					else
-							!!TODO: n_GLQ_clear is fine for now but should change when clear is put into classes
-						if (temp_GLQ_point < n_GLQ_clear) then
-							n1 = nint((GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2)
-							n1 = n1 + 1
+						if (temp_GLQ_point == 1) then
+							n1 = 1
 							n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
 						else
-							n1 = nint((GLQ_points_clear(n_GLQ_clear-1) + GLQ_points_clear(n_GLQ_clear)) / 2)
-							n1 = n1 + 1
-							n2 = n_clear
+								!!TODO: n_GLQ_clear is fine for now but should change when clear is put into classes
+							if (temp_GLQ_point < n_GLQ_clear) then
+								n1 = nint((GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2)
+								n1 = n1 + 1
+								n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
+							else
+								n1 = nint((GLQ_points_clear(n_GLQ_clear-1) + GLQ_points_clear(n_GLQ_clear)) / 2)
+								n1 = n1 + 1
+								n2 = n_clear
+							end if
 						end if
 					end if
-
 					!Places the values into the non GLQ places on the array
 					do n = n1, n2
 						!Is looking at original Clear LWP indexes correct? Have they been ordered?
@@ -676,19 +680,24 @@ contains
 					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
 					
 					!Determine GLQ bin edges for replacing
-					if (cloudtop_GLQ_point == 1) then
-						n1 = 1
-						n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
+					if (n_GLQ_cloudtop == 1) then
+						n1=1
+						n2=class_size
 					else
-						!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
-						if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
-							n1 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2)
-							n1 = n1 + 1
+						if (cloudtop_GLQ_point == 1) then
+							n1 = 1
 							n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
 						else
-							n1 = nint((GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2)
-							n1 = n1 + 1
-							n2 = class_size
+							!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
+							if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
+								n1 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2)
+								n1 = n1 + 1
+								n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
+							else
+								n1 = nint((GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2)
+								n1 = n1 + 1
+								n2 = class_size
+							end if
 						end if
 					end if
 					
