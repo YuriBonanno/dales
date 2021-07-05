@@ -525,6 +525,8 @@ contains
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
+		call writeinttofile("n_RT_Ratio", n_RT_Ratio)
+		call writeinttofile("n_RT", n_RT)
 		call writeinttofile("n_GLQ_clear", n_GLQ_clear)
 		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear)
