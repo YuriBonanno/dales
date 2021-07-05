@@ -408,9 +408,9 @@ contains
 			do n = 1, n_classes
 				! print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case
-				call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop)
+				! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop)
 				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
-				call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop)
+				! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop)
 				
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
@@ -530,7 +530,7 @@ contains
 		call writeinttofile("n_RT", n_RT)
 		call writeinttofile("n_GLQ_clear", n_GLQ_clear)
 		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop)
-		call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
+		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear)
 		call writeinttofile("n_clouds", n_clouds)
 		call writeinttofile("n_classes", n_classes)
