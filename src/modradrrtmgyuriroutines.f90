@@ -188,11 +188,11 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		! if (.not. fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
 		! else
 			open(11, file=fullpath, status="new", action="write")
-		end if
+		! end if
 		
 		if (dims == 1) then
 			!do i=1,imax
@@ -253,11 +253,11 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		! if (.not. fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
 		! else
 			open(11, file=fullpath, status="new", action="write")
-		end if
+		! end if
 		
 		if (dims == 1) then
 			!do i=1,imax
@@ -318,11 +318,11 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		! if (.not. fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
 		! else
 			open(11, file=fullpath, status="new", action="write")
-		end if
+		! end if
 		
 		if (dims == 1) then
 			!do i=1,imax
@@ -377,11 +377,11 @@ contains
 	
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		! if (.not. fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
 		! else
 			open(11, file=fullpath, status="new", action="write")
-		end if
+		! end if
 		
 		write(11, *) intvalue
 
