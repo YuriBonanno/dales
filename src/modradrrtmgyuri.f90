@@ -667,7 +667,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					! print *, "temp_GLQ_point > n_GLQ_clear"
+					print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 
