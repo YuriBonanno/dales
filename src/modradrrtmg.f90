@@ -259,8 +259,8 @@ contains
 			else
 				passed_slice_length = imax
 			end if
-			print *, "passed_slice_length"
-			print *, passed_slice_length
+			! print *, "passed_slice_length"
+			! print *, passed_slice_length
 			
 			!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 			passed_GLQ_point = current_GLQ_point
@@ -370,6 +370,7 @@ contains
 		call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writeinttofile("total_value_test", total_value_test)
+		print *, "total_value_test", total_value_test
 	else
 	
 ! End Added myself ------------------
