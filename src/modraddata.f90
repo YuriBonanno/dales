@@ -162,6 +162,8 @@ SAVE
 	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 	integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
 	
+	integer :: total_value_test
+	
 	!These values should be read form file
 	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
 	integer :: n_GLQ_clear != 30 							!Amount of points for GLQ

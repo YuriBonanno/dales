@@ -211,6 +211,8 @@ contains
 	!The points are chosen on basis of Gauss-Legendre Quadrature
 	!These points are then passed to the radiation functions for calculations.
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
+	total_value_test = 0
+	
  	if (barker_method) then
 		print *, "barker true"
 		
@@ -367,7 +369,7 @@ contains
 		call writetofiledefinedsize("SW_dn_ca_TOA_barker", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-
+		call writeinttofile("total_value_test", total_value_test)
 	else
 	
 ! End Added myself ------------------

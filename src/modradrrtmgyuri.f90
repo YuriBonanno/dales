@@ -667,7 +667,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					print *, "temp_GLQ_point > n_GLQ_clear"
+					! print *, "temp_GLQ_point > n_GLQ_clear"
 					!cloudtop
 
 
@@ -703,8 +703,8 @@ contains
 					
 					!Places the values into the non GLQ places on the array
 					do n = n1, n2
-						print *, n2-n1
-
+						total_value_test = total_value_test + n2-n1 + 1
+						! print *, n2-n1
 
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
