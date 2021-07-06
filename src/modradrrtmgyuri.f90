@@ -624,6 +624,8 @@ contains
 					end if
 					!Places the values into the non GLQ places on the array
 					do n = n1, n2
+						total_value_test = total_value_test + n2-n1 !+ 1
+						
 						!Is looking at original Clear LWP indexes correct? Have they been ordered?
 						fill_i = int(original_clear_LWP_indexes(n, 1))
 						fill_j = int(original_clear_LWP_indexes(n, 2))
@@ -703,7 +705,7 @@ contains
 					
 					!Places the values into the non GLQ places on the array
 					do n = n1, n2
-						total_value_test = total_value_test + n2-n1 + 1
+						total_value_test = total_value_test + n2-n1 !+ 1
 						! print *, n2-n1
 
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
