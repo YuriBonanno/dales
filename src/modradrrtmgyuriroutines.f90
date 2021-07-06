@@ -188,9 +188,10 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-		! else
+			open(11, file=fullpath, status="replace", action="write")
+		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
@@ -253,9 +254,10 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-		! else
+			open(11, file=fullpath, status="replace", action="write")
+		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
@@ -318,9 +320,10 @@ contains
 		
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-		! else
+			open(11, file=fullpath, status="replace", action="write")
+		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
@@ -377,9 +380,10 @@ contains
 	
 		inquire(file=fullpath, exist=fileexists)
 		!print *, fileexists
-		if (.not. fileexists) then
+		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-		! else
+			open(11, file=fullpath, status="replace", action="write")
+		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
