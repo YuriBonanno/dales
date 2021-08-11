@@ -29,6 +29,7 @@ contains
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
 	! Added myself ------------------
+	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
@@ -346,29 +347,31 @@ contains
 		
 		deallocate(testArrayIndexes)
 		
+		write(int_str_container, *) n_RT_Ratio
+		
 		xsize = i1+ih - (2-ih) + 1
 		ysize = j1+jh - (2-jh) + 1
 		zsize = k1
 		
-		call writetofiledefinedsize("lwu_barker", lwu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwd_barker", lwd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swu_barker", swu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swd_barker", swd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdir_barker", swdir(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdif_barker", swdif(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwc_barker", lwc(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwuca_barker", lwuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("lwdca_barker", lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swuca_barker", swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("swdca_barker", swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("SW_up_TOA_barker", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_dn_TOA_barker", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_up_TOA_barker", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_dn_TOA_barker", LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_up_ca_TOA_barker", SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("SW_dn_ca_TOA_barker", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_up_ca_TOA_barker", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writetofiledefinedsize("LW_dn_ca_TOA_barker", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("swu_barker_" // trim(int_str_container), swu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("swd_barker_" // trim(int_str_container), swd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("swdir_barker_" // trim(int_str_container), swdir(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("swdif_barker_" // trim(int_str_container), swdif(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("lwc_barker_" // trim(int_str_container), lwc(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("lwuca_barker_" // trim(int_str_container), lwuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("lwdca_barker_" // trim(int_str_container), lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("swuca_barker_" // trim(int_str_container), swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("SW_up_TOA_barker_" // trim(int_str_container), SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("SW_dn_TOA_barker_" // trim(int_str_container), SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("LW_up_TOA_barker_" // trim(int_str_container), LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("LW_dn_TOA_barker_" // trim(int_str_container), LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("SW_up_ca_TOA_barker_" // trim(int_str_container), SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("SW_dn_ca_TOA_barker_" // trim(int_str_container), SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("LW_up_ca_TOA_barker_" // trim(int_str_container), LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		call writetofiledefinedsize("LW_dn_ca_TOA_barker_" // trim(int_str_container), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writeinttofile("total_value_test", total_value_test)
 		print *, "total_value_test", total_value_test
 	else

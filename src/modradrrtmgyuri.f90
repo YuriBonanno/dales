@@ -92,7 +92,7 @@ contains
 		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)			!Grid containing collumn highest cloud, cloudtop height
 		integer,dimension(:,:) :: cloud_class(imax, jmax)						!Contains the whole grid with integers showing to which class every collumns belongs
 
-		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax)         !Cloud height distribution	
+		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax)         !Column LWP distribution	
 		real(kind=kind_rb),dimension(:,:) :: cloudFrac (imax, jmax)			! cloud height class grid
 
 		!__________________________________________________________
@@ -387,7 +387,7 @@ contains
 			! print *, "cloud and classes finished"
 			
 
-			!Deter,ine how many GLQ points have to be chosen for the cloudtop case
+			!Determine how many GLQ points have to be chosen for the cloudtop case
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			
@@ -526,6 +526,11 @@ contains
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
+		
+		call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1)
+		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1)
+		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1)
+		
 		call writeinttofile("n_RT_Ratio", n_RT_Ratio)
 		call writeinttofile("n_RT", n_RT)
 		call writeinttofile("n_GLQ_clear", n_GLQ_clear)
@@ -591,6 +596,8 @@ contains
 	! integer,allocatable,dimension(:,:):: original_index_all
 	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
 	!----------------------------------------------
+	
+	!TODO: Misschien even kijken of ik de weight niet alsnog moet toepassen aangezien de GLQ punten niet daadwerkelijk even ver uit elkaar staan???
 	
 		temp_GLQ_point = passed_GLQ_point
 		!This loop passes through the slice and assigns values of a certain GLQ point to the pointss around that GLQ point as seen onm basis of cloud height and collumn LWP
