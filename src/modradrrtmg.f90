@@ -347,7 +347,8 @@ contains
 		
 		deallocate(testArrayIndexes)
 		
-		write(int_str_container, *) n_RT_Ratio
+		write(int_str_container, "(i0)") n_RT_Ratio
+		int_str_container = adjustl(int_str_container)
 		
 		xsize = i1+ih - (2-ih) + 1
 		ysize = j1+jh - (2-jh) + 1
