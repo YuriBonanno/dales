@@ -435,7 +435,7 @@ contains
 				!
 				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
 			
-				! print *, "save GLQ points"
+				print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
 				do N_g = 1, n_GLQ_cloudtop	
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
@@ -451,7 +451,7 @@ contains
 			deallocate(cloudtop_LWP_ordered)
 		end if
 		
-		! print *, "finished clouded collumns"
+		print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
@@ -459,10 +459,10 @@ contains
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		!!GLQ_indexes
-		! print *, "allocating this amount of points", total_amount_GLQ_points
+		print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		! print *, "GLQ clear"
+		print *, "GLQ clear"
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		if (n_GLQ_clear>0) then
 			do i =1, n_GLQ_clear
@@ -471,7 +471,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		! print *, "GLQ clouded"
+		print *, "GLQ clouded"
 		
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
@@ -485,7 +485,7 @@ contains
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
-		! print *, "GLQ clear"
+		print *, "GLQ clear"
 		if (n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
@@ -493,7 +493,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_clear
-		! print *, "GLQ clouded"
+		print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_clouds
@@ -514,7 +514,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		! print *, "GLQ clouded"
+		print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_GLQ_cloudtop
@@ -525,6 +525,7 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
+		print *, "start print to files"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
