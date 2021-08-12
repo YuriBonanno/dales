@@ -322,8 +322,9 @@ contains
 				! write(*,*) 'n_classes = ', n_classes
 
 				!Determines the edges for every class
+				print *, "Does it fail here?"
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
-
+				print *, "It does not fail here"
 				!Write to file for testing purposes
 				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1)
 				
@@ -428,8 +429,9 @@ contains
 				
 				! print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
+				print *, "Here maybe?"
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
-			
+				print *, "Not here"
 				!
 				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
 			
@@ -550,6 +552,7 @@ contains
 		! call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
 		! call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
 		! print *, "finished GLQ to long total array"
+		print *, "It does not happen in modradrrtmgyuri"
 
 	end subroutine findGLQPoints
 	
