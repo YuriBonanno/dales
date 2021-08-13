@@ -516,8 +516,11 @@ contains
 		GLQ_counter = n_GLQ_clear
 		print *, "GLQ clouded"
 		if (n_GLQ_cloudtop>0) then
+			print *, "n_classes", n_classes
 			do i=1,n_classes
+				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
 				do j= 1,n_GLQ_cloudtop
+					print *, "GLQ_counter", GLQ_counter
 					GLQ_counter = GLQ_counter + 1
 					GLQ_points_all(GLQ_counter) = GLQ_points_cloudtop(j, i)
 				enddo
