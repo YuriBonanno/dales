@@ -497,8 +497,8 @@ contains
 		if (n_GLQ_cloudtop>0) then
 			print *, "n_classes", n_classes
 			do i=1,n_classes
-				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
-				do j= 1,n_clouds
+				print *, "class_size", class_size
+				do j= 1,class_size
 					print *, "GLQ_counter", GLQ_counter
 					GLQ_counter = GLQ_counter + 1
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
