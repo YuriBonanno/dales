@@ -369,7 +369,7 @@ contains
 				class_size = n_class(1)
 				do i=2,n_classes
 					if (class_size /= n_class(i)) then
-						print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
+						!print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
 						!!Maybe not necessary to stop loop?
 						n_classes = n_classes - 1
 						deallocate (quantiles_value)
@@ -451,7 +451,7 @@ contains
 			deallocate(cloudtop_LWP_ordered)
 		end if
 		
-		print *, "finished clouded collumns"
+		!print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
