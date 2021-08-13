@@ -612,7 +612,7 @@ contains
 					! print *, "temp_GLQ_point <= n_GLQ_clear"
 					!Cloudless
 					!Determine GLQ bin edges for replacing
-					if (n_GLQ_cloudtop == 1) then
+					if (n_GLQ_clear == 1) then
 						n1=1
 						n2=n_clear
 					else
