@@ -462,7 +462,7 @@ contains
 		print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		print *, "GLQ clear"
+		print *, "GLQ clear 1"
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		if (n_GLQ_clear>0) then
 			do i =1, n_GLQ_clear
@@ -471,7 +471,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded"
+		print *, "GLQ clouded 1"
 		
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
@@ -485,7 +485,7 @@ contains
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
-		print *, "GLQ clear"
+		print *, "GLQ clear 2"
 		if (n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
@@ -493,10 +493,13 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_clear
-		print *, "GLQ clouded"
+		print *, "GLQ clouded 2"
 		if (n_GLQ_cloudtop>0) then
+			print *, "n_classes", n_classes
 			do i=1,n_classes
+				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
 				do j= 1,n_clouds
+					print *, "GLQ_counter", GLQ_counter
 					GLQ_counter = GLQ_counter + 1
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
@@ -514,7 +517,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded"
+		print *, "GLQ clouded 3"
 		if (n_GLQ_cloudtop>0) then
 			print *, "n_classes", n_classes
 			do i=1,n_classes
