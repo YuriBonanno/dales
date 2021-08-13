@@ -373,8 +373,14 @@ contains
 		call writetofiledefinedsize("SW_dn_ca_TOA_barker_" // trim(int_str_container), SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_up_ca_TOA_barker_" // trim(int_str_container), LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_dn_ca_TOA_barker_" // trim(int_str_container), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		call writeinttofile("total_value_test", total_value_test)
-		print *, "total_value_test", total_value_test
+		if (total_value_test /= imax*jmax)
+			print *, "total_value_test", total_value_test
+			print *, "GLQ_points_cloudtop", GLQ_points_cloudtop
+			print *, "n_clouds", n_clouds
+		end if
+		
+		!call writeinttofile("total_value_test", total_value_test)
+		!print *, "total_value_test", total_value_test
 	else
 	
 ! End Added myself ------------------

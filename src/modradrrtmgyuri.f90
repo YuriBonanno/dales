@@ -322,9 +322,9 @@ contains
 				! write(*,*) 'n_classes = ', n_classes
 
 				!Determines the edges for every class
-				print *, "Does it fail here?"
+
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
-				print *, "It does not fail here"
+
 				!Write to file for testing purposes
 				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1)
 				
@@ -429,9 +429,9 @@ contains
 				
 				! print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
-				print *, "Here maybe?"
+
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
-				print *, "Not here"
+
 				!
 				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered, 1, class_size, 1, 1)
 			
@@ -445,7 +445,7 @@ contains
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 					
 				end do
-				
+				print *, "end save GLQ points"
 			end do
 			deallocate(cloudtop_height_ordered)
 			deallocate(cloudtop_LWP_ordered)
@@ -462,7 +462,7 @@ contains
 		print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
-		print *, "GLQ clear 1"
+
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		if (n_GLQ_clear>0) then
 			do i =1, n_GLQ_clear
@@ -471,7 +471,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded 1"
+
 		
 		do i=1,n_classes
 			do j= 1,n_GLQ_cloudtop
@@ -485,7 +485,7 @@ contains
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
-		print *, "GLQ clear 2"
+
 		if (n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
@@ -493,13 +493,10 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_clear
-		print *, "GLQ clouded 2"
+
 		if (n_GLQ_cloudtop>0) then
-			print *, "n_classes", n_classes
 			do i=1,n_classes
-				print *, "class_size", class_size
 				do j= 1,class_size
-					print *, "GLQ_counter", GLQ_counter
 					GLQ_counter = GLQ_counter + 1
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
@@ -517,13 +514,9 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_GLQ_clear
-		print *, "GLQ clouded 3"
 		if (n_GLQ_cloudtop>0) then
-			print *, "n_classes", n_classes
 			do i=1,n_classes
-				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
 				do j= 1,n_GLQ_cloudtop
-					print *, "GLQ_counter", GLQ_counter
 					GLQ_counter = GLQ_counter + 1
 					GLQ_points_all(GLQ_counter) = GLQ_points_cloudtop(j, i)
 				enddo
@@ -531,7 +524,6 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		print *, "start print to files"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
@@ -559,7 +551,6 @@ contains
 		! call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
 		! call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
 		! print *, "finished GLQ to long total array"
-		print *, "It does not happen in modradrrtmgyuri"
 
 	end subroutine findGLQPoints
 	
@@ -571,6 +562,8 @@ contains
 		! n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
 		! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	subroutine reshuffleValues(passed_GLQ_point, passed_slice_length)
+	
+	!use modglobal, only: imax, jmax		!For test purposes
 	
 	use modglobal, only: k1, boltz
 	use modfields, only: thl0
@@ -767,7 +760,6 @@ contains
 				end if
 			end if
 		end do
-			
 	end subroutine reshuffleValues
 	
 end module modradrrtmgyuri
