@@ -511,7 +511,7 @@ contains
 		
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
-		if (temp_n_GLQ_clear0) then
+		if (temp_n_GLQ_clear>0) then
 			do i =1, temp_n_GLQ_clear
 				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
 				GLQ_index_all(i, 2) = GLQ_clear_LWP_indexes(i, 2)
