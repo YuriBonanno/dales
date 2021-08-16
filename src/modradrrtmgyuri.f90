@@ -229,7 +229,7 @@ contains
 			if (n_GLQ_clear > n_clear) then
 				n_GLQ_clear = n_clear
 			end if
-			! print *, "n_clear > 0"
+			print *, "n_clear > 0"
 			
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (original_clear_LWP_indexes (n_clear, 2))
@@ -392,12 +392,14 @@ contains
 				end do
 				deallocate (quantiles_value)
 			else
-				!print *, "single class"
+				print *, "single class"
+				print *, "n_classes", n_classes
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				n_class(1) = n_clouds
 				class_size = n_class(1)
 				cloud_class(:,:) = n_classes
+				print *, "class size", class_size
 			end if
 			!print *, "cloud and classes finished"
 			
@@ -454,6 +456,8 @@ contains
 				!Class size is suddenly 4095???
 				!print *, cloudtop_LWP_ordered(:,n)
 				print *, "LWP_flattened1"
+				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4095, 1, 1)
 				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, class_size, 1, 1)
 				print *, "LWP_flattened2"
 				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, imax*jmax, 1, 1)
@@ -461,6 +465,8 @@ contains
 				print *, "n", n
 				print *, "class size", class_size
 				print *, "n_classes", n_classes
+				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4096, 1, 1)
+				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1)
 				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
 			
 				!print *, "save GLQ points"
