@@ -326,7 +326,7 @@ contains
 		10	if (n_classes > 1) then
 		    	allocate (quantiles_value(n_classes-1))
 
-				write(*,*) 'n_classes = ', n_classes
+				!write(*,*) 'n_classes = ', n_classes
 
 				!Determines the edges for every class
 				!print *, "quantiles"
