@@ -230,7 +230,7 @@ contains
 		allocate(testArrayIndexes(total_amount_GLQ_points, 2))
 		
 		!Write the GLQ indexes to file, this file can then be used to validate whether code works correctly
-		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
+		!call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
 
 
 		!Piece of code that determines how many slices have to be read.
@@ -248,7 +248,7 @@ contains
 		! print *, GLQ_slices
 		! print *, "slice_length"
 		! print *, slice_length
-		! print *, "Starting  GLQ loop"
+		print *, "Starting  GLQ loop"
 		
 		! Function that Create n <= j1 slices with the necessary fields.
 			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
@@ -265,12 +265,12 @@ contains
 			
 			!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 			passed_GLQ_point = current_GLQ_point
-			! print *, "Starting  setupBarkerSlicesFromProfiles"
+			print *, "Starting  setupBarkerSlicesFromProfiles"
 			call setupBarkerSlicesFromProfiles(npatch_start, &
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 			   passed_GLQ_point, passed_slice_length, &
 			   testArrayIndexes, j)
-			! print *, "Finished  setupBarkerSlicesFromProfiles"
+			print *, "Finished  setupBarkerSlicesFromProfiles"
 			
 		
 			! call writetofiledefinedsize("tg_slice_barker", tg_slice, 1, imax, 1, 1)
@@ -280,7 +280,7 @@ contains
 			! call writetofiledefinedsize("iceRe_barker", iceRe, 2, imax, krad1, 1)
 			! call writetofiledefinedsize("liquidRe_barker", liquidRe, 2, imax, krad1, 1)
 			
-			! print *, "Starting  radiation"
+			print *, "Starting  radiation"
 			!Radiation routines
 			if (rad_longw) then
 				call rrtmg_lw &
@@ -297,7 +297,7 @@ contains
 						( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
 				end if
 			end if
-			! print *, "finished  radiation"
+			print *, "finished  radiation"
 
 			! call writetofiledefinedsize("lwUp_slice_barker", lwUp_slice, 2, imax, krad2, 1)
 			! call writetofiledefinedsize("-lwDown_slice_barker", -lwDown_slice, 2, imax, krad2, 1)
@@ -313,18 +313,19 @@ contains
 
 			
 			passed_GLQ_point = current_GLQ_point
-			! print *, "Starting  reshuffleValues"
+			print *, "Starting  reshuffleValues"
 			!Place all the flux values into the original array:
 			call reshuffleValues(passed_GLQ_point, passed_slice_length)
 			! call reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
 				! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
 				! n_classes, n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
 				! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
-			! print *, "Finished  reshuffleValues"
+			print *, "Finished  reshuffleValues"
 			current_GLQ_point = current_GLQ_point + passed_slice_length
 			
 			passed_GLQ_point = current_GLQ_point
 		enddo
+		print *, "ending  GLQ loop"
 		
 		if (n_clear>0) then
 			deallocate(GLQ_points_clear)
@@ -373,6 +374,7 @@ contains
 		call writetofiledefinedsize("SW_dn_ca_TOA_barker_" // trim(int_str_container), SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_up_ca_TOA_barker_" // trim(int_str_container), LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_dn_ca_TOA_barker_" // trim(int_str_container), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+		print *, "total_value_test"
 		if (total_value_test/=4096) then
 			print *, "total_value_test", total_value_test
 			print *, "GLQ_points_cloudtop", GLQ_points_cloudtop

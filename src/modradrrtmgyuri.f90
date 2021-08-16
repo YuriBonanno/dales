@@ -91,7 +91,7 @@ contains
 		integer,dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
 		real(kind=kind_rb),dimension(:,:) :: ztop_field	(imax, jmax)			!Grid containing collumn highest cloud, cloudtop height
 		integer,dimension(:,:) :: cloud_class(imax, jmax)						!Contains the whole grid with integers showing to which class every collumns belongs
-
+		
 		real(KIND=kind_rb),dimension(:) :: LWP_distribution (kradmax)         !Column LWP distribution	
 		real(kind=kind_rb),dimension(:,:) :: cloudFrac (imax, jmax)			! cloud height class grid
 
@@ -159,9 +159,9 @@ contains
 		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1)
 		!call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax, krad1)
 		
-		!print *, "finished Define all field values"
+		print *, "finished Define all field values"
 		!__________________________________________________________
-		!print *, "starting cloud and LWP data"
+		print *, "starting cloud and LWP data"
 
 		
 		
@@ -222,15 +222,15 @@ contains
 		!   n_clear
 		!   LWP_flattened
 		
-		! print *, "finished cloud and LWP data"
-		! print *, "starting cloudless collumns"
+		print *, "finished cloud and LWP data"
+		print *, "starting cloudless collumns"
 		
 		!Perform the finding of GLQ points for the cloudless collumns
-		
+		temp_n_GLQ_clear = n_GLQ_clear
 		if (n_clear > 0) then
 			!Reduce the amount of GLQ points  if there are not enough clear collumns to house the GLQ points
-			if (n_GLQ_clear > n_clear) then
-				n_GLQ_clear = n_clear
+			if (temp_n_GLQ_clear > n_clear) then
+				temp_n_GLQ_clear = n_clear
 			end if
 			print *, "n_clear > 0"
 			
@@ -256,18 +256,18 @@ contains
 			call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)
 		
 			!Determine the indexes of the Gauss-Legendre points
-			allocate (GLQ_points_clear 	(n_GLQ_clear))
-			allocate (GLQ_weights_clear	(n_GLQ_clear))
-			allocate (GLQ_clear_LWP_indexes (n_GLQ_clear, 2))
+			allocate (GLQ_points_clear 	(temp_n_GLQ_clear))
+			allocate (GLQ_weights_clear	(temp_n_GLQ_clear))
+			allocate (GLQ_clear_LWP_indexes (temp_n_GLQ_clear, 2))
 		
 			!Determine GLQ points
-			call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, n_GLQ_clear)
+			call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, temp_n_GLQ_clear)
 		
 			!Write to files for test purposes
-			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, n_GLQ_clear, 1, 1)
+			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1)
 		
 			!Save coordinates of the points to an array containing all the GLQ points
-			do N_g = 1, n_GLQ_clear
+			do N_g = 1, temp_n_GLQ_clear
 			  x_index  = nint(GLQ_points_clear(N_g))
 			  temp_i   = int(original_clear_LWP_indexes(x_index,1))
 			  temp_j   = int(original_clear_LWP_indexes(x_index,2))
@@ -278,14 +278,14 @@ contains
 			deallocate (clear_LWP_ordered)
 			!deallocate (GLQ_weights_clear)
 		else
-			n_GLQ_clear = 0
+			temp_n_GLQ_clear = 0
 		end if
-		! print *, "finished cloudless collumns"
+		print *, "finished cloudless collumns"
 
 
 		!Cloudy Sky Gauss-Legendre
 		!Select only the collumns with a nonzero cloudratio
-		! print *, "starting clouded collumns"
+		print *, "starting clouded collumns"
 		n_classes = 0
 		class_size = 0
 		n_GLQ_cloudtop = 0
@@ -401,13 +401,13 @@ contains
 				n_class(:) = 0
 				n_class(1) = n_clouds
 				class_size = n_class(1)
-				print *, "merging fail?"
+				!print *, "merging fail?"
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
-				print *, "no merging fail"
+				!print *, "no merging fail"
 			end if
-			!print *, "cloud and classes finished"
-			print *, "n_classes", n_classes
-			print *, "class size", class_size
+			print *, "cloud and classes finished"
+			!print *, "n_classes", n_classes
+			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
 			!print *, "LWP_flattened before allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
@@ -432,7 +432,7 @@ contains
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 			
-			!print *, "start going through classes"
+			print *, "start going through classes"
 			do n = 1, n_classes
 				!print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case
@@ -498,12 +498,12 @@ contains
 			deallocate(cloudtop_LWP_ordered)
 		end if
 		
-		!print *, "finished clouded collumns"
+		print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		!print *, "starting GLQ to long total array"
-		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
+		total_amount_GLQ_points = temp_n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		!!GLQ_indexes
 		!print *, "allocating this amount of points", total_amount_GLQ_points
@@ -511,13 +511,13 @@ contains
 		
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
-		if (n_GLQ_clear>0) then
-			do i =1, n_GLQ_clear
+		if (temp_n_GLQ_clear0) then
+			do i =1, temp_n_GLQ_clear
 				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
 				GLQ_index_all(i, 2) = GLQ_clear_LWP_indexes(i, 2)
 			enddo
 		end if
-		GLQ_counter = n_GLQ_clear
+		GLQ_counter = temp_n_GLQ_clear
 
 		
 		do i=1,n_classes
@@ -533,7 +533,7 @@ contains
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
 
-		if (n_GLQ_clear>0) then
+		if (temp_n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
 				Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
@@ -555,12 +555,12 @@ contains
 		!! Original GLQ points
 		!This places all the GLQ point order indexes for testing purposes.
 		allocate(GLQ_points_all(total_amount_GLQ_points))
-		if (n_GLQ_clear>0) then
-			do i = 1, n_GLQ_clear
+		if (temp_n_GLQ_clear>0) then
+			do i = 1, temp_n_GLQ_clear
 				GLQ_points_all(i) = GLQ_points_clear(i)
 			enddo
 		end if
-		GLQ_counter = n_GLQ_clear
+		GLQ_counter = temp_n_GLQ_clear
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_GLQ_cloudtop
@@ -581,7 +581,7 @@ contains
 		
 		call writeinttofile("n_RT_Ratio", n_RT_Ratio)
 		call writeinttofile("n_RT", n_RT)
-		call writeinttofile("n_GLQ_clear", n_GLQ_clear)
+		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear)
 		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear)
@@ -593,11 +593,11 @@ contains
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
-		! call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, n_GLQ_clear, 2, 1)
+		! call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, temp_n_GLQ_clear, 2, 1)
 		! call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)
 		! call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
 		! call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
-		! print *, "finished GLQ to long total array"
+		print *, "finished GLQ to long total array"
 
 	end subroutine findGLQPoints
 	
@@ -655,11 +655,11 @@ contains
 			
 			if (temp_GLQ_point <= total_amount_GLQ_points) then
 				! print *, "temp_GLQ_point <= total_amount_GLQ_points"
-				if (temp_GLQ_point <= n_GLQ_clear) then
-					! print *, "temp_GLQ_point <= n_GLQ_clear"
+				if (temp_GLQ_point <= temp_n_GLQ_clear) then
+					! print *, "temp_GLQ_point <= temp_n_GLQ_clear"
 					!Cloudless
 					!Determine GLQ bin edges for replacing
-					if (n_GLQ_clear == 1) then
+					if (temp_n_GLQ_clear == 1) then
 						n1=1
 						n2=n_clear
 					else
@@ -667,13 +667,13 @@ contains
 							n1 = 1
 							n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
 						else
-								!!TODO: n_GLQ_clear is fine for now but should change when clear is put into classes
-							if (temp_GLQ_point < n_GLQ_clear) then
+								!!TODO: temp_n_GLQ_clear is fine for now but should change when clear is put into classes
+							if (temp_GLQ_point < temp_n_GLQ_clear) then
 								n1 = nint((GLQ_points_clear(temp_GLQ_point-1) + GLQ_points_clear(temp_GLQ_point)) / 2)
 								n1 = n1 + 1
 								n2 = nint((GLQ_points_clear(temp_GLQ_point) + GLQ_points_clear(temp_GLQ_point+1)) / 2)
 							else
-								n1 = nint((GLQ_points_clear(n_GLQ_clear-1) + GLQ_points_clear(n_GLQ_clear)) / 2)
+								n1 = nint((GLQ_points_clear(temp_n_GLQ_clear-1) + GLQ_points_clear(temp_n_GLQ_clear)) / 2)
 								n1 = n1 + 1
 								n2 = n_clear
 							end if
@@ -726,12 +726,12 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					! print *, "temp_GLQ_point > n_GLQ_clear"
+					! print *, "temp_GLQ_point > temp_n_GLQ_clear"
 					!cloudtop
 
 
 					!Necessary to determine the clouded GLQ point with respoect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
-					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
+					cloudtop_GLQ_point = temp_GLQ_point - temp_n_GLQ_clear
 					class_number = cloudtop_GLQ_point/n_GLQ_cloudtop
 					if (MODULO(cloudtop_GLQ_point, n_GLQ_cloudtop) > 0) then
 						class_number = class_number + 1
