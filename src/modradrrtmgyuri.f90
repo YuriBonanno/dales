@@ -195,7 +195,7 @@ contains
 		   end do
 	    end do
 		
-		print, "4096?", imax*jmax
+		print *, "4096?", imax*jmax
 		call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1,imax*jmax , 1, 1)
 		
 		if (SUM(cloudtop_distribution).ne.n_clouds) then
