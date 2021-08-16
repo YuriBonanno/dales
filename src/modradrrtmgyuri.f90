@@ -300,7 +300,7 @@ contains
 			!Place the clouds in order on basis of cloudtop height from low to high.
 			counter = 0
 			counter2 = 0
-			print *, "cloudtop distr"
+			!print *, "cloudtop distr"
 			do k=1,k1
 				counter2 = cloudtop_distribution(k)
 				!print *, "cloudt distr while"
@@ -312,7 +312,7 @@ contains
 			end do
 			
 			!Write to file for testing purposes
-			print *, "LookIfActuallyIncreasing"
+			!print *, "LookIfActuallyIncreasing"
 			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, n_clouds, 1, 1)
 			
 			!Determined:
@@ -324,7 +324,7 @@ contains
 			!First tries to fill n_classes_initial with the same amount of collumns, 
 			!if that fails it tries again with n_classes-1, this repeats until either all the classes are the same size or n_classes == 0
 			!The classes are ordered on basis of cloudtop height
-			print *, "classes"
+			!print *, "classes"
 			n_classes = n_classes_initial
 		10	if (n_classes > 1) then
 		    	allocate (quantiles_value(n_classes-1))
@@ -332,23 +332,23 @@ contains
 				!write(*,*) 'n_classes = ', n_classes
 
 				!Determines the edges for every class
-				print *, "quantiles"
+				!print *, "quantiles"
 				call quantiles (n_clouds, n_classes-1, .false., cloudtop_height_ordered, quantiles_value)
 
 				!Write to file for testing purposes
-				print *, "write to file"
+				!print *, "write to file"
 				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1)
 				
 				!print *, "quantiles_value"
 				!print *, quantiles_value
 
-				print *, "allocate n_classes"
+				!print *, "allocate n_classes"
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				cloud_class(:,:) = 0
 			
 				!determines the size of the classes and fills cloud_class with the integers of which the classes belong to
-				print *, "ztop loop"
+				!print *, "ztop loop"
 				do i = 1,imax
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
@@ -371,7 +371,7 @@ contains
 
 
 				!If the "smallest" class is too small, retry making classes
-				print *, "smallest class too small?"
+				!print *, "smallest class too small?"
 				min_class  = minval(n_class(:))
 				min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
 				if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
@@ -382,7 +382,7 @@ contains
 				end if
 				
 				!Checks if all the classes are the same size
-				print *, "same size classes?"
+				!print *, "same size classes?"
 				class_size = n_class(1)
 				do i=2,n_classes
 					if (class_size /= n_class(i)) then
@@ -396,7 +396,7 @@ contains
 				end do
 				deallocate (quantiles_value)
 			else
-				print *, "single class"
+				!print *, "single class"
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				n_class(1) = n_clouds
@@ -405,7 +405,7 @@ contains
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 				print *, "no merging fail"
 			end if
-			print *, "cloud and classes finished"
+			!print *, "cloud and classes finished"
 			print *, "n_classes", n_classes
 			print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
@@ -432,9 +432,9 @@ contains
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 			
-			print *, "start going through classes"
+			!print *, "start going through classes"
 			do n = 1, n_classes
-				print *, "gauleg"
+				!print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case
 				! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop)
 				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
@@ -442,7 +442,7 @@ contains
 				
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
-				print *, "Place the original LWP values"
+				!print *, "Place the original LWP values"
 				!print *, "LWP_flattened before placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				do j = 1, jmax
@@ -459,7 +459,7 @@ contains
 				!print *, "LWP_flattened after placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				
-				print *, "quicksortindexes"
+				!print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
 
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
@@ -482,7 +482,7 @@ contains
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1)
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
 			
-				print *, "save GLQ points"
+				!print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
 				do N_g = 1, n_GLQ_cloudtop	
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
@@ -492,13 +492,13 @@ contains
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 					
 				end do
-				print *, "end save GLQ points"
+				!print *, "end save GLQ points"
 			end do
 			deallocate(cloudtop_height_ordered)
 			deallocate(cloudtop_LWP_ordered)
 		end if
 		
-		print *, "finished clouded collumns"
+		!print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
