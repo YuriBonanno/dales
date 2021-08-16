@@ -195,8 +195,8 @@ contains
 		   end do
 	    end do
 		
-		print *, "4096?", imax*jmax
-		call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1,imax*jmax , 1, 1)
+		!print *, "4096?", imax*jmax
+		!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1,imax*jmax , 1, 1)
 		
 		if (SUM(cloudtop_distribution).ne.n_clouds) then
 			print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
@@ -404,11 +404,11 @@ contains
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 			end if
 			!print *, "cloud and classes finished"
-			print *, "n_classes", n_classes
-			print *, "class size", class_size
+			!print *, "n_classes", n_classes
+			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
-			print *, "LWP_flattened before allocation"
-			call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+			!print *, "LWP_flattened before allocation"
+			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 			
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
@@ -427,8 +427,8 @@ contains
 			!print *, "GLQ_cloudtop_LWP_indexes"
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
-			print *, "LWP_flattened after allocation"
-			call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+			!print *, "LWP_flattened after allocation"
+			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 			
 			! print *, "start going through classes"
 			do n = 1, n_classes
@@ -441,8 +441,8 @@ contains
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
 				! print *, "Place the original LWP values"
-				print *, "LWP_flattened before placing the original LWP values"
-				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				!print *, "LWP_flattened before placing the original LWP values"
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				do j = 1, jmax
 					do i = 1, imax
 						if (cloud_class(i,j) == n) then
@@ -454,8 +454,8 @@ contains
 						end if
 					end do
 				end do
-				print *, "LWP_flattened after placing the original LWP values"
-				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				!print *, "LWP_flattened after placing the original LWP values"
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				
 				! print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
@@ -466,21 +466,21 @@ contains
 
 				!Class size is suddenly 4095???
 				!print *, cloudtop_LWP_ordered(:,n)
-				print *, "LWP_flattened1"
-				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				!print *, "LWP_flattened1"
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4095, 1, 1)
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, class_size, 1, 1)
 				!print *, "LWP_flattened2"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, imax*jmax, 1, 1)
-				print *, "cloudtop LWP ordered"
+				!print *, "cloudtop LWP ordered"
 				!print *, "n", n
 				!print *, "class size", class_size
 				!print *, "n_classes", n_classes
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4096, 1, 1)
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1)
-				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
+				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
 			
-				print *, "save GLQ points"
+				!print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
 				do N_g = 1, n_GLQ_cloudtop	
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
@@ -490,7 +490,7 @@ contains
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 					
 				end do
-				print *, "end save GLQ points"
+				!print *, "end save GLQ points"
 			end do
 			deallocate(cloudtop_height_ordered)
 			deallocate(cloudtop_LWP_ordered)
@@ -500,12 +500,12 @@ contains
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
-		print *, "starting GLQ to long total array"
-		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
+		!print *, "starting GLQ to long total array"
+		!total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		!!GLQ_indexes
-		print *, "allocating this amount of points", total_amount_GLQ_points
-		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
+		!print *, "allocating this amount of points", total_amount_GLQ_points
+		!allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
