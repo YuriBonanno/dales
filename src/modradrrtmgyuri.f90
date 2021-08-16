@@ -287,6 +287,8 @@ contains
 		class_size = 0
 		n_GLQ_cloudtop = 0
 		!Perform the finding of GLQ points for the clouded collumns
+		print *, "n_clear", n_clear
+		print *, "n_clouds", n_clouds
 		if (n_clouds > 0) then
 			print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
