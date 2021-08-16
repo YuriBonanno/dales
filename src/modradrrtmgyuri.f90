@@ -468,7 +468,7 @@ contains
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1)
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
 			
-				!print *, "save GLQ points"
+				print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
 				do N_g = 1, n_GLQ_cloudtop	
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
@@ -478,7 +478,7 @@ contains
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 					
 				end do
-				!print *, "end save GLQ points"
+				print *, "end save GLQ points"
 			end do
 			deallocate(cloudtop_height_ordered)
 			deallocate(cloudtop_LWP_ordered)
@@ -488,7 +488,7 @@ contains
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
-		! print *, "starting GLQ to long total array"
+		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		!!GLQ_indexes
