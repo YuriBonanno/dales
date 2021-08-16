@@ -401,7 +401,7 @@ contains
 				n_class(:) = 0
 				n_class(1) = n_clouds
 				class_size = n_class(1)
-				cloud_class(:,:) = n_classes
+				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 			end if
 			!print *, "cloud and classes finished"
 			print *, "n_classes", n_classes
