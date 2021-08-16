@@ -503,11 +503,11 @@ contains
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		!print *, "starting GLQ to long total array"
-		!total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
+		total_amount_GLQ_points = n_GLQ_clear + n_GLQ_cloudtop*n_classes
 		
 		!!GLQ_indexes
 		!print *, "allocating this amount of points", total_amount_GLQ_points
-		!allocate(GLQ_index_all(total_amount_GLQ_points, 2))
+		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 		
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
