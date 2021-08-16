@@ -732,11 +732,11 @@ contains
 
 					!Necessary to determine the clouded GLQ point with respoect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
 					cloudtop_GLQ_point = temp_GLQ_point - n_GLQ_clear
-					class_number = cloudtop_GLQ_point/class_size
-					if (MODULO(cloudtop_GLQ_point, class_size) > 0) then
+					class_number = cloudtop_GLQ_point/n_GLQ_cloudtop
+					if (MODULO(cloudtop_GLQ_point, n_GLQ_cloudtop) > 0) then
 						class_number = class_number + 1
 					end if
-					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*class_size
+					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*n_GLQ_cloudtop
 					
 					!Determine GLQ bin edges for replacing
 					if (n_GLQ_cloudtop == 1) then
