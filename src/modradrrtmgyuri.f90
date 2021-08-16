@@ -407,6 +407,8 @@ contains
 			print *, "n_classes", n_classes
 			print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
+			print *, "LWP_flattened before allocation"
+			call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 			
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
@@ -425,6 +427,9 @@ contains
 			!print *, "GLQ_cloudtop_LWP_indexes"
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
+			print *, "LWP_flattened after allocation"
+			call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+			
 			! print *, "start going through classes"
 			do n = 1, n_classes
 				! print *, "gauleg"
@@ -436,6 +441,8 @@ contains
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
 				! print *, "Place the original LWP values"
+				print *, "LWP_flattened before placing the original LWP values"
+				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				do j = 1, jmax
 					do i = 1, imax
 						if (cloud_class(i,j) == n) then
@@ -447,6 +454,8 @@ contains
 						end if
 					end do
 				end do
+				print *, "LWP_flattened after placing the original LWP values"
+				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				
 				! print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
