@@ -262,7 +262,7 @@ contains
 		end if
 		
 		if (dims == 1) then
-			print *, "1D write"
+			!print *, "1D write"
 			!do i=1,imax
 				write(11, *) dataset(:,1,1)
 			!end do

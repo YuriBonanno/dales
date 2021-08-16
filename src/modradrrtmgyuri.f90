@@ -393,18 +393,16 @@ contains
 				end do
 				deallocate (quantiles_value)
 			else
-				print *, "single class"
-				print *, "n_classes", n_classes
+				!print *, "single class"
 				allocate (n_class(n_classes))
 				n_class(:) = 0
 				n_class(1) = n_clouds
 				class_size = n_class(1)
 				cloud_class(:,:) = n_classes
-				print *, "class size", class_size
 			end if
 			!print *, "cloud and classes finished"
-			
-
+			print *, "n_classes", n_classes
+			print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
 			
 			n_RT = (imax*jmax)/(n_RT_Ratio)
