@@ -457,19 +457,19 @@ contains
 
 				!Class size is suddenly 4095???
 				!print *, cloudtop_LWP_ordered(:,n)
-				!print *, "LWP_flattened1"
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				print *, "LWP_flattened1"
+				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4095, 1, 1)
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, class_size, 1, 1)
 				!print *, "LWP_flattened2"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, imax*jmax, 1, 1)
-				!print *, "cloudtop LWP ordered"
+				print *, "cloudtop LWP ordered"
 				!print *, "n", n
 				!print *, "class size", class_size
 				!print *, "n_classes", n_classes
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4096, 1, 1)
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1)
-				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
+				call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
 			
 				print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
