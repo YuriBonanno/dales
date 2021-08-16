@@ -451,7 +451,9 @@ contains
 
 				!Class size is suddenly 4095???
 				!print *, cloudtop_LWP_ordered(:,n)
-				print *, "LWP_flattened"
+				print *, "LWP_flattened1"
+				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, class_size, 1, 1)
+				print *, "LWP_flattened2"
 				call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, imax*jmax, 1, 1)
 				print *, "cloudtop LWP ordered"
 				print *, "n", n
