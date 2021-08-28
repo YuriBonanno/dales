@@ -36,6 +36,7 @@ contains
 	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
+	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
 	
 	! logical :: barker_method											!Boolean for doing the barker_method or regular method	
 	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
@@ -494,8 +495,35 @@ contains
 		call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 	
 	end if
+	!-------- TEST
+	!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
+	call execute_command_line ('rm -r ./testdir')
+	call execute_command_line ('mkdir -p testdir')
 	
+	
+	do i=1,100
+		do j=1,100
+			test(i, j) = 100.0
+		end do
+	end do
+	do i=1,100
+		write(int_str_container, "(i0)") i
+		int_str_container = adjustl(int_str_container)
+		fullpath = './testdir/' // trim(int_str_container)
+		open(i, file=fullpath, status="replace", action="write")
+		frmt = "(F18.13"
+		do i=2,imax
+			frmt = trim(frmt)
+			frmt = trim(frmt) // ",F18.13 "
+			frmt = trim(frmt)
+		end do
+		frmt = trim(frmt) // ")"
 		
+		do j = 1,i
+			write(i, frmt) test(:,j)
+		end do
+	end do
+	!-------- TEST
 !End Added myself ------------------	
     do k=1,kmax
       do j=2,j1
