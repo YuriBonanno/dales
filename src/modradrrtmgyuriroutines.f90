@@ -196,10 +196,10 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
-		frmt = "(F18.13"
+		frmt = "(F18.11"
 		do i=2,imax
 			frmt = trim(frmt)
-			frmt = trim(frmt) // ",F18.13 "
+			frmt = trim(frmt) // ",F18.11 "
 			frmt = trim(frmt)
 		end do
 		frmt = trim(frmt) // ")"
@@ -274,10 +274,10 @@ contains
 		! print *, "test start"
 		
 		! print *, "now starting the concatenation"
-		frmt = "(F18.13"
+		frmt = "(F18.11"
 		do i=2,xsize
 			frmt = trim(frmt)
-			frmt = trim(frmt) // ",F18.13 "
+			frmt = trim(frmt) // ",F18.11 "
 			frmt = trim(frmt)
 		end do
 		frmt = trim(frmt) // ")"
