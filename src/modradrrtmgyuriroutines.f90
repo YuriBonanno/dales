@@ -173,6 +173,7 @@ contains
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
+		character(1000) :: frmt
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -195,16 +196,24 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
+		frmt = "(F18.13"
+		do i=2,imax
+			frmt = trim(frmt)
+			frmt = trim(frmt) // ",F18.13 "
+			frmt = trim(frmt)
+		end do
+		frmt = trim(frmt) // ")"
+		
 		if (dims == 1) then
 			!do i=1,imax
-				write(11, *) dataset(:,1,1)
+				write(11, frmt) dataset(:,1,1)
 			!end do
 		end if
 			
 		if (dims == 2) then
 			!do i=1,imax
 				do j=1,jmax
-					write(11, *) dataset(:,j,1)
+					write(11, frmt) dataset(:,j,1)
 				end do
 			!end do
 		end if
@@ -213,7 +222,7 @@ contains
 			!do i=1,imax
 				do j=1,jmax
 					do k=1,kmax
-						write(11, *) dataset(:,j,k)
+						write(11, frmt) dataset(:,j,k)
 					end do
 				end do
 			!end do
@@ -239,6 +248,7 @@ contains
 		character(:), allocatable :: makedir
 		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		character(1000) :: frmt
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -261,29 +271,37 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
+		frmt = "(F18.13"
+		do i=2,imax
+			frmt = trim(frmt)
+			frmt = trim(frmt) // ",F18.13 "
+			frmt = trim(frmt)
+		end do
+		frmt = trim(frmt) // ")"
+		
 		if (dims == 1) then
 			!print *, "1D write"
-			!do i=1,imax
-				write(11, *) dataset(:,1,1)
-			!end do
+			! do i=1,imax
+				write(11, frmt) dataset(:,1,1)
+			! end do
 		end if
 			
 		if (dims == 2) then
-			!do i=1,imax
+			! do i=1,imax
 				do j=1,ysize
-					write(11, *) dataset(:,j,1)
+					write(11, frmt) dataset(:,j,1)
 				end do
-			!end do
+			! end do
 		end if
 		
 		if (dims == 3) then
-			!do i=1,imax
+			! do i=1,imax
 				do j=1,ysize
 					do k=1,zsize
-						write(11, *) dataset(:,j,k)
+						write(11, frmt) dataset(:,j,k)
 					end do
 				end do
-			!end do
+			! end do
 		end if
 
 		close(11)
@@ -306,6 +324,7 @@ contains
 		character(:), allocatable :: makedir
 		integer :: xsize, ysize, zsize
 		integer :: dataset (xsize, ysize, zsize)
+		character(1000) :: frmt
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -328,16 +347,24 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
+		frmt = "(I0"
+		do i=2,imax
+			frmt = trim(frmt)
+			frmt = trim(frmt) // ",I0 "
+			frmt = trim(frmt)
+		end do
+		frmt = trim(frmt) // ")"
+		
 		if (dims == 1) then
 			!do i=1,imax
-				write(11, *) dataset(:,1,1)
+				write(11, frmt) dataset(:,1,1)
 			!end do
 		end if
 			
 		if (dims == 2) then
 			!do i=1,imax
 				do j=1,ysize
-					write(11, *) dataset(:,j,1)
+					write(11, frmt) dataset(:,j,1)
 				end do
 			!end do
 		end if
@@ -346,7 +373,7 @@ contains
 			!do i=1,imax
 				do j=1,ysize
 					do k=1,zsize
-						write(11, *) dataset(:,j,k)
+						write(11, frmt) dataset(:,j,k)
 					end do
 				end do
 			!end do
