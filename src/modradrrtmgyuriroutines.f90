@@ -271,6 +271,9 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
+		print *, "test start"
+		
+		print *, "now starting the concatenation"
 		frmt = "(F18.13"
 		do i=2,xsize
 			frmt = trim(frmt)
@@ -279,6 +282,14 @@ contains
 		end do
 		frmt = trim(frmt) // ")"
 		
+		print *, "finished concatenation"
+		
+		print *, "concatenation result:"
+		print *, frmt
+		print *, "trimmed concatenation result:"
+		print *, trim(frmt)
+		
+		print *, "now writing to datadir"
 		if (dims == 1) then
 			!print *, "1D write"
 			! do i=1,imax
