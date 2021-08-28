@@ -197,7 +197,7 @@ contains
 		end if
 		
 		frmt = "(F18.13"
-		do i=2,xsize
+		do i=2,imax
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",F18.13 "
 			frmt = trim(frmt)
