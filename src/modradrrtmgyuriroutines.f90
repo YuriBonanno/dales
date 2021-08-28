@@ -197,7 +197,7 @@ contains
 		end if
 		
 		frmt = "(F18.13"
-		do i=2,imax
+		do i=2,xsize
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",F18.13 "
 			frmt = trim(frmt)
@@ -272,7 +272,7 @@ contains
 		end if
 		
 		frmt = "(F18.13"
-		do i=2,imax
+		do i=2,xsize
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",F18.13 "
 			frmt = trim(frmt)
@@ -348,7 +348,7 @@ contains
 		end if
 		
 		frmt = "(I0"
-		do i=2,imax
+		do i=2,xsize
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",I0 "
 			frmt = trim(frmt)

@@ -497,32 +497,32 @@ contains
 	end if
 	!-------- TEST
 	!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
-	call execute_command_line ('rm -r ./testdir')
-	call execute_command_line ('mkdir -p testdir')
+	! call execute_command_line ('rm -r ./testdir')
+	! call execute_command_line ('mkdir -p testdir')
 	
 	
-	do i=1,100
-		do j=1,100
-			test(i, j) = 100.0
-		end do
-	end do
-	do i=1,100
-		write(int_str_container, "(i0)") i
-		int_str_container = adjustl(int_str_container)
-		fullpath = './testdir/' // trim(int_str_container)
-		open(i, file=fullpath, status="replace", action="write")
-		frmt = "(F18.13"
-		do i=2,100
-			frmt = trim(frmt)
-			frmt = trim(frmt) // ",F18.13 "
-			frmt = trim(frmt)
-		end do
-		frmt = trim(frmt) // ")"
+	! do i=1,100
+		! do j=1,100
+			! test(i, j) = 100.0
+		! end do
+	! end do
+	! do i=1,100
+		! write(int_str_container, "(i0)") i
+		! int_str_container = adjustl(int_str_container)
+		! fullpath = './testdir/' // trim(int_str_container)
+		! open(i, file=fullpath, status="replace", action="write")
+		! frmt = "(F18.13"
+		! do i=2,100
+			! frmt = trim(frmt)
+			! frmt = trim(frmt) // ",F18.13 "
+			! frmt = trim(frmt)
+		! end do
+		! frmt = trim(frmt) // ")"
 		
-		do j = 1,i
-			write(i, frmt) test(:,j)
-		end do
-	end do
+		! do j = 1,i
+			! write(i, frmt) test(:,j)
+		! end do
+	! end do
 	!-------- TEST
 !End Added myself ------------------	
     do k=1,kmax
