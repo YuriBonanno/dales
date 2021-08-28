@@ -512,7 +512,7 @@ contains
 		fullpath = './testdir/' // trim(int_str_container)
 		open(i, file=fullpath, status="replace", action="write")
 		frmt = "(F18.13"
-		do i=2,imax
+		do i=2,100
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",F18.13 "
 			frmt = trim(frmt)
