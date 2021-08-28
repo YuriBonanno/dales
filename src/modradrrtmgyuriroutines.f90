@@ -173,7 +173,7 @@ contains
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
-		character(1000) :: frmt
+		character(50000) :: frmt
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -248,7 +248,7 @@ contains
 		character(:), allocatable :: makedir
 		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
-		character(1000) :: frmt
+		character(50000) :: frmt
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -271,9 +271,9 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
-		print *, "test start"
+		! print *, "test start"
 		
-		print *, "now starting the concatenation"
+		! print *, "now starting the concatenation"
 		frmt = "(F18.13"
 		do i=2,xsize
 			frmt = trim(frmt)
@@ -282,14 +282,14 @@ contains
 		end do
 		frmt = trim(frmt) // ")"
 		
-		print *, "finished concatenation"
+		! print *, "finished concatenation"
 		
-		print *, "concatenation result:"
-		print *, frmt
-		print *, "trimmed concatenation result:"
-		print *, trim(frmt)
+		! print *, "concatenation result:"
+		! print *, frmt
+		! print *, "trimmed concatenation result:"
+		! print *, trim(frmt)
 		
-		print *, "now writing to datadir"
+		! print *, "now writing to datadir"
 		if (dims == 1) then
 			!print *, "1D write"
 			! do i=1,imax
@@ -335,7 +335,7 @@ contains
 		character(:), allocatable :: makedir
 		integer :: xsize, ysize, zsize
 		integer :: dataset (xsize, ysize, zsize)
-		character(1000) :: frmt
+		character(50000) :: frmt
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
