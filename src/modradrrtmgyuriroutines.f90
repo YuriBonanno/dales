@@ -428,6 +428,10 @@ contains
 		character(:), allocatable :: makedir
 		integer :: intvalue
 
+		print *, "tnext"
+		print *, tnext
+		print *, "runtime"
+		print *, runtime
 		if (.NOT. (tnext>runtime)) then
 			print *, "skipping"
 			return
