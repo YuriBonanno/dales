@@ -176,7 +176,7 @@ contains
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 		character(50000) :: frmt
 
-		if .NOT. (tnext>runtime) then
+		if (.NOT. (tnext>runtime)) then
 			return
 		end if
 
@@ -256,7 +256,7 @@ contains
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
 
-		if .NOT. (tnext>runtime) then
+		if (.NOT. (tnext>runtime)) then
 			return
 		end if
 
@@ -348,7 +348,7 @@ contains
 		integer :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
 
-		if .NOT. (tnext>runtime) then
+		if (.NOT. (tnext>runtime)) then
 			return
 		end if
 
@@ -425,7 +425,7 @@ contains
 		character(:), allocatable :: makedir
 		integer :: intvalue
 
-		if .NOT. (tnext>runtime) then
+		if (.NOT. (tnext>runtime)) then
 			return
 		end if
 
