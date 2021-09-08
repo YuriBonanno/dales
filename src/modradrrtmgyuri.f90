@@ -65,6 +65,7 @@ contains
 		integer :: min_class							!amount of clouds in smallest cloud class
 		integer :: counter,counter2						!counter that allows for cloud_top ordering
 		real(kind=kind_rb)		:: min_thresh							!Minimal size a cloud class has to have
+		character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 		
 		!Cloud ordering
 		!integer,allocatable,dimension(:) :: clear_LWP_distribution					!Possibly very unnecessary
@@ -158,7 +159,13 @@ contains
 		do k=1, krad1
 			LWP_vertical(k) = sum(LWP_grid(:,:,k))
 		end do
-		call writetofiledefinedsize("LWP_vertical", LWP_vertical, 1, krad1, 1, 1)
+		
+		print *, "krad1"
+		print *, krad1
+		
+		write(int_str_container, "(i0)") n_RT_Ratio
+		int_str_container = adjustl(int_str_container)
+		call writetofiledefinedsize("LWP_vertical_barker_" // trim(int_str_container), LWP_vertical, 1, krad1, 1, 1)
 		!call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax)
 		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1)
 		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2)

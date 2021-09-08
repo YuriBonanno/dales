@@ -497,7 +497,7 @@ contains
 		!call writetofiledefinedsize("lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
 		!call writetofiledefinedsize("swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
 		!call writetofiledefinedsize("swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		call writetofiledefinedsize("LWP_vertical", LWP_vertical, 1, krad1, 1, 1)
+		call writetofiledefinedsize("LWP_vertical_stephan", LWP_vertical, 1, krad1, 1, 1)
 		call writetofiledefinedsize("SW_up_TOA_stephan", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("SW_dn_TOA_stephan", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_up_TOA_stephan", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
