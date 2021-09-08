@@ -176,7 +176,7 @@ contains
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 		character(50000) :: frmt
 
-		if (.NOT. ((tnext/1000)>runtime)) then
+		if (.NOT. ((tnext/1000)>=runtime)) then
 			print *, "skipping"
 			return
 		end if
@@ -257,7 +257,7 @@ contains
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
 
-		if (.NOT. ((tnext/1000)>runtime)) then
+		if (.NOT. ((tnext/1000)>=runtime)) then
 			print *, "skipping"
 			return
 		end if
@@ -350,7 +350,7 @@ contains
 		integer :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
 
-		if (.NOT. ((tnext/1000)>runtime)) then
+		if (.NOT. ((tnext/1000)>=runtime)) then
 			print *, "skipping"
 			return
 		end if
@@ -428,11 +428,7 @@ contains
 		character(:), allocatable :: makedir
 		integer :: intvalue
 
-		print *, "tnext"
-		print *, tnext
-		print *, "runtime"
-		print *, runtime
-		if (.NOT. ((tnext/1000)>runtime)) then
+		if (.NOT. ((tnext/1000)>=runtime)) then
 			print *, "skipping"
 			return
 		end if
