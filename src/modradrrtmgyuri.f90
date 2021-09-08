@@ -80,7 +80,8 @@ contains
 		
 		!Grid data
 		real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
-		real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content
+		real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
+		real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		
 		real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)		!full grid LWP contents, Is not actually a LWP
 		real(kind=kind_rb),dimension(:,:,:) :: layerP_grid 		(imax, jmax, krad1)		!pressure at grid core (full-level)
 		real(kind=kind_rb),dimension(:,:,:) :: interfaceP_grid	(imax, jmax, krad2)		!pressure at grid interface (half-level)
@@ -153,6 +154,11 @@ contains
 		LWP_grid(1:imax,1:jmax,1:kradmax) = qcl_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 		
+		!vertical LWP
+		do k=1, krad1
+			LWP_vertical(k) = sum(LWP_grid(:,:,k))
+		end do
+		call writetofiledefinedsize("LWP_vertical", LWP_vertical, 1, krad1, 1, 1)
 		!call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax)
 		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1)
 		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2)

@@ -34,6 +34,8 @@ contains
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
 	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
+	
+	real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP for Stephan part
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
@@ -208,11 +210,14 @@ contains
     lwUpCS_slice = 0
     lwDownCS_slice = 0
 	
+
+	
 ! Added myself ------------------
 	!This is the "Barker method" where a set of points (i,j) are chosen to represent the whole set.
 	!The points are chosen on basis of Gauss-Legendre Quadrature
 	!These points are then passed to the radiation functions for calculations.
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
+	LWP_vertical(:) = 0.0
 	total_value_test = 0
 	
  	if (barker_method) then
@@ -399,6 +404,12 @@ contains
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
+
+			!vertical LWP
+			do k=1, krad1
+				LWP_vertical(k) = LWP_vertical(k) + sum(LWP_slice(:,k))
+			end do
+
 			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
 			! call writetofiledefinedsize("IWP_slice_stephan", IWP_slice, 2, imax, krad1, 1)
@@ -442,6 +453,7 @@ contains
 			  lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
 			end do
 		  end if
+		  
 		  swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
 		  swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
 
@@ -485,6 +497,7 @@ contains
 		!call writetofiledefinedsize("lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
 		!call writetofiledefinedsize("swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
 		!call writetofiledefinedsize("swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+		call writetofiledefinedsize("LWP_vertical", LWP_vertical, 1, krad1, 1, 1)
 		call writetofiledefinedsize("SW_up_TOA_stephan", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("SW_dn_TOA_stephan", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("LW_up_TOA_stephan", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)

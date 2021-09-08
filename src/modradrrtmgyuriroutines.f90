@@ -1,5 +1,6 @@
 module modradrrtmgyuriroutines
-use modglobal, only: kind_rb
+use modglobal, only: kind_rb, runtime
+use modraddata, only: tnext
 implicit none
 
 contains
@@ -175,6 +176,10 @@ contains
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 		character(50000) :: frmt
 
+		if .NOT. (tnext>runtime) then
+			return
+		end if
+
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
 		call execute_command_line ('mkdir -p ' // trim(makedir))
@@ -196,10 +201,10 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
-		frmt = "(F18.11"
+		frmt = "(F18.10"
 		do i=2,imax
 			frmt = trim(frmt)
-			frmt = trim(frmt) // ",F18.11 "
+			frmt = trim(frmt) // ",F18.10 "
 			frmt = trim(frmt)
 		end do
 		frmt = trim(frmt) // ")"
@@ -229,7 +234,8 @@ contains
 		end if
 
 		close(11)
-
+		deallocate(fullpath)
+		deallocate(makedir)
 
 	end subroutine
 
@@ -249,6 +255,10 @@ contains
 		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
+
+		if .NOT. (tnext>runtime) then
+			return
+		end if
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -274,10 +284,10 @@ contains
 		! print *, "test start"
 		
 		! print *, "now starting the concatenation"
-		frmt = "(F18.11"
+		frmt = "(F18.10"
 		do i=2,xsize
 			frmt = trim(frmt)
-			frmt = trim(frmt) // ",F18.11 "
+			frmt = trim(frmt) // ",F18.10 "
 			frmt = trim(frmt)
 		end do
 		frmt = trim(frmt) // ")"
@@ -316,7 +326,8 @@ contains
 		end if
 
 		close(11)
-
+		deallocate(fullpath)
+		deallocate(makedir)
 
 	end subroutine
 	
@@ -336,6 +347,10 @@ contains
 		integer :: xsize, ysize, zsize
 		integer :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
+
+		if .NOT. (tnext>runtime) then
+			return
+		end if
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -391,7 +406,8 @@ contains
 		end if
 
 		close(11)
-
+		deallocate(fullpath)
+		deallocate(makedir)
 
 	end subroutine
 
@@ -408,6 +424,10 @@ contains
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		integer :: intvalue
+
+		if .NOT. (tnext>runtime) then
+			return
+		end if
 
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
@@ -429,7 +449,8 @@ contains
 		write(11, *) intvalue
 
 		close(11)
-
+		deallocate(fullpath)
+		deallocate(makedir)
 
 	end subroutine
 
