@@ -177,7 +177,6 @@ contains
 		character(50000) :: frmt
 
 		if (.NOT. ((tnext/1000)>=runtime)) then
-			print *, "skipping"
 			return
 		end if
 
@@ -258,7 +257,6 @@ contains
 		character(50000) :: frmt
 
 		if (.NOT. ((tnext/1000)>=runtime)) then
-			print *, "skipping"
 			return
 		end if
 
@@ -351,7 +349,6 @@ contains
 		character(50000) :: frmt
 
 		if (.NOT. ((tnext/1000)>=runtime)) then
-			print *, "skipping"
 			return
 		end if
 
@@ -429,7 +426,6 @@ contains
 		integer :: intvalue
 
 		if (.NOT. ((tnext/1000)>=runtime)) then
-			print *, "skipping"
 			return
 		end if
 
