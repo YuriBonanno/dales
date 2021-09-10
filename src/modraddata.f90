@@ -179,12 +179,16 @@ SAVE
 	
 	real(kind=kind_rb) :: LWP_temp
 	real(kind=kind_rb) :: LWP_total
-	integer,dimension(:) :: LWP_index (3)
-	real(kind=kind_rb),dimension(:) :: LWP_index_heights (3)
-	integer,dimension(:) :: LWP_index_percent (3)
-	real(kind=kind_rb),dimension(:) :: LWP_index_heights_percent (3)
-	real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
-	real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
+	integer,dimension(:) :: LWP_index (4)
+	real(kind=kind_rb),dimension(:) :: LWP_index_heights (4)
+	integer,dimension(:) :: LWP_index_percent (4)
+	real(kind=kind_rb),dimension(:) :: LWP_index_heights_percent (4)
+	real(kind=kind_rb),allocatable,dimension(:) :: LWP_vertical 		!vertical slab average LWP
+	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
+
+	!Using krad1 and imax, jmax is not allowed here
+	! real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
+	! real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
 
 	!----------------------------------------
 	

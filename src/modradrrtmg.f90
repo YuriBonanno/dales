@@ -218,8 +218,11 @@ contains
 	!The points are chosen on basis of Gauss-Legendre Quadrature
 	!These points are then passed to the radiation functions for calculations.
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
+	allocate(LWP_flattened(imax,jmax))
+	allocate(LWP_vertical(krad1))
 	LWP_vertical(:) = 0.0
 	total_value_test = 0
+	
 	
  	if (barker_method) then
 		print *, "barker true"
@@ -589,6 +592,9 @@ contains
 		call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 	
 	end if
+	
+	deallocate(LWP_flattened)
+	deallocate(LWP_vertical)
 	!-------- TEST
 	!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
 	! call execute_command_line ('rm -r ./testdir')
