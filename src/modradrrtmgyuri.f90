@@ -82,7 +82,7 @@ contains
 		!Grid data
 		real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
 		!real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		
-		real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)		!full grid LWP contents, Is not actually a LWP
+		! real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)		!full grid LWP contents, Is not actually a LWP
 		real(kind=kind_rb),dimension(:,:,:) :: layerP_grid 		(imax, jmax, krad1)		!pressure at grid core (full-level)
 		real(kind=kind_rb),dimension(:,:,:) :: interfaceP_grid	(imax, jmax, krad2)		!pressure at grid interface (half-level)
 		real(kind=kind_rb),dimension(:,:,:) :: layerMass_grid	(imax, jmax, krad1)		!mass within a gridpoint

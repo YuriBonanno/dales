@@ -218,6 +218,7 @@ contains
 	!The points are chosen on basis of Gauss-Legendre Quadrature
 	!These points are then passed to the radiation functions for calculations.
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
+	allocate(LWP_gri(imax, jmax, krad1))
 	allocate(LWP_flattened(imax,jmax))
 	allocate(LWP_vertical(krad1))
 	LWP_vertical(:) = 0.0
@@ -368,12 +369,12 @@ contains
 		!vertical LWP and flattened for writing to file
 		call LWPDataCollection
 
-		call writetofiledefinedsize("LWP_vertical_barker_" // trim(int_str_container)", LWP_vertical, 1, k1, 1, 1)
-		call writetofiledefinedsize("LWP_flattened_barker_" // trim(int_str_container)", LWP_flattened, 2, imax, jmax, 1)
-		call writetofiledefinedsizeint("LWP_index_barker_" // trim(int_str_container)", LWP_index, 1, 4, 1, 1)
-		call writetofiledefinedsize("LWP_index_heights_barker_" // trim(int_str_container)", LWP_index_heights, 1, 4, 1, 1)
-		call writetofiledefinedsizeint("LWP_index_percent_barker_" // trim(int_str_container)", LWP_index_percent, 1, 4, 1, 1)
-		call writetofiledefinedsize("LWP_index_heights_percent_barker_" // trim(int_str_container)", LWP_index_heights_percent, 1, 4, 1, 1)
+		call writetofiledefinedsize("LWP_vertical_barker_" // trim(int_str_container), LWP_vertical, 1, k1, 1, 1)
+		call writetofiledefinedsize("LWP_flattened_barker_" // trim(int_str_container), LWP_flattened, 2, imax, jmax, 1)
+		call writetofiledefinedsizeint("LWP_index_barker_" // trim(int_str_container), LWP_index, 1, 4, 1, 1)
+		call writetofiledefinedsize("LWP_index_heights_barker_" // trim(int_str_container), LWP_index_heights, 1, 4, 1, 1)
+		call writetofiledefinedsizeint("LWP_index_percent_barker_" // trim(int_str_container), LWP_index_percent, 1, 4, 1, 1)
+		call writetofiledefinedsize("LWP_index_heights_percent_barker_" // trim(int_str_container), LWP_index_heights_percent, 1, 4, 1, 1)
 		
 		! call writetofiledefinedsize("lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
 		! call writetofiledefinedsize("lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
@@ -388,30 +389,30 @@ contains
 		! call writetofiledefinedsize("swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
 		
 		! the values found at LWP_index
-		call writetofiledefinedsize("partial_lwu_barker_" // trim(int_str_container)", lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_lwd_barker_" // trim(int_str_container)", lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_swu_barker_" // trim(int_str_container)", swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_swd_barker_" // trim(int_str_container)", swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_swdir_barker_" // trim(int_str_container)", swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_swdif_barker_" // trim(int_str_container)", swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_lwc_barker_" // trim(int_str_container)", lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_lwuca_barker_" // trim(int_str_container)", lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_lwdca_barker_" // trim(int_str_container)", lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_swuca_barker_" // trim(int_str_container)", swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_swdca_barker_" // trim(int_str_container)", swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_swu_barker_" // trim(int_str_container), swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_swd_barker_" // trim(int_str_container), swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_swdir_barker_" // trim(int_str_container), swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_swdif_barker_" // trim(int_str_container), swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_lwc_barker_" // trim(int_str_container), lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_lwuca_barker_" // trim(int_str_container), lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_lwdca_barker_" // trim(int_str_container), lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_swuca_barker_" // trim(int_str_container), swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
 		
 		! the values found at LWP_index_percent
-		call writetofiledefinedsize("partial_percent_lwu_barker_" // trim(int_str_container)", lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_lwd_barker_" // trim(int_str_container)", lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_swu_barker_" // trim(int_str_container)", swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_swd_barker_" // trim(int_str_container)", swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_swdir_barker_" // trim(int_str_container)", swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_swdif_barker_" // trim(int_str_container)", swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_lwc_barker_" // trim(int_str_container)", lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_lwuca_barker_" // trim(int_str_container)", lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_lwdca_barker_" // trim(int_str_container)", lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_swuca_barker_" // trim(int_str_container)", swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		call writetofiledefinedsize("partial_percent_swdca_barker_" // trim(int_str_container)", swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_swu_barker_" // trim(int_str_container), swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_swd_barker_" // trim(int_str_container), swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_swdir_barker_" // trim(int_str_container), swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_swdif_barker_" // trim(int_str_container), swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_lwc_barker_" // trim(int_str_container), lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_lwuca_barker_" // trim(int_str_container), lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_lwdca_barker_" // trim(int_str_container), lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_swuca_barker_" // trim(int_str_container), swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+		call writetofiledefinedsize("partial_percent_swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
 		
 		call writetofiledefinedsize("SW_up_TOA_barker_" // trim(int_str_container), SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 		call writetofiledefinedsize("SW_dn_TOA_barker_" // trim(int_str_container), SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
@@ -592,7 +593,7 @@ contains
 		call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 	
 	end if
-	
+	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
 	deallocate(LWP_vertical)
 	!-------- TEST
@@ -1594,9 +1595,10 @@ contains
 	! LWP Goes to krad1 but radiation only goes to k1, so in this segment we only look at everything between 1 and k1.
 	
 	use modraddata
-	use modglobal, only imax, jmax, kmax, i1, j1, k1, kind_rb, zf
+	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
+	implicit none
 	
-	integer :: i, j, k
+	integer :: i, j, k, inverse_k
 	
 	do k=1, k1
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
