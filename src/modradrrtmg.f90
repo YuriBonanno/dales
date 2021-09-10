@@ -218,7 +218,7 @@ contains
 	!The points are chosen on basis of Gauss-Legendre Quadrature
 	!These points are then passed to the radiation functions for calculations.
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
-	allocate(LWP_gri(imax, jmax, krad1))
+	allocate(LWP_grid(imax, jmax, krad1))
 	allocate(LWP_flattened(imax,jmax))
 	allocate(LWP_vertical(krad1))
 	LWP_vertical(:) = 0.0
