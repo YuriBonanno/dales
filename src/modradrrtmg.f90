@@ -35,8 +35,6 @@ contains
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
 	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
 	
-	real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP for Stephan part
-	real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
