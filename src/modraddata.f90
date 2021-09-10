@@ -176,6 +176,15 @@ SAVE
 	!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
 	integer,allocatable,dimension(:,:):: original_index_all
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
+	
+	real(kind=kind_rb) :: LWP_temp
+	real(kind=kind_rb) :: LWP_total
+	integer,dimension(:) :: LWP_index (3)
+	real(kind=kind_rb),dimension(:) :: LWP_index_heights (3)
+	integer,dimension(:) :: LWP_index_percent (3)
+	real(kind=kind_rb),dimension(:) :: LWP_index_heights_percent (3)
+	real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
+	real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
 
 	!----------------------------------------
 	
