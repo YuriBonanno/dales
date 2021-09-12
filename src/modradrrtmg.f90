@@ -598,9 +598,11 @@ contains
 		call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 	
 	end if
+	print *, "is this reached"
 	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
 	deallocate(LWP_vertical)
+	print *, "this just happens"
 	!-------- TEST
 	!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
 	! call execute_command_line ('rm -r ./testdir')
