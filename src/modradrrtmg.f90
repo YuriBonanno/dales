@@ -439,16 +439,18 @@ contains
 			   ! ( j, npatch_start, &                                           !input
 			   ! LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 			   ! current_GLQ_point, testArrayIndexes)             !output
-				
-		  call setupSlicesFromProfiles &
+			print *, "start setupSlicesFromProfiles"
+			call setupSlicesFromProfiles &
 			   ( j, npatch_start, &                                           !input
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
+			print *, "end setupSlicesFromProfiles"
 
-
+			print *, "start LWP vertical"
 			!vertical LWP
 			do k=1,krad1
 				LWP_vertical(k) = LWP_vertical(k) + sum(LWP_slice(:,k))
 			end do
+			print *, "start LWP flattened"
 			do i=1,imax
 				LWP_flattened(i,j) = sum(LWP_slice(i,:))
 			end do
@@ -460,6 +462,7 @@ contains
 			! call writetofiledefinedsize("iceRe_stephan", iceRe, 2, imax, krad1, 1)
 			! call writetofiledefinedsize("liquidRe_stephan", liquidRe, 2, imax, krad1, 1)
 
+		print *, "start longwave"
 		  if (rad_longw) then
 			call rrtmg_lw &
 				 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -467,7 +470,7 @@ contains
 		  end if
 
 		  !!
-
+		print *, "start shortwave"
 		  if (rad_shortw) then
 			 call setupSW(sunUp)
 			 if (sunUp) then
@@ -487,7 +490,7 @@ contains
 			! call writetofiledefinedsize("-lwDownCS_slice_stephan", -lwDownCS_slice, 2, imax, krad2, 1)
 			! call writetofiledefinedsize("lwUp_slice_stephan", lwUp_slice, 2, imax, krad2, 1)
 			! call writetofiledefinedsize("-swDownCS_slice_stephan", -swDownCS_slice, 2, imax, krad2, 1)
-
+			print *, "start placing into slices"
 		  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
 		  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
 		  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
@@ -523,6 +526,7 @@ contains
 
 		end do ! Large loop over j=2,j1
 ! Added myself ------------------
+		print *, "start testindexes"
 		call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 		
 		xsize = i1+ih - (2-ih) + 1
@@ -532,8 +536,10 @@ contains
 
 		!----------------------------------------------------------
 		!vertical LWP and flattened for writing to file
+		print *, "start LWPDataCollection"
 		call LWPDataCollection
 
+		print *, "start writing"
 		call writetofiledefinedsize("LWP_vertical_stephan", LWP_vertical, 1, k1, 1, 1)
 		call writetofiledefinedsize("LWP_flattened_stephan", LWP_flattened, 2, imax, jmax, 1)
 		call writetofiledefinedsizeint("LWP_index_stephan", LWP_index, 1, 4, 1, 1)
