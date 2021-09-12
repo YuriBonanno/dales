@@ -601,10 +601,14 @@ contains
 	
 	end if
 	print *, "is this reached"
-	deallocate(LWP_grid)
-	deallocate(LWP_flattened)
-	deallocate(LWP_vertical)
+	! deallocate(LWP_grid)
+	! deallocate(LWP_flattened)
+	! deallocate(LWP_vertical)
 	print *, "this just happens"
+	
+		! allocate(LWP_grid(imax, jmax, krad1))
+		! allocate(LWP_flattened(imax,jmax))
+		! allocate(LWP_vertical(krad1))
 	!-------- TEST
 	!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
 	! call execute_command_line ('rm -r ./testdir')
