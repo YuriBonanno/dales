@@ -447,15 +447,23 @@ contains
 			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 			print *, "end setupSlicesFromProfiles"
 
-			print *, "start LWP vertical"
-			!vertical LWP
-			do k=1,krad1
-				LWP_vertical(k) = LWP_vertical(k) + sum(LWP_slice(:,k))
-			end do
-			print *, "start LWP flattened"
+			print *, "start LWP grid"
 			do i=1,imax
-				LWP_flattened(i,j) = sum(LWP_slice(i,:))
+				do k = 1,krad1
+					LWP_grid(i,j,k) = LWP_slice(i,k)
+				end do
 			end do
+
+
+			! print *, "start LWP vertical"
+			! ! vertical LWP
+			! do k=1,krad1
+				! LWP_vertical(k) = LWP_vertical(k) + sum(LWP_slice(:,k))
+			! end do
+			! print *, "start LWP flattened"
+			! do i=1,imax
+				! LWP_flattened(i,j) = sum(LWP_slice(i,:))
+			! end do
 
 			! call writetofiledefinedsize("tg_slice_stephan", tg_slice, 1, imax, 1, 1)
 			! call writetofiledefinedsize("cloudFrac_stephan", cloudFrac, 2, imax, krad1, 1)
@@ -601,8 +609,8 @@ contains
 	
 	end if
 	print *, "is this reached"
-	deallocate(LWP_grid)
-	! deallocate(LWP_flattened) !This one fails
+	deallocate(LWP_grid) ! This one also fails
+	deallocate(LWP_flattened) !This one fails
 	deallocate(LWP_vertical)
 	print *, "this just happens"
 	
