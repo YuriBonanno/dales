@@ -603,7 +603,7 @@ contains
 	print *, "is this reached"
 	! deallocate(LWP_grid)
 	! deallocate(LWP_flattened)
-	! deallocate(LWP_vertical)
+	deallocate(LWP_vertical)
 	print *, "this just happens"
 	
 		! allocate(LWP_grid(imax, jmax, krad1))
