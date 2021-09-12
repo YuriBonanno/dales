@@ -602,7 +602,7 @@ contains
 	end if
 	print *, "is this reached"
 	! deallocate(LWP_grid)
-	! deallocate(LWP_flattened)
+	deallocate(LWP_flattened)
 	deallocate(LWP_vertical)
 	print *, "this just happens"
 	
