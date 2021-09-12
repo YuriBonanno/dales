@@ -220,6 +220,8 @@ contains
 	allocate(LWP_flattened(imax,jmax))
 	allocate(LWP_vertical(krad1))
 	LWP_vertical(:) = 0.0
+	LWP_flattened(:,:) = 0.0
+	LWP_grid(:,:,:) = 0.0
 	total_value_test = 0
 	
 	
