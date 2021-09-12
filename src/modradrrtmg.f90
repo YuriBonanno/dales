@@ -1565,7 +1565,7 @@ contains
 
   subroutine PrintRadiationData(NameSuffix)
   	use modraddata
-	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
+	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
