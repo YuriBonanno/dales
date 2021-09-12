@@ -546,6 +546,7 @@ contains
 		call writetofiledefinedsize("LWP_index_heights_stephan", LWP_index_heights, 1, 4, 1, 1)
 		call writetofiledefinedsizeint("LWP_index_percent_stephan", LWP_index_percent, 1, 4, 1, 1)
 		call writetofiledefinedsize("LWP_index_heights_percent_stephan", LWP_index_heights_percent, 1, 4, 1, 1)
+		print *, "finish new writing"
 		!----------------------------------------------------------
 		
 		
