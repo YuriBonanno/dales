@@ -1561,8 +1561,29 @@ contains
 	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
 	
+	swUp_slice = 0
+    swDown_slice = 0
+    swDownDir_slice = 0
+    swDownDif_slice = 0
+    swUpCS_slice = 0
+    swDownCS_slice = 0
+    lwUp_slice = 0
+    lwDown_slice = 0
+    lwUpCS_slice = 0
+    lwDownCS_slice = 0
+	
 	call StephanRad(sunUp)
 	do i=1,13
+	    swUp_slice = 0
+		swDown_slice = 0
+		swDownDir_slice = 0
+		swDownDif_slice = 0
+		swUpCS_slice = 0
+		swDownCS_slice = 0
+		lwUp_slice = 0
+		lwDown_slice = 0
+		lwUpCS_slice = 0
+		lwDownCS_slice = 0
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
 	end do
