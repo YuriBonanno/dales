@@ -1363,7 +1363,7 @@ contains
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
 	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
-	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
+	! character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
@@ -1561,7 +1561,7 @@ contains
 	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
 	
-	call StephanRad
+	call StephanRad(sunUp)
 	do i=1,13
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
