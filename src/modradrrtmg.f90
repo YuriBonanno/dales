@@ -218,10 +218,15 @@ contains
  	if (barker_method) then
 		call BarkerRad(sunUp)
 	else
+		print *, "do Stephan"
 		call StephanRad(sunUp)
+		print *, "end Stephan"
 	end if
+	print *, "LWP Grid"
 	deallocate(LWP_grid)
+	print *, "LWP flattened"
 	deallocate(LWP_flattened)
+	print *, "LWP vertical"
 	deallocate(LWP_vertical)
 
 !End Added myself ------------------	
@@ -1482,16 +1487,19 @@ contains
   
 	print *, "barker false"
 	do j=2,j1
+		print *, "setupSlicesFromProfiles"
 		call setupSlicesFromProfiles &
 		   ( j, npatch_start, &                                           !input
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
+		print *, "LWP grid"
 		do i=1,imax
 			do k = 1,krad1
 				LWP_grid(i,j,k) = LWP_slice(i,k)
 			end do
 		end do
 
+		print *, "LONGWAVE"
 		if (rad_longw) then
 			call rrtmg_lw &
 				( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -1499,7 +1507,7 @@ contains
 		end if
 
 		!!
-
+		print *, "SHORTWAVE"
 		if (rad_shortw) then
 		 call setupSW(sunUp)
 			 if (sunUp) then
@@ -1507,7 +1515,8 @@ contains
 					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
 			 end if
 		end if
-
+	
+		print *, "saving"
 	  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
 	  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
 	  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
@@ -1546,7 +1555,9 @@ contains
 
 	!----------------------------------------------------------
 	!vertical LWP and flattened for writing to file
+	print *, "LWPDataCollection"
 	call LWPDataCollection
+	print *, "PrintRadiationData"
 	call PrintRadiationData("stephan")
   end subroutine StephanRad
 end module modradrrtmg
