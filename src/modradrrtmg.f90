@@ -1496,7 +1496,7 @@ contains
 		print *, sum(LWP_slice(:,:))
 		do i=1,imax
 			do k = 1,krad1
-				LWP_grid(i,j,k) = LWP_slice(i,k)
+				LWP_grid(i,j-1,k) = LWP_slice(i,k)
 			end do
 		end do
 		
