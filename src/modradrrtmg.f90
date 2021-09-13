@@ -218,15 +218,10 @@ contains
  	if (barker_method) then
 		call BarkerRad(sunUp)
 	else
-		print *, "do Stephan"
 		call StephanRad(sunUp)
-		print *, "end Stephan"
 	end if
-	print *, "LWP Grid deallocate"
 	deallocate(LWP_grid)
-	print *, "LWP flattened deallocate"
 	deallocate(LWP_flattened)
-	print *, "LWP vertical deallocate"
 	deallocate(LWP_vertical)
 
 !End Added myself ------------------	
@@ -1492,8 +1487,6 @@ contains
 		   ( j, npatch_start, &                                           !input
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
-		print *, "LWP grid"
-		print *, sum(LWP_slice(:,:))
 		do i=1,imax
 			do k = 1,krad1
 				LWP_grid(i,j-1,k) = LWP_slice(i,k)
@@ -1549,14 +1542,7 @@ contains
 	  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
 	  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
 	end do ! Large loop over j=2,j1
-	print *, "j1"
-	print *, j1
-	print *, "imax"
-	print *, imax
-	print *, "krad1"
-	print *, krad1
-	! print *, "LWP_grid"
-	! print *, LWP_grid
+
 ! Added myself ------------------
 	! call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 
