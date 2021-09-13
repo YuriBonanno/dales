@@ -1344,7 +1344,7 @@ contains
 	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
   end subroutine PrintRadiationData
   
-  subroutine BarkerRad
+  subroutine BarkerRad(sunUp)
     use modraddata
 	use modglobal, only : imax, jmax, kmax
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
@@ -1353,6 +1353,7 @@ contains
 	use rrtmg_sw_rad,  only : rrtmg_sw
 	implicit none
   
+	logical :: sunUp
 	integer :: j
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
@@ -1458,16 +1459,19 @@ contains
   end subroutine BarkerRad
 ! ==============================================================================;
 ! ==============================================================================;
-  subroutine StephanRad
+  subroutine StephanRad(sunUp)
 	use modraddata
-	use modglobal, only : imax, jmax, kmax, j1
+	use modglobal, only : imax, jmax, kmax, i1, j1, k1, boltz
+	use modfields,     only : thl0
+    use modsurfdata ,  only : tskin
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
 	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
 	use rrtmg_lw_rad,  only : rrtmg_lw
 	use rrtmg_sw_rad,  only : rrtmg_sw
 	implicit none
 
-	integer :: j
+	logical :: sunUp
+	integer :: i, j, k
 	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
 	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
 	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
