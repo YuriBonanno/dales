@@ -222,11 +222,11 @@ contains
 		call StephanRad(sunUp)
 		print *, "end Stephan"
 	end if
-	print *, "LWP Grid"
+	print *, "LWP Grid deallocate"
 	deallocate(LWP_grid)
-	print *, "LWP flattened"
+	print *, "LWP flattened deallocate"
 	deallocate(LWP_flattened)
-	print *, "LWP vertical"
+	print *, "LWP vertical deallocate"
 	deallocate(LWP_vertical)
 
 !End Added myself ------------------	
@@ -1487,7 +1487,7 @@ contains
   
 	print *, "barker false"
 	do j=2,j1
-		print *, "setupSlicesFromProfiles"
+
 		call setupSlicesFromProfiles &
 		   ( j, npatch_start, &                                           !input
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
@@ -1498,8 +1498,7 @@ contains
 				LWP_grid(i,j,k) = LWP_slice(i,k)
 			end do
 		end do
-
-		print *, "LONGWAVE"
+		
 		if (rad_longw) then
 			call rrtmg_lw &
 				( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
@@ -1507,7 +1506,7 @@ contains
 		end if
 
 		!!
-		print *, "SHORTWAVE"
+
 		if (rad_shortw) then
 		 call setupSW(sunUp)
 			 if (sunUp) then
@@ -1516,7 +1515,6 @@ contains
 			 end if
 		end if
 	
-		print *, "saving"
 	  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
 	  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
 	  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
@@ -1550,14 +1548,20 @@ contains
 	  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
 	  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
 	end do ! Large loop over j=2,j1
+	print *, "j1"
+	print *, j1
+	print *, "imax"
+	print *, imax
+	print *, "krad1"
+	print *, krad1
+	print *, "LWP_grid"
+	print *, LWP_grid
 ! Added myself ------------------
 	! call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 
 	!----------------------------------------------------------
 	!vertical LWP and flattened for writing to file
-	print *, "LWPDataCollection"
 	call LWPDataCollection
-	print *, "PrintRadiationData"
 	call PrintRadiationData("stephan")
   end subroutine StephanRad
 end module modradrrtmg
