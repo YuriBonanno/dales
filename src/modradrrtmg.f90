@@ -1493,6 +1493,7 @@ contains
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
 		print *, "LWP grid"
+		print *, sum(LWP_slice(i,k))
 		do i=1,imax
 			do k = 1,krad1
 				LWP_grid(i,j,k) = LWP_slice(i,k)
@@ -1554,8 +1555,8 @@ contains
 	print *, imax
 	print *, "krad1"
 	print *, krad1
-	print *, "LWP_grid"
-	print *, LWP_grid
+	! print *, "LWP_grid"
+	! print *, LWP_grid
 ! Added myself ------------------
 	! call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 
