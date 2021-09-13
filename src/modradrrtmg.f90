@@ -216,9 +216,9 @@ contains
 	
 	
  	if (barker_method) then
-		call BarkerRad
+		call BarkerRad(sunUp)
 	else
-		call StephanRad
+		call StephanRad(sunUp)
 	end if
 	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
