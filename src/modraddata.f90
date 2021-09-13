@@ -188,6 +188,8 @@ SAVE
 	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid
 
+	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
+
 	!Using krad1 and imax, jmax is not allowed here
 	! real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
 	! real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
