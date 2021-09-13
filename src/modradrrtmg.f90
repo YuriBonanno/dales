@@ -28,15 +28,6 @@ contains
     integer                :: npatch    ! Sounding levels above domain
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
-	! Added myself ------------------
-	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
-	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
-	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
-	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
-	
-	!Array is used for testing purposes
-	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
-	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
 	
 	! logical :: barker_method											!Boolean for doing the barker_method or regular method	
 	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
@@ -225,288 +216,10 @@ contains
 	
 	
  	if (barker_method) then
-		print *, "barker true"
-		
-		!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
-
-		call findGLQPoints()
-
-		!Allocate the testArrayIndexes for testing
-		allocate(testArrayIndexes(total_amount_GLQ_points, 2))
-
-		!Piece of code that determines how many slices have to be read.
-		!This is because amount of GLQ points <= imax*jmax
-		GLQ_slices = total_amount_GLQ_points/imax
-		slice_length = MODULO(total_amount_GLQ_points, imax)
-		if (slice_length>0) then
-			GLQ_slices = GLQ_slices + 1 
-		end if
-		current_GLQ_point = 1					!Initialise GLQ point
-		passed_GLQ_point = current_GLQ_point	!GLQ point that is passed to functions, generally a multitude of imax.
-		
-		! Function that Create n <= j1 slices with the necessary fields.
-			! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
-		do j = 1, GLQ_slices
-			!Shorten slices if imax the amount of GLQ points left is smaller than imax
-			if (j == GLQ_slices .and. slice_length>0) then
-
-				passed_slice_length = slice_length
-			else
-				passed_slice_length = imax
-			end if
-
-			!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
-			passed_GLQ_point = current_GLQ_point
-
-			call setupBarkerSlicesFromProfiles(npatch_start, &
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-			   passed_GLQ_point, passed_slice_length, &
-			   testArrayIndexes, j)
-
-			!Radiation routines
-			if (rad_longw) then
-				call rrtmg_lw &
-					 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
-				!if(myid==0) write(*,*) 'after call to rrtmg_lw'
-			end if
-
-			  !!
-
-			if (rad_shortw) then
-				call setupSW(sunUp)
-				if (sunUp) then
-					call rrtmg_sw &
-						( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
-				end if
-			end if
-
-			passed_GLQ_point = current_GLQ_point
-
-			!Place all the flux values into the original array:
-			call reshuffleValues(passed_GLQ_point, passed_slice_length)
-
-			current_GLQ_point = current_GLQ_point + passed_slice_length
-			
-			passed_GLQ_point = current_GLQ_point
-		enddo
-
-		if (n_clear>0) then
-			deallocate(GLQ_points_clear)
-			deallocate(GLQ_weights_clear)
-			deallocate(original_clear_LWP_indexes)
-		end if
-		
-		if (n_clouds>0) then
-			deallocate(GLQ_points_cloudtop)
-			deallocate(GLQ_weights_cloudtop)
-			deallocate(original_cloudtop_LWP_indexes)
-			deallocate(n_class)
-		end if
-
-		deallocate(original_index_all)
-		deallocate(GLQ_points_all)
-		deallocate(GLQ_index_all)
-		
-		! call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
-		
-		deallocate(testArrayIndexes)
-		
-		write(int_str_container, "(i0)") n_RT_Ratio
-		int_str_container = adjustl(int_str_container)
-
-		!vertical LWP and flattened for writing to file
-		call LWPDataCollection
-		print *, "before Barker"
-		call PrintRadiationData("barker" // trim(int_str_container))
-		print *, "after Barker"
-		! call writetofiledefinedsize("LWP_vertical_barker_" // trim(int_str_container), LWP_vertical, 1, k1, 1, 1)
-		! call writetofiledefinedsize("LWP_flattened_barker_" // trim(int_str_container), LWP_flattened, 2, imax, jmax, 1)
-		! call writetofiledefinedsizeint("LWP_index_barker_" // trim(int_str_container), LWP_index, 1, 4, 1, 1)
-		! call writetofiledefinedsize("LWP_index_heights_barker_" // trim(int_str_container), LWP_index_heights, 1, 4, 1, 1)
-		! call writetofiledefinedsizeint("LWP_index_percent_barker_" // trim(int_str_container), LWP_index_percent, 1, 4, 1, 1)
-		! call writetofiledefinedsize("LWP_index_heights_percent_barker_" // trim(int_str_container), LWP_index_heights_percent, 1, 4, 1, 1)
-		
-		! call writetofiledefinedsize("lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swu_barker_" // trim(int_str_container), swu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swd_barker_" // trim(int_str_container), swd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swdir_barker_" // trim(int_str_container), swdir(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swdif_barker_" // trim(int_str_container), swdif(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwc_barker_" // trim(int_str_container), lwc(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwuca_barker_" // trim(int_str_container), lwuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwdca_barker_" // trim(int_str_container), lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swuca_barker_" // trim(int_str_container), swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		
-		! the values found at LWP_index
-		! call writetofiledefinedsize("partial_lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swu_barker_" // trim(int_str_container), swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swd_barker_" // trim(int_str_container), swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swdir_barker_" // trim(int_str_container), swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swdif_barker_" // trim(int_str_container), swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwc_barker_" // trim(int_str_container), lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwuca_barker_" // trim(int_str_container), lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwdca_barker_" // trim(int_str_container), lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swuca_barker_" // trim(int_str_container), swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		
-		! the values found at LWP_index_percent
-		! call writetofiledefinedsize("partial_percent_lwu_barker_" // trim(int_str_container), lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwd_barker_" // trim(int_str_container), lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swu_barker_" // trim(int_str_container), swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swd_barker_" // trim(int_str_container), swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swdir_barker_" // trim(int_str_container), swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swdif_barker_" // trim(int_str_container), swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwc_barker_" // trim(int_str_container), lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwuca_barker_" // trim(int_str_container), lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwdca_barker_" // trim(int_str_container), lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swuca_barker_" // trim(int_str_container), swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swdca_barker_" // trim(int_str_container), swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		
-		! call writetofiledefinedsize("SW_up_TOA_barker_" // trim(int_str_container), SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("SW_dn_TOA_barker_" // trim(int_str_container), SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_up_TOA_barker_" // trim(int_str_container), LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_dn_TOA_barker_" // trim(int_str_container), LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("SW_up_ca_TOA_barker_" // trim(int_str_container), SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("SW_dn_ca_TOA_barker_" // trim(int_str_container), SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_up_ca_TOA_barker_" // trim(int_str_container), LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_dn_ca_TOA_barker_" // trim(int_str_container), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-
+		call BarkerRad
 	else
-	
-! End Added myself ------------------
-
-		print *, "barker false"
-		do j=2,j1
-			call setupSlicesFromProfiles &
-			   ( j, npatch_start, &                                           !input
-			   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
-
-			do i=1,imax
-				do k = 1,krad1
-					LWP_grid(i,j,k) = LWP_slice(i,k)
-				end do
-			end do
-
-		  if (rad_longw) then
-			call rrtmg_lw &
-				 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
-			!if(myid==0) write(*,*) 'after call to rrtmg_lw'
-		  end if
-
-		  !!
-
-		  if (rad_shortw) then
-			 call setupSW(sunUp)
-			 if (sunUp) then
-			   call rrtmg_sw &
-					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
-			 end if
-		  end if
-
-		  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
-		  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
-		  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
-			do i=2,i1
-			  lwd(i,j,1) =  -0.8 * boltz * thl0(i,j,1) ** 4.
-			  lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
-			end do
-		  end if
-		  
-		  swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
-		  swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
-
-		  swdir(2:i1,j,1:k1) = -swDownDir_slice(1:imax,1:k1)
-		  swdif(2:i1,j,1:k1) = -swDownDif_slice(1:imax,1:k1)
-		  lwc  (2:i1,j,1:k1) =  LWP_slice      (1:imax,1:k1)
-
-		  lwuca(2:i1,j,1:k1) =  lwUpCS_slice  (1:imax,1:k1)
-		  lwdca(2:i1,j,1:k1) = -lwDownCS_slice(1:imax,1:k1)
-		  swuca(2:i1,j,1:k1) =  swUpCS_slice  (1:imax,1:k1)
-		  swdca(2:i1,j,1:k1) = -swDownCS_slice(1:imax,1:k1)
-
-		  SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
-		  SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
-		  !!FAILS
-		  LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
-		  LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
-
-		  SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
-		  SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
-		  !!FAILS
-		  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
-		  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
-
-		end do ! Large loop over j=2,j1
-! Added myself ------------------
-		! call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
-
-		!----------------------------------------------------------
-		!vertical LWP and flattened for writing to file
-		call LWPDataCollection
-		print *, "before Stephan"
-		call PrintRadiationData("stephan")
-		print *, "after Stephan"
-
-		! call writetofiledefinedsize("LWP_vertical_stephan", LWP_vertical, 1, k1, 1, 1)
-		! call writetofiledefinedsize("LWP_flattened_stephan", LWP_flattened, 2, imax, jmax, 1)
-		! call writetofiledefinedsizeint("LWP_index_stephan", LWP_index, 1, 4, 1, 1)
-		! call writetofiledefinedsize("LWP_index_heights_stephan", LWP_index_heights, 1, 4, 1, 1)
-		! call writetofiledefinedsizeint("LWP_index_percent_stephan", LWP_index_percent, 1, 4, 1, 1)
-		! call writetofiledefinedsize("LWP_index_heights_percent_stephan", LWP_index_heights_percent, 1, 4, 1, 1)
-		!----------------------------------------------------------
-		
-		
-		! call writetofiledefinedsize("lwu_stephan", lwu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwd_stephan", lwd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swu_stephan", swu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swd_stephan", swd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swdir_stephan", swdir(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swdif_stephan", swdif(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwc_stephan", lwc(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwuca_stephan", lwuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		! call writetofiledefinedsize("swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-		
-		! the values found at LWP_index
-		! call writetofiledefinedsize("partial_lwu_stephan", lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwd_stephan", lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swu_stephan", swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swd_stephan", swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swdir_stephan", swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swdif_stephan", swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwc_stephan", lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwuca_stephan", lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-		
-		! the values found at LWP_index_percent
-		! call writetofiledefinedsize("partial_percent_lwu_stephan", lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwd_stephan", lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swu_stephan", swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swd_stephan", swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swdir_stephan", swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swdif_stephan", swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwc_stephan", lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwuca_stephan", lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_lwdca_stephan", lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swuca_stephan", swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		! call writetofiledefinedsize("partial_percent_swdca_stephan", swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-		
-		! call writetofiledefinedsize("SW_up_TOA_stephan", SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("SW_dn_TOA_stephan", SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_up_TOA_stephan", LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_dn_TOA_stephan", LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("SW_up_ca_TOA_stephan", SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("SW_dn_ca_TOA_stephan", SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_up_ca_TOA_stephan", LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-		! call writetofiledefinedsize("LW_dn_ca_TOA_stephan", LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	
+		call StephanRad
 	end if
-
 	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
 	deallocate(LWP_vertical)
@@ -1562,7 +1275,8 @@ contains
 		end if
 	end do
   end subroutine LWPDataCollection
-
+! ==============================================================================;
+! ==============================================================================;
   subroutine PrintRadiationData(NameSuffix)
   	use modraddata
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
@@ -1571,10 +1285,6 @@ contains
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
   		
-		
-	print *, "working?"
-	print *, NameSuffix
-	print *, trim(NameSuffix)
 	xsize = i1+ih - (2-ih) + 1
 	ysize = j1+jh - (2-jh) + 1
 	zsize = k1
@@ -1633,4 +1343,206 @@ contains
 	call writetofiledefinedsize("LW_up_ca_TOA_" // trim(NameSuffix), LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
 	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
   end subroutine PrintRadiationData
+  
+  subroutine BarkerRad
+    use modraddata
+	use modglobal, only : imax, jmax, kmax
+	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
+	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
+	use rrtmg_lw_rad,  only : rrtmg_lw
+	use rrtmg_sw_rad,  only : rrtmg_sw
+	implicit none
+  
+	integer :: j
+	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
+	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
+	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
+	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
+	!Array is used for testing purposes
+	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
+	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
+
+	
+	print *, "barker true"
+	
+	!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
+
+	call findGLQPoints()
+
+	!Allocate the testArrayIndexes for testing
+	allocate(testArrayIndexes(total_amount_GLQ_points, 2))
+
+	!Piece of code that determines how many slices have to be read.
+	!This is because amount of GLQ points <= imax*jmax
+	GLQ_slices = total_amount_GLQ_points/imax
+	slice_length = MODULO(total_amount_GLQ_points, imax)
+	if (slice_length>0) then
+		GLQ_slices = GLQ_slices + 1 
+	end if
+	current_GLQ_point = 1					!Initialise GLQ point
+	passed_GLQ_point = current_GLQ_point	!GLQ point that is passed to functions, generally a multitude of imax.
+		
+	! Function that Create n <= j1 slices with the necessary fields.
+		! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
+	do j = 1, GLQ_slices
+		!Shorten slices if imax the amount of GLQ points left is smaller than imax
+		if (j == GLQ_slices .and. slice_length>0) then
+
+			passed_slice_length = slice_length
+		else
+			passed_slice_length = imax
+		end if
+
+		!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
+		passed_GLQ_point = current_GLQ_point
+
+		call setupBarkerSlicesFromProfiles(npatch_start, &
+		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+		   passed_GLQ_point, passed_slice_length, &
+		   testArrayIndexes, j)
+
+		!Radiation routines
+		if (rad_longw) then
+			call rrtmg_lw &
+				 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+			!if(myid==0) write(*,*) 'after call to rrtmg_lw'
+		end if
+
+			  !!
+
+		if (rad_shortw) then
+			call setupSW(sunUp)
+			if (sunUp) then
+				call rrtmg_sw &
+					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+			end if
+		end if
+
+		passed_GLQ_point = current_GLQ_point
+
+		!Place all the flux values into the original array:
+		call reshuffleValues(passed_GLQ_point, passed_slice_length)
+
+		current_GLQ_point = current_GLQ_point + passed_slice_length
+		
+		passed_GLQ_point = current_GLQ_point
+		enddo
+
+	if (n_clear>0) then
+		deallocate(GLQ_points_clear)
+		deallocate(GLQ_weights_clear)
+		deallocate(original_clear_LWP_indexes)
+	end if
+		
+	if (n_clouds>0) then
+		deallocate(GLQ_points_cloudtop)
+		deallocate(GLQ_weights_cloudtop)
+		deallocate(original_cloudtop_LWP_indexes)
+		deallocate(n_class)
+	end if
+
+	deallocate(original_index_all)
+	deallocate(GLQ_points_all)
+	deallocate(GLQ_index_all)
+	
+	! call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
+	
+	deallocate(testArrayIndexes)
+	
+	write(int_str_container, "(i0)") n_RT_Ratio
+	int_str_container = adjustl(int_str_container)
+
+	!vertical LWP and flattened for writing to file
+	call LWPDataCollection
+	call PrintRadiationData("barker_" // trim(int_str_container))
+  end subroutine BarkerRad
+! ==============================================================================;
+! ==============================================================================;
+  subroutine StephanRad
+	use modraddata
+	use modglobal, only : imax, jmax, kmax, j1
+	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
+	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
+	use rrtmg_lw_rad,  only : rrtmg_lw
+	use rrtmg_sw_rad,  only : rrtmg_sw
+	implicit none
+
+	integer :: j
+	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
+	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
+	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
+	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
+	!Array is used for testing purposes
+	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
+	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
+  
+	print *, "barker false"
+	do j=2,j1
+		call setupSlicesFromProfiles &
+		   ( j, npatch_start, &                                           !input
+		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
+
+		do i=1,imax
+			do k = 1,krad1
+				LWP_grid(i,j,k) = LWP_slice(i,k)
+			end do
+		end do
+
+		if (rad_longw) then
+			call rrtmg_lw &
+				( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+			!if(myid==0) write(*,*) 'after call to rrtmg_lw'
+		end if
+
+		!!
+
+		if (rad_shortw) then
+		 call setupSW(sunUp)
+			 if (sunUp) then
+			   call rrtmg_sw &
+					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+			 end if
+		end if
+
+	  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
+	  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
+	  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
+		do i=2,i1
+		  lwd(i,j,1) =  -0.8 * boltz * thl0(i,j,1) ** 4.
+		  lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
+		end do
+	  end if
+	  
+	  swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
+	  swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
+
+	  swdir(2:i1,j,1:k1) = -swDownDir_slice(1:imax,1:k1)
+	  swdif(2:i1,j,1:k1) = -swDownDif_slice(1:imax,1:k1)
+	  lwc  (2:i1,j,1:k1) =  LWP_slice      (1:imax,1:k1)
+
+	  lwuca(2:i1,j,1:k1) =  lwUpCS_slice  (1:imax,1:k1)
+	  lwdca(2:i1,j,1:k1) = -lwDownCS_slice(1:imax,1:k1)
+	  swuca(2:i1,j,1:k1) =  swUpCS_slice  (1:imax,1:k1)
+	  swdca(2:i1,j,1:k1) = -swDownCS_slice(1:imax,1:k1)
+
+	  SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
+	  SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
+	  !!FAILS
+	  LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
+	  LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
+
+	  SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
+	  SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
+	  !!FAILS
+	  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
+	  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
+	end do ! Large loop over j=2,j1
+! Added myself ------------------
+	! call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
+
+	!----------------------------------------------------------
+	!vertical LWP and flattened for writing to file
+	call LWPDataCollection
+	call PrintRadiationData("stephan")
+  end subroutine StephanRad
 end module modradrrtmg
