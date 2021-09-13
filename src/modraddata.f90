@@ -165,6 +165,7 @@ SAVE
 	integer :: total_value_test
 	
 	!These values should be read from namoptions file
+	logical :: diagnostic_run = .false.							!Boolean for doing the diagnostics run
 	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
 	integer :: n_GLQ_clear != 30 							!Amount of points for clear column GLQ, defined in namoptions
 	integer :: temp_n_GLQ_clear != 30 						!Amount of points for clear column GLQ, temporary value in order to not overwrite n_GLQ_clear which is defined in namoptions

@@ -576,7 +576,7 @@ contains
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
 		
-		call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1)
+		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1)
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1)
 		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1)
 		
