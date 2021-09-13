@@ -1493,7 +1493,7 @@ contains
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
 		print *, "LWP grid"
-		print *, sum(LWP_slice(i,k))
+		print *, sum(LWP_slice(:,:))
 		do i=1,imax
 			do k = 1,krad1
 				LWP_grid(i,j,k) = LWP_slice(i,k)
