@@ -44,7 +44,7 @@ contains
 		 j=j-1
 	  end do
 
-	!Recursively go through this subrotuine to order the array
+	!Recursively go through this subroutine to order the array
 	  if (first < i-1) call quicksortindexes(a, first, i-1, indexes, length)
 	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes, length)
 	end subroutine quicksortindexes
@@ -77,7 +77,7 @@ contains
 		 i=i+1
 		 j=j-1
 	  end do
-	!Recursively go through this subrotuine to order the array
+	!Recursively go through this subroutine to order the array
 	  if (first < i-1) call quicksort(a, first, i-1, length)
 	  if (j+1 < last)  call quicksort(a, j+1, last, length)
 	end subroutine quicksort
@@ -121,7 +121,7 @@ contains
 	12    continue
 
 		  return
-		  END
+		  end subroutine gauleg
 		  
 		  
 	! This function determines the quantiles for the clouded classes, these quantiles are evenly spaced over the amount of points
@@ -158,8 +158,170 @@ contains
 	   end if
 
 	   return
-	   end
+	   end subroutine quantiles
 
+	! --------------------------------------------------------------------
+	! PROGRAM  MeanVariance:
+	!    This program reads in an unknown number of real values and
+	! computes its mean, variance and standard deviation.  It contains
+	! three subroutines:
+	!    (1)  Sums()     - computes the sum and sum of squares of the input
+	!    (2)  Result()   - computes the mean, variance and standard
+	!                      deviation from the sum and sum of squares
+	!    (3)  PrintResult() - print results
+	! --------------------------------------------------------------------
+	subroutine MeanVariance(dataset, filename, xsize, ysize, zsize)
+		REAL(kind=kind_rb)    :: SumMean, SumVar, x
+		REAL(kind=kind_rb)    :: Mean(zsize), Var(zsize), Std(zsize)
+		integer :: Ncolumns
+		integer :: dims, i, j, k, m
+		integer :: xsize, ysize, zsize
+		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		character(*) :: filename
+		character(:), allocatable :: fullpath
+		character(:), allocatable :: makedir
+		character(500) :: frmt
+
+		makedir = "datadir"
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		! for mean
+		fullpath = trim(makedir) // '/' // trim(filename) // '_mean'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(10, file=fullpath, status="old", position="append", action="write")
+		else
+			open(10, file=fullpath, status="new", action="write")
+		end if
+
+		! for stdev
+		fullpath = trim(makedir) // '/' // trim(filename) // '_stdev'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(11, file=fullpath, status="old", position="append", action="write")
+		else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		! for var
+		fullpath = trim(makedir) // '/' // trim(filename) // '_var'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(12, file=fullpath, status="old", position="append", action="write")
+		else
+			open(12, file=fullpath, status="new", action="write")
+		end if
+
+		Ncolumns = xsize*ysize
+		x = 0.0
+		SumMean = 0.0
+		SumVar = 0.0
+
+		frmt = "("
+		do k=1,zsize
+			x = 0.0
+			SumMean = 0.0
+			SumVar = 0.0
+			do i=1,xsize
+				do j=1,ysize
+					x = dataset(i, j, k)
+					SumMean = SumMean + x
+					SumVar = SumVar + x*x
+				enddo
+			enddo
+			frmt = trim(frmt)
+			frmt = trim(frmt) // ",F18.10 "
+			frmt = trim(frmt)
+			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Var(k), Std(k))  ! compute results
+			
+		enddo
+		frmt = trim(frmt) // ")"
+		
+		write(10, frmt, advance="no")  Mean(:)
+		write(10, *, advance="no")  ","
+		write(11, frmt, advance="no")  Var(:)
+		write(11, *, advance="no")  ","
+		write(12, frmt, advance="no")  Std(:)
+		write(12, *, advance="no")  ","
+
+		close(10)
+		close(11)
+		close(12)
+		deallocate(fullpath)
+		deallocate(makedir)
+	end subroutine MeanVariance
+
+	
+	! --------------------------------------------------------------------
+	! SUBROUTINE  Results():
+	!    This subroutine computes the mean, variance and standard deviation
+	! from the sum and sum-of-squares:
+	!    (1) Sum       - sum of input values
+	!    (2) SumSQR    - sun-of-squares
+	!    (3) n         - number of input data items
+	!    (4) Mean      - computed mean value
+	!    (5) Variance  - computed variance
+	!    (6) StdDev    - computed standard deviation
+	! --------------------------------------------------------------------
+	SUBROUTINE  Results(Sum1, SumSQR, n, Mean, Variance, StdDev)
+		IMPLICIT  NONE
+
+		INTEGER, INTENT(IN) :: n
+		REAL(kind=kind_rb), INTENT(IN)    :: Sum1, SumSQR
+		REAL(kind=kind_rb), INTENT(OUT)   :: Mean, Variance, StdDev
+
+		Mean = Sum1 / n
+		Variance = (SumSQR - Sum1*Sum1/n)/(n-1)
+		StdDev   = SQRT(Variance)
+	END SUBROUTINE
+
+	subroutine finishstatisticsline(filename)
+		character(*) :: filename
+		character(:), allocatable :: fullpath
+		character(:), allocatable :: makedir
+	
+	
+		makedir = "datadir"
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		! for mean
+		fullpath = trim(makedir) // '/' // trim(filename) // '_mean'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(10, file=fullpath, status="old", position="append", action="write")
+		else
+			open(10, file=fullpath, status="new", action="write")
+		end if
+
+		! for stdev
+		fullpath = trim(makedir) // '/' // trim(filename) // '_stdev'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(11, file=fullpath, status="old", position="append", action="write")
+		else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		! for var
+		fullpath = trim(makedir) // '/' // trim(filename) // '_var'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(12, file=fullpath, status="old", position="append", action="write")
+		else
+			open(12, file=fullpath, status="new", action="write")
+		end if
+	
+	
+		write(10, *)  ' '
+		write(11, *)  ' '
+		write(12, *)  ' '
+
+		close(10)
+		close(11)
+		close(12)
+		deallocate(fullpath)
+		deallocate(makedir)
+	
+	end subroutine finishstatisticsline
+	
 	! write to file with real(kind=kind_rb) with assumed size imax, jmax, kradmax
 	subroutine writetofile(filename, dataset, dims)
 	use modraddata

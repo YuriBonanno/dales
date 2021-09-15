@@ -188,16 +188,16 @@ contains
 ! +=+=+=+=+=+=+=+= End of reading and initialization stage =+=+=++=+=+=+=+=+=+=+=++ !
 
     ! zero the RRTMG output arrays here, in case rrtmg_lw or rrtmg_sw is not executed
-    swUp_slice = 0
-    swDown_slice = 0
-    swDownDir_slice = 0
-    swDownDif_slice = 0
-    swUpCS_slice = 0
-    swDownCS_slice = 0
-    lwUp_slice = 0
-    lwDown_slice = 0
-    lwUpCS_slice = 0
-    lwDownCS_slice = 0
+    ! swUp_slice = 0
+    ! swDown_slice = 0
+    ! swDownDir_slice = 0
+    ! swDownDif_slice = 0
+    ! swUpCS_slice = 0
+    ! swDownCS_slice = 0
+    ! lwUp_slice = 0
+    ! lwDown_slice = 0
+    ! lwUpCS_slice = 0
+    ! lwDownCS_slice = 0
 	
 ! Added myself ------------------
 	!This is the "Barker method" where a set of points (i,j) are chosen to represent the whole set.
@@ -1289,10 +1289,18 @@ contains
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
+	integer :: x1, x2, y1, y2
   		
 	xsize = i1+ih - (2-ih) + 1
 	ysize = j1+jh - (2-jh) + 1
 	zsize = k1
+  
+	x1 = 2-ih
+	x2 = i1+ih
+	y1 = 2-jh
+	y2 = j1+jh
+
+
   
 	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1)
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1)
@@ -1301,52 +1309,52 @@ contains
 	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1)
 	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1)
 	
-	! call writetofiledefinedsize("lwu_" // trim(NameSuffix), lwu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwd_" // trim(NameSuffix), lwd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swu_" // trim(NameSuffix), swu(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swd_" // trim(NameSuffix), swd(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwuca_" // trim(NameSuffix), lwuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwdca_" // trim(NameSuffix), lwdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swuca_" // trim(NameSuffix), swuca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swdca_" // trim(NameSuffix), swdca(2-ih:i1+ih,2-jh:j1+jh,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("lwuca_" // trim(NameSuffix), lwuca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("lwdca_" // trim(NameSuffix), lwdca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	! call writetofiledefinedsize("swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	
 	! the values found at LWP_index
-	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swdir_" // trim(NameSuffix), swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swdif_" // trim(NameSuffix), swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_lwc_" // trim(NameSuffix), lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_lwuca_" // trim(NameSuffix), lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_lwdca_" // trim(NameSuffix), lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swuca_" // trim(NameSuffix), swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swdca_" // trim(NameSuffix), swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_lwuca_" // trim(NameSuffix), lwuca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_lwdca_" // trim(NameSuffix), lwdca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
 	
 	! the values found at LWP_index_percent
-	call writetofiledefinedsize("partial_percent_lwu_" // trim(NameSuffix), lwu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_percent_lwd_" // trim(NameSuffix), lwd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_percent_swu_" // trim(NameSuffix), swu(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_percent_swd_" // trim(NameSuffix), swd(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swdir_" // trim(NameSuffix), swdir(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swdif_" // trim(NameSuffix), swdif(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_lwc_" // trim(NameSuffix), lwc(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_lwuca_" // trim(NameSuffix), lwuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_lwdca_" // trim(NameSuffix), lwdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swuca_" // trim(NameSuffix), swuca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swdca_" // trim(NameSuffix), swdca(2-ih:i1+ih,2-jh:j1+jh,LWP_index_percent), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_percent_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_percent_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_percent_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_lwuca_" // trim(NameSuffix), lwuca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_lwdca_" // trim(NameSuffix), lwdca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	! call writetofiledefinedsize("partial_percent_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
 	
-	call writetofiledefinedsize("SW_up_TOA_" // trim(NameSuffix), SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("SW_dn_TOA_" // trim(NameSuffix), SW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_up_TOA_" // trim(NameSuffix), LW_up_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_dn_TOA_" // trim(NameSuffix), LW_dn_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("SW_up_ca_TOA_" // trim(NameSuffix), SW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("SW_dn_ca_TOA_" // trim(NameSuffix), SW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_up_ca_TOA_" // trim(NameSuffix), LW_up_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(2-ih:i1+ih,2-jh:j1+jh), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("SW_up_TOA_" // trim(NameSuffix), SW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("SW_dn_TOA_" // trim(NameSuffix), SW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("LW_up_TOA_" // trim(NameSuffix), LW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("LW_dn_TOA_" // trim(NameSuffix), LW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("SW_up_ca_TOA_" // trim(NameSuffix), SW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("SW_dn_ca_TOA_" // trim(NameSuffix), SW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("LW_up_ca_TOA_" // trim(NameSuffix), LW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
   end subroutine PrintRadiationData
   
   subroutine BarkerRad(sunUp)
@@ -1368,6 +1376,16 @@ contains
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
 
+	swUp_slice = 0
+	swDown_slice = 0
+	swDownDir_slice = 0
+	swDownDif_slice = 0
+	swUpCS_slice = 0
+	swDownCS_slice = 0
+	lwUp_slice = 0
+	lwDown_slice = 0
+	lwUpCS_slice = 0
+	lwDownCS_slice = 0
 	
 	print *, "barker true"
 	
@@ -1473,12 +1491,20 @@ contains
 
 	logical :: sunUp
 	integer :: i, j, k
-	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
-	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
-	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
 	!Array is used for testing purposes
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
+  
+	swUp_slice = 0
+	swDown_slice = 0
+	swDownDir_slice = 0
+	swDownDif_slice = 0
+	swUpCS_slice = 0
+	swDownCS_slice = 0
+	lwUp_slice = 0
+	lwDown_slice = 0
+	lwUpCS_slice = 0
+	lwDownCS_slice = 0
   
 	print *, "barker false"
 	do j=2,j1
@@ -1559,35 +1585,80 @@ contains
 	integer :: i
 	integer, dimension(:) :: ratios (13)
 	
+	!Welke datasets wil ik weergeven?
+	! - Alle TOA
+	! - Rad op relevante hoogtes
+	
+	! - Beginnen met TOA
+	!  - Eerst LWup
+	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
 	
-	swUp_slice = 0
-    swDown_slice = 0
-    swDownDir_slice = 0
-    swDownDif_slice = 0
-    swUpCS_slice = 0
-    swDownCS_slice = 0
-    lwUp_slice = 0
-    lwDown_slice = 0
-    lwUpCS_slice = 0
-    lwDownCS_slice = 0
-	
 	call StephanRad(sunUp)
+	call CompileStatistics
 	do i=1,13
-	    swUp_slice = 0
-		swDown_slice = 0
-		swDownDir_slice = 0
-		swDownDif_slice = 0
-		swUpCS_slice = 0
-		swDownCS_slice = 0
-		lwUp_slice = 0
-		lwDown_slice = 0
-		lwUpCS_slice = 0
-		lwDownCS_slice = 0
+
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
+		call CompileStatistics
 	end do
-
 	
+	call EndCompileStatistics
+
   end subroutine Diagnostics
+
+	subroutine CompileStatistics
+	  	use modraddata
+		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
+		use modradrrtmgyuriroutines, only : MeanVariance
+	
+		integer :: xsize, ysize									!helper integers for easy size allocation of writetofiles
+		integer :: x1, x2, y1, y2
+  		
+		xsize = i1+ih - (2-ih) - 1
+		ysize = j1+jh - (2-jh) - 1
+		
+		x1 = 3-ih
+		x2 = i1+ih-1
+		y1 = 3-jh
+		y2 = j1+jh-1
+		
+		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
+		call MeanVariance(SW_dn_TOA(x1:x2,y1:y2),"SW_dn_TOA", xsize, ysize, 1)
+		call MeanVariance(LW_up_TOA(x1:x2,y1:y2),"LW_up_TOA", xsize, ysize, 1)
+		call MeanVariance(LW_dn_TOA(x1:x2,y1:y2),"LW_dn_TOA", xsize, ysize, 1)
+	
+		! the values found at LWP_index
+		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index), "partial_lwu", xsize, ysize, 4)
+		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index), "partial_lwd", xsize, ysize, 4)
+		call MeanVariance(swu(x1:x2,y1:y2,LWP_index), "partial_swu", xsize, ysize, 4)
+		call MeanVariance(swd(x1:x2,y1:y2,LWP_index), "partial_swd", xsize, ysize, 4)
+
+		! the values found at LWP_index_percent
+		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwu", xsize, ysize, 4)
+		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwd", xsize, ysize, 4)
+		call MeanVariance(swu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swu", xsize, ysize, 4)
+		call MeanVariance(swd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swd", xsize, ysize, 4)
+	
+	end subroutine CompileStatistics
+	
+	subroutine EndCompileStatistics
+		use modradrrtmgyuriroutines, only : finishstatisticsline
+	
+		call finishstatisticsline("SW_up_TOA")
+		call finishstatisticsline("SW_dn_TOA")
+		call finishstatisticsline("LW_up_TOA")
+		call finishstatisticsline("LW_dn_TOA")
+		
+		call finishstatisticsline("partial_lwu")
+		call finishstatisticsline("partial_lwd")
+		call finishstatisticsline("partial_swu")
+		call finishstatisticsline("partial_swd")
+		
+		call finishstatisticsline("partial_percent_lwu")
+		call finishstatisticsline("partial_percent_lwd")
+		call finishstatisticsline("partial_percent_swu")
+		call finishstatisticsline("partial_percent_swd")
+	end subroutine EndCompileStatistics
+
 end module modradrrtmg
