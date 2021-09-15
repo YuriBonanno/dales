@@ -214,6 +214,7 @@ contains
 	
 	if (diagnostic_run) then
 		call Diagnostics(sunUp)
+		call PrintRadiationData("diagnostics")
 	else
 		if (barker_method) then
 			call BarkerRad(sunUp)

@@ -177,6 +177,7 @@ contains
 		integer :: dims, i, j, k, m
 		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		logical :: fileexists=.false.
 		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
@@ -234,15 +235,11 @@ contains
 			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Var(k), Std(k))  ! compute results
 			
 		enddo
-		frmt = trim(frmt) // ")"
+		frmt = trim(frmt) // ", A)"
 		
-		write(10, frmt, advance="no")  Mean(:)
-		write(10, *, advance="no")  ","
-		write(11, frmt, advance="no")  Var(:)
-		write(11, *, advance="no")  ","
-		write(12, frmt, advance="no")  Std(:)
-		write(12, *, advance="no")  ","
-
+		write(10, frmt, advance="no")  Mean(:), ","
+		write(11, frmt, advance="no")  Var(:), ","
+		write(12, frmt, advance="no")  Std(:), ","
 		close(10)
 		close(11)
 		close(12)
@@ -275,6 +272,7 @@ contains
 	END SUBROUTINE
 
 	subroutine finishstatisticsline(filename)
+		logical :: fileexists=.false.
 		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
