@@ -171,11 +171,11 @@ contains
 	!    (3)  PrintResult() - print results
 	! --------------------------------------------------------------------
 	subroutine MeanVariance(dataset, filename, xsize, ysize, zsize)
+		integer :: xsize, ysize, zsize
 		REAL(kind=kind_rb)    :: SumMean, SumVar, x
 		REAL(kind=kind_rb)    :: Mean(zsize), Var(zsize), Std(zsize)
 		integer :: Ncolumns
 		integer :: dims, i, j, k, m
-		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		logical :: fileexists=.false.
 		character(*) :: filename
