@@ -533,10 +533,10 @@ contains
 			open(11, file=fullpath, status="new", action="write")
 		end if
 		
-		frmt = "(I0"
+		frmt = "(I6"
 		do i=2,xsize
 			frmt = trim(frmt)
-			frmt = trim(frmt) // ",I0 "
+			frmt = trim(frmt) // ",I6 "
 			frmt = trim(frmt)
 		end do
 		frmt = trim(frmt) // ")"
