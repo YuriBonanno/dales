@@ -1434,7 +1434,9 @@ contains
 		end if
 
 			  !!
-
+			  
+		print *, "rad_shortw bark"
+		print *, rad_shortw
 		if (rad_shortw) then
 			call setupSW(sunUp)
 			if (sunUp) then
@@ -1527,7 +1529,9 @@ contains
 		end if
 
 		!!
-
+		
+		print *, "rad_shortw steph"
+		print *, rad_shortw
 		if (rad_shortw) then
 		 call setupSW(sunUp)
 			 if (sunUp) then
