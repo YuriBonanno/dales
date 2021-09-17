@@ -1410,6 +1410,7 @@ contains
 	! Function that Create n <= j1 slices with the necessary fields.
 		! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
 	do j = 1, GLQ_slices
+		print *, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
 		!Shorten slices if imax the amount of GLQ points left is smaller than imax
 		if (j == GLQ_slices .and. slice_length>0) then
 
@@ -1511,7 +1512,7 @@ contains
   
 	print *, "barker false"
 	do j=2,j1
-
+		print *, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 		call setupSlicesFromProfiles &
 		   ( j, npatch_start, &                                           !input
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
