@@ -1600,13 +1600,34 @@ contains
 	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
 	
+	print *, "SW_up_TOA"
+	print *, sum(SW_up_TOA)
+	print *, "SW_dn_TOA"
+	print *, sum(SW_dn_TOA)
+	
 	call StephanRad(sunUp)
 	call CompileStatistics
+	print *, "stephanrad"
+	print *, "SW_up_TOA"
+	print *, sum(SW_up_TOA)
+	print *, "SW_dn_TOA"
+	print *, sum(SW_dn_TOA)
 	do i=1,13
 
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
 		call CompileStatistics
+		print *, "Barker", i
+		print *, "SW_up_TOA"
+		print *, sum(SW_up_TOA)
+		print *, "SW_dn_TOA"
+		print *, sum(SW_dn_TOA)
+		call CompileStatistics
+		print *, "Barker", i
+		print *, "SW_up_TOA"
+		print *, sum(SW_up_TOA)
+		print *, "SW_dn_TOA"
+		print *, sum(SW_dn_TOA)
 	end do
 	
 	call EndCompileStatistics
