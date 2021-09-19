@@ -1410,7 +1410,6 @@ contains
 	! Function that Create n <= j1 slices with the necessary fields.
 		! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
 	do j = 1, GLQ_slices
-		print *, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
 		!Shorten slices if imax the amount of GLQ points left is smaller than imax
 		if (j == GLQ_slices .and. slice_length>0) then
 
@@ -1436,8 +1435,6 @@ contains
 
 			  !!
 			  
-		print *, "rad_shortw bark"
-		print *, rad_shortw
 		if (rad_shortw) then
 			call setupSW(sunUp)
 			if (sunUp) then
@@ -1512,7 +1509,6 @@ contains
   
 	print *, "barker false"
 	do j=2,j1
-		print *, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 		call setupSlicesFromProfiles &
 		   ( j, npatch_start, &                                           !input
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
@@ -1600,34 +1596,14 @@ contains
 	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
 	
-	print *, "SW_up_TOA"
-	print *, sum(SW_up_TOA)
-	print *, "SW_dn_TOA"
-	print *, sum(SW_dn_TOA)
-	
 	call StephanRad(sunUp)
 	call CompileStatistics
-	print *, "stephanrad"
-	print *, "SW_up_TOA"
-	print *, sum(SW_up_TOA)
-	print *, "SW_dn_TOA"
-	print *, sum(SW_dn_TOA)
 	do i=1,13
 
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
 		call CompileStatistics
-		print *, "Barker", i
-		print *, "SW_up_TOA"
-		print *, sum(SW_up_TOA)
-		print *, "SW_dn_TOA"
-		print *, sum(SW_dn_TOA)
 		call CompileStatistics
-		print *, "Barker", i
-		print *, "SW_up_TOA"
-		print *, sum(SW_up_TOA)
-		print *, "SW_dn_TOA"
-		print *, sum(SW_dn_TOA)
 	end do
 	
 	call EndCompileStatistics
