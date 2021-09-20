@@ -1605,8 +1605,8 @@ contains
 	do i=1,ratioSize
 
 		n_RT_Ratio = ratios(i)
-		! call BarkerRad(sunUp)
-		! call CompileStatistics
+		call BarkerRad(sunUp)
+		call CompileStatistics
 	end do
 	
 	call EndCompileStatistics
