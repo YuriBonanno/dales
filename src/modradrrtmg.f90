@@ -1595,10 +1595,13 @@ contains
 	!  - Eerst LWup
 	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
+	ratioSize = size(ratios)
+	
+	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1)
 	
 	call StephanRad(sunUp)
 	call CompileStatistics
-	do i=1,13
+	do i=1,ratioSize
 
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
