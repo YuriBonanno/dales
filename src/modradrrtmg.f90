@@ -1607,7 +1607,6 @@ contains
 		n_RT_Ratio = ratios(i)
 		call BarkerRad(sunUp)
 		call CompileStatistics
-		call CompileStatistics
 	end do
 	
 	call EndCompileStatistics
