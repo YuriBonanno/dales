@@ -270,7 +270,7 @@ contains
 		Variance = (SumSQR - Sum1*Sum1/n)/(n-1)
 		if (Variance < 0.0) then
 			Variance = 0
-		end
+		end if
 		StdDev   = SQRT(Variance)
 	END SUBROUTINE
 
