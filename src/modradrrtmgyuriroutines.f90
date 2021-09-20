@@ -173,7 +173,7 @@ contains
 	subroutine MeanVariance(dataset, filename, xsize, ysize, zsize)
 		integer :: xsize, ysize, zsize
 		REAL(kind=kind_rb)    :: SumMean, SumVar, x
-		REAL(kind=kind_rb)    :: Mean(zsize), Var(zsize), Std(zsize)
+		REAL(kind=kind_rb)    :: Mean(zsize), Std(zsize), Var(zsize)
 		integer :: Ncolumns
 		integer :: dims, i, j, k, m
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
@@ -232,14 +232,14 @@ contains
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",F18.10 "
 			frmt = trim(frmt)
-			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Var(k), Std(k))  ! compute results
+			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Std(k), Var(k))  ! compute results
 			
 		enddo
 		frmt = trim(frmt) // ", A)"
 		
 		write(10, frmt, advance="no")  Mean(:), ","
-		write(11, frmt, advance="no")  Var(:), ","
-		write(12, frmt, advance="no")  Std(:), ","
+		write(11, frmt, advance="no")  Std(:), ","
+		write(12, frmt, advance="no")  Var(:), ","
 		close(10)
 		close(11)
 		close(12)
@@ -259,15 +259,18 @@ contains
 	!    (5) Variance  - computed variance
 	!    (6) StdDev    - computed standard deviation
 	! --------------------------------------------------------------------
-	SUBROUTINE  Results(Sum1, SumSQR, n, Mean, Variance, StdDev)
+	SUBROUTINE  Results(Sum1, SumSQR, n, Mean, StdDev, Variance)
 		IMPLICIT  NONE
 
 		INTEGER, INTENT(IN) :: n
 		REAL(kind=kind_rb), INTENT(IN)    :: Sum1, SumSQR
-		REAL(kind=kind_rb), INTENT(OUT)   :: Mean, Variance, StdDev
+		REAL(kind=kind_rb), INTENT(OUT)   :: Mean, StdDev, Variance
 
 		Mean = Sum1 / n
 		Variance = (SumSQR - Sum1*Sum1/n)/(n-1)
+		if (Variance < 0.0) then
+			Variance = 0
+		end
 		StdDev   = SQRT(Variance)
 	END SUBROUTINE
 
