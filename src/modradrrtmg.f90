@@ -1584,7 +1584,7 @@ contains
 	implicit none
 	
 	logical :: sunUp
-	integer :: i
+	integer :: i, ratioSize
 	integer, dimension(:) :: ratios (13)
 	
 	!Welke datasets wil ik weergeven?
