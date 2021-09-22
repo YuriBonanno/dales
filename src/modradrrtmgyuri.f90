@@ -438,7 +438,7 @@ contains
 				!print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case
 				! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop, .true.)
-				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop, .true.)
+				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
 				! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop, .true.)
 				
 				counter = 0
