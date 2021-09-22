@@ -16,7 +16,7 @@ contains
     use modsurfdata ,  only : tskin
 	! Added myself ------------------
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
-	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile
+	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
 	!End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
@@ -1285,17 +1285,13 @@ contains
 		end if
 	end do
 	
-	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
-	
-	call writerealtofile("total_cloud_fraction", total_cloud_fraction, .false.)
-	
   end subroutine LWPDataCollection
 ! ==============================================================================;
 ! ==============================================================================;
   subroutine PrintRadiationData(NameSuffix)
   	use modraddata
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
+	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
@@ -1309,6 +1305,10 @@ contains
 	x2 = i1+ih
 	y1 = 2-jh
 	y2 = j1+jh
+
+	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
+	
+	call writerealtofile("total_cloud_fraction_" // trim(NameSuffix), total_cloud_fraction, .false.)
 
 	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
 	call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
