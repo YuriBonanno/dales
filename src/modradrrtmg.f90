@@ -1209,9 +1209,13 @@ contains
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
 	end do
 
+	n_clouds = 0
 	do i=1,imax
 		do j=1,jmax
 			LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
+			if (LWP_flattened(i,j) > cloud_threshold) then
+				n_clouds = n_clouds + 1
+			end if
 		end do
 	end do
 
@@ -1280,6 +1284,11 @@ contains
 			EXIT
 		end if
 	end do
+	
+	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
+	
+	call writerealtofile("total_cloud_fraction", total_cloud_fraction, .false.)
+	
   end subroutine LWPDataCollection
 ! ==============================================================================;
 ! ==============================================================================;
@@ -1301,13 +1310,11 @@ contains
 	y1 = 2-jh
 	y2 = j1+jh
 
-
-  
-	! call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
-	! call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
-	! call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
-	! call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
-	! call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
+	call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	

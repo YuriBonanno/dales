@@ -149,6 +149,8 @@ SAVE
 	!!Added by Yuri
 	!----------------------------------------
 	
+	real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
+	
 	integer :: n_GLQ_cloudtop											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless

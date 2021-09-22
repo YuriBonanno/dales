@@ -80,7 +80,7 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
 		
 		!Grid data
-		real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
+		! real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
 		!real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		
 		! real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)		!full grid LWP contents, Is not actually a LWP
 		real(kind=kind_rb),dimension(:,:,:) :: layerP_grid 		(imax, jmax, krad1)		!pressure at grid core (full-level)
@@ -580,17 +580,15 @@ contains
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1, .true.)
 		
-		! call writerealtofile("total_cloud_fraction", total_cloud_fraction, .false.)
-		
 		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .true.)
 		call writeinttofile("n_RT", n_RT, .true.)
 		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .true.)
 		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
-		! call writeinttofile("n_clear", n_clear, .false.)
-		! call writeinttofile("n_clouds", n_clouds, .false.)
-		! call writeinttofile("n_classes", n_classes, .false.)
-		! call writeinttofile("class_size", class_size, .false.)
+		call writeinttofile("n_clear", n_clear, .false.)
+		call writeinttofile("n_clouds", n_clouds, .false.)
+		call writeinttofile("n_classes", n_classes, .false.)
+		call writeinttofile("class_size", class_size, .false.)
 
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
