@@ -580,17 +580,17 @@ contains
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1, .true.)
 		
-		call writerealtofile("total_cloud_fraction", total_cloud_fraction, .false.)
+		! call writerealtofile("total_cloud_fraction", total_cloud_fraction, .false.)
 		
 		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .true.)
 		call writeinttofile("n_RT", n_RT, .true.)
 		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .true.)
 		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
-		call writeinttofile("n_clear", n_clear, .false.)
-		call writeinttofile("n_clouds", n_clouds, .false.)
-		call writeinttofile("n_classes", n_classes, .false.)
-		call writeinttofile("class_size", class_size, .false.)
+		! call writeinttofile("n_clear", n_clear, .false.)
+		! call writeinttofile("n_clouds", n_clouds, .false.)
+		! call writeinttofile("n_classes", n_classes, .false.)
+		! call writeinttofile("class_size", class_size, .false.)
 
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
@@ -600,7 +600,7 @@ contains
 		! call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)
 		! call writetofiledefinedsizeint("original_clear_LWP_indexes", original_clear_LWP_indexes, 2, n_clear, 2, 1)
 		! call writetofiledefinedsizeint("original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes, 2, n_clouds, 2, 1)
-		print *, "finished GLQ to long total array"
+		! print *, "finished GLQ to long total array"
 
 	end subroutine findGLQPoints
 	
