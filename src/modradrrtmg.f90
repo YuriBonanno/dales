@@ -1602,7 +1602,7 @@ contains
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
 	ratioSize = size(ratios)
 	
-	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1)
+	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1, .false.)
 	
 	call cpu_time(startTime)
 	call StephanRad(sunUp)
