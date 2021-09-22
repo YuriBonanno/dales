@@ -1303,11 +1303,11 @@ contains
 
 
   
-	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
-	call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
-	call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
-	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
-	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
+	! call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
+	! call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
+	! call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
+	! call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
+	! call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	
@@ -1604,21 +1604,21 @@ contains
 	
 	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1, .true.)
 	
-	call cpu_time(startTime)
+	! call cpu_time(startTime)
 	call StephanRad(sunUp)
-	call cpu_time(endTime)
-	netTime = endTime - endTime
-	timeSet(1) = netTime
+	! call cpu_time(endTime)
+	! netTime = endTime - endTime
+	! timeSet(1) = netTime
 	
 	call CompileStatistics
 	do i=1,ratioSize
 
 		n_RT_Ratio = ratios(i)
-		call cpu_time(startTime)
+		! call cpu_time(startTime)
 		call BarkerRad(sunUp)
-		call cpu_time(endTime)
-		netTime = endTime - endTime
-		timeSet(i+1) = netTime
+		! call cpu_time(endTime)
+		! netTime = endTime - endTime
+		! timeSet(i+1) = netTime
 		call CompileStatistics
 	end do
 	
