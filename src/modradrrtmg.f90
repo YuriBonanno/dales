@@ -1584,7 +1584,7 @@ contains
   
   subroutine Diagnostics(sunUp)
   	use modraddata
-	use modradrrtmgyuriroutines, only : writetofiledefinedsizeint
+	use modradrrtmgyuriroutines, only : writetofiledefinedsizeint, writetofiledefinedsize
 	implicit none
 	
 	logical :: sunUp
