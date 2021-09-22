@@ -332,7 +332,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		logical :: printLast=.true.
+		logical :: printLast
 		integer :: dims, i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -418,7 +418,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		logical :: printLast=.true.
+		logical :: printLast
 		integer :: dims, i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -518,7 +518,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		logical :: printLast=.true.
+		logical :: printLast
 		integer :: dims, i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -604,7 +604,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		logical :: printLast=.true.
+		logical :: printLast
 		integer :: i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -654,7 +654,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
-		logical :: printLast=.true.
+		logical :: printLast
 		integer :: i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
