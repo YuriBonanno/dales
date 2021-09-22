@@ -178,6 +178,8 @@ SAVE
 	integer,allocatable,dimension(:,:):: original_index_all
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
 	
+	real(kind=kind_rb) :: startTime, endTime, netTime
+	
 	real(kind=kind_rb) :: LWP_temp
 	real(kind=kind_rb) :: LWP_total
 	integer,dimension(:) :: LWP_index (4)

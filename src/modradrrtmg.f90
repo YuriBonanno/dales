@@ -1303,12 +1303,13 @@ contains
 
 
   
-	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1)
-	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1)
-	call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1)
-	call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1)
-	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1)
-	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1)
+	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
+	call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
+	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
+	
+	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	
 	! call writetofiledefinedsize("lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
@@ -1323,10 +1324,10 @@ contains
 	! call writetofiledefinedsize("swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	
 	! the values found at LWP_index
-	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
 	! call writetofiledefinedsize("partial_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
@@ -1336,10 +1337,10 @@ contains
 	! call writetofiledefinedsize("partial_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
 	
 	! the values found at LWP_index_percent
-	call writetofiledefinedsize("partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_percent_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_percent_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	call writetofiledefinedsize("partial_percent_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
+	call writetofiledefinedsize("partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_percent_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_percent_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_percent_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
 	! call writetofiledefinedsize("partial_percent_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_percent_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_percent_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
@@ -1348,14 +1349,14 @@ contains
 	! call writetofiledefinedsize("partial_percent_swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_percent_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
 	
-	call writetofiledefinedsize("SW_up_TOA_" // trim(NameSuffix), SW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("SW_dn_TOA_" // trim(NameSuffix), SW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_up_TOA_" // trim(NameSuffix), LW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_dn_TOA_" // trim(NameSuffix), LW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("SW_up_ca_TOA_" // trim(NameSuffix), SW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("SW_dn_ca_TOA_" // trim(NameSuffix), SW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_up_ca_TOA_" // trim(NameSuffix), LW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
-	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1)
+	call writetofiledefinedsize("SW_up_TOA_" // trim(NameSuffix), SW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("SW_dn_TOA_" // trim(NameSuffix), SW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("LW_up_TOA_" // trim(NameSuffix), LW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("LW_dn_TOA_" // trim(NameSuffix), LW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("SW_up_ca_TOA_" // trim(NameSuffix), SW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("SW_dn_ca_TOA_" // trim(NameSuffix), SW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("LW_up_ca_TOA_" // trim(NameSuffix), LW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
+	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
   end subroutine PrintRadiationData
   
   subroutine BarkerRad(sunUp)
@@ -1377,6 +1378,8 @@ contains
 	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
 	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
 
+
+
 	swUp_slice = 0
 	swDown_slice = 0
 	swDownDir_slice = 0
@@ -1388,7 +1391,7 @@ contains
 	lwUpCS_slice = 0
 	lwDownCS_slice = 0
 	
-	print *, "barker true"
+	! print *, "barker true"
 	
 	!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
 
@@ -1507,7 +1510,7 @@ contains
 	lwUpCS_slice = 0
 	lwDownCS_slice = 0
   
-	print *, "barker false"
+	! print *, "barker false"
 	do j=2,j1
 		call setupSlicesFromProfiles &
 		   ( j, npatch_start, &                                           !input
@@ -1527,8 +1530,8 @@ contains
 
 		!!
 		
-		print *, "rad_shortw steph"
-		print *, rad_shortw
+		! print *, "rad_shortw steph"
+		! print *, rad_shortw
 		if (rad_shortw) then
 		 call setupSW(sunUp)
 			 if (sunUp) then
@@ -1587,6 +1590,7 @@ contains
 	logical :: sunUp
 	integer :: i, ratioSize
 	integer, dimension(:) :: ratios (13)
+	real(kind=kind_rb), dimension(:) :: timeSet (14)
 	
 	!Welke datasets wil ik weergeven?
 	! - Alle TOA
@@ -1600,14 +1604,25 @@ contains
 	
 	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1)
 	
+	call cpu_time(startTime)
 	call StephanRad(sunUp)
+	call cpu_time(endTime)
+	netTime = endTime - endTime
+	timeSet(1) = netTime
+	
 	call CompileStatistics
 	do i=1,ratioSize
 
 		n_RT_Ratio = ratios(i)
+		call cpu_time(startTime)
 		call BarkerRad(sunUp)
+		call cpu_time(endTime)
+		netTime = endTime - endTime
+		timeSet(i+1) = netTime
 		call CompileStatistics
 	end do
+	
+	call writetofiledefinedsize("netTime", timeSet, 1, 14, 1, 1, .false.)
 	
 	call EndCompileStatistics
 

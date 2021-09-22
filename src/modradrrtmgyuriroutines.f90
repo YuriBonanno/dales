@@ -324,7 +324,7 @@ contains
 	end subroutine finishstatisticsline
 	
 	! write to file with real(kind=kind_rb) with assumed size imax, jmax, kradmax
-	subroutine writetofile(filename, dataset, dims)
+	subroutine writetofile(filename, dataset, dims, printLast)
 	use modraddata
 	use modglobal, only: imax, jmax, kmax, kind_rb
 
@@ -332,6 +332,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
+		logical :: printLast=.true.
 		integer :: dims, i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -339,10 +340,12 @@ contains
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 		character(50000) :: frmt
 
-		if (.NOT. ((tnext/1000)>=runtime)) then
-			return
+		if (printLast) then
+			if (.NOT. ((tnext/1000)>=runtime)) then
+				return
+			end if
 		end if
-
+		
 		makedir = "datadir"
 		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
 		call execute_command_line ('mkdir -p ' // trim(makedir))
@@ -359,7 +362,11 @@ contains
 		!print *, fileexists
 		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-			open(11, file=fullpath, status="replace", action="write")
+			if (printLast) then
+				open(11, file=fullpath, status="replace", action="write")
+			else
+				open(11, file=fullpath, status="old", position="append", action="write")
+			end if
 		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
@@ -403,7 +410,7 @@ contains
 	end subroutine
 
 	! write to file with real(kind=kind_rb) with defined size
-	subroutine writetofiledefinedsize(filename, dataset, dims, xsize, ysize, zsize)
+	subroutine writetofiledefinedsize(filename, dataset, dims, xsize, ysize, zsize, printLast)
 	! use modraddata
 	use modglobal, only: kind_rb
 
@@ -411,6 +418,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
+		logical :: printLast=.true.
 		integer :: dims, i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -419,8 +427,10 @@ contains
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
 
-		if (.NOT. ((tnext/1000)>=runtime)) then
-			return
+		if (printLast) then
+			if (.NOT. ((tnext/1000)>=runtime)) then
+				return
+			end if
 		end if
 
 		makedir = "datadir"
@@ -439,7 +449,11 @@ contains
 		!print *, fileexists
 		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-			open(11, file=fullpath, status="replace", action="write")
+			if (printLast) then
+				open(11, file=fullpath, status="replace", action="write")
+			else
+				open(11, file=fullpath, status="old", position="append", action="write")
+			end if
 		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
@@ -494,8 +508,9 @@ contains
 
 	end subroutine
 	
+	
 	! write to file with integers with defined size
-	subroutine writetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize)
+	subroutine writetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize, printLast)
 	! use modraddata
 	! use modglobal, only: imax, jmax, kmax, kind_rb
 
@@ -503,6 +518,7 @@ contains
 
 	!Files
 		logical :: fileexists=.false.
+		logical :: printLast=.true.
 		integer :: dims, i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
@@ -511,8 +527,10 @@ contains
 		integer :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
 
-		if (.NOT. ((tnext/1000)>=runtime)) then
-			return
+		if (printLast) then
+			if (.NOT. ((tnext/1000)>=runtime)) then
+				return
+			end if
 		end if
 
 		makedir = "datadir"
@@ -531,7 +549,11 @@ contains
 		!print *, fileexists
 		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-			open(11, file=fullpath, status="replace", action="write")
+			if (printLast) then
+				open(11, file=fullpath, status="replace", action="write")
+			else
+				open(11, file=fullpath, status="old", position="append", action="write")
+			end if
 		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
@@ -575,21 +597,24 @@ contains
 	end subroutine
 
 	! write single ints to file
-	subroutine writeinttofile(filename, intvalue)
+	subroutine writeinttofile(filename, intvalue, printLast)
 	! use modraddata
 
 	implicit none
 
 	!Files
 		logical :: fileexists=.false.
+		logical :: printLast=.true.
 		integer :: i, j, k
 		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
 		integer :: intvalue
 
-		if (.NOT. ((tnext/1000)>=runtime)) then
-			return
+		if (printLast) then
+			if (.NOT. ((tnext/1000)>=runtime)) then
+				return
+			end if
 		end if
 
 		makedir = "datadir"
@@ -604,7 +629,11 @@ contains
 		!print *, fileexists
 		if (fileexists) then
 			! open(11, file=fullpath, status="old", position="append", action="write")
-			open(11, file=fullpath, status="replace", action="write")
+			if (printLast) then
+				open(11, file=fullpath, status="replace", action="write")
+			else
+				open(11, file=fullpath, status="old", position="append", action="write")
+			end if
 		else
 			open(11, file=fullpath, status="new", action="write")
 		end if
@@ -616,6 +645,92 @@ contains
 		deallocate(makedir)
 
 	end subroutine
+
+	! write single real to file
+	subroutine writerealtofile(filename, realvalue, printLast)
+	! use modraddata
+
+	implicit none
+
+	!Files
+		logical :: fileexists=.false.
+		logical :: printLast=.true.
+		integer :: i, j, k
+		character(*) :: filename
+		character(:), allocatable :: fullpath
+		character(:), allocatable :: makedir
+		real(kind=kind_rb) :: realvalue
+
+		if (printLast) then
+			if (.NOT. ((tnext/1000)>=runtime)) then
+				return
+			end if
+		end if
+
+		makedir = "datadir"
+		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		fullpath = trim(makedir) // '/' // trim(filename)
+		
+		!__________________________________________________________
+		!Make and write to files
+	
+		inquire(file=fullpath, exist=fileexists)
+		!print *, fileexists
+		if (fileexists) then
+			! open(11, file=fullpath, status="old", position="append", action="write")
+			if (printLast) then
+				open(11, file=fullpath, status="replace", action="write")
+			else
+				open(11, file=fullpath, status="old", position="append", action="write")
+			end if
+		else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		write(11, *) realvalue
+
+		close(11)
+		deallocate(fullpath)
+		deallocate(makedir)
+
+	end subroutine
+
+	! subroutine handleIndexes(dataset, filename, length)
+		! integer :: length
+		! integer :: dims, i
+		! real(kind=kind_rb) :: dataset (length)
+		! logical :: fileexists=.false.
+		! character(*) :: filename
+		! character(:), allocatable :: fullpath
+		! character(:), allocatable :: makedir
+		! character(500) :: frmt
+
+		! makedir = "datadir"
+		! call execute_command_line ('mkdir -p ' // trim(makedir))
+		! ! ! ! for mean
+		! fullpath = trim(makedir) // '/' // trim(filename)'
+		! inquire(file=fullpath, exist=fileexists)
+		! if (fileexists) then
+			! open(10, file=fullpath, status="old", position="append", action="write")
+		! else
+			! open(10, file=fullpath, status="new", action="write")
+		! end if
+
+		! frmt = "("
+		! do i=1,length
+			! frmt = trim(frmt)
+			! frmt = trim(frmt) // ",F18.10 "
+			! frmt = trim(frmt)
+			
+		! enddo
+		! frmt = trim(frmt) // ", A)"
+		
+		! write(10, frmt, advance="no")  dataset(:), ","
+		! close(10)
+		! deallocate(fullpath)
+		! deallocate(makedir)
+	! end subroutine MeanVariance
 
 end module modradrrtmgyuriroutines
 

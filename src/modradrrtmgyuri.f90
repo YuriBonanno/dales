@@ -154,15 +154,15 @@ contains
 		LWP_grid(1:imax,1:jmax,1:kradmax) = qcl_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 
-		!call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax)
-		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1)
-		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2)
-		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1)
-		! call writetofiledefinedsize("LWP_grid_barker_" // trim(int_str_container), LWP_grid, 3, imax, jmax, krad1)
+		!call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax, .true.)
+		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
+		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
+		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
+		! call writetofiledefinedsize("LWP_grid_barker_" // trim(int_str_container), LWP_grid, 3, imax, jmax, krad1, .true.)
 		!----------------------------------------------------------
-		print *, "finished Define all field values"
-		!__________________________________________________________
-		print *, "starting cloud and LWP data"
+		! print *, "finished Define all field values"
+		! ! __________________________________________________________
+		! print *, "starting cloud and LWP data"
 
 		
 		
@@ -197,7 +197,7 @@ contains
 	    end do
 		
 		!print *, "4096?", imax*jmax
-		!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1,imax*jmax , 1, 1)
+		!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1,imax*jmax , 1, 1, .true.)
 		
 		if (SUM(cloudtop_distribution).ne.n_clouds) then
 			print *, "Warning: cloud patch threshold and cloud threshold have undeterminable results"
@@ -212,8 +212,8 @@ contains
 		total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 		
 		!Write to file for test purposes
-		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1)
-		call writetofiledefinedsizeint("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1)
+		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
+		call writetofiledefinedsizeint("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1, .true.)
 		
 		!Determined:
 		!   Cloud_fraction
@@ -223,8 +223,8 @@ contains
 		!   n_clear
 		!   LWP_flattened
 		
-		print *, "finished cloud and LWP data"
-		print *, "starting cloudless collumns"
+		! print *, "finished cloud and LWP data"
+		! print *, "starting cloudless collumns"
 		
 		!Perform the finding of GLQ points for the cloudless collumns
 		temp_n_GLQ_clear = n_GLQ_clear
@@ -233,7 +233,7 @@ contains
 			if (temp_n_GLQ_clear > n_clear) then
 				temp_n_GLQ_clear = n_clear
 			end if
-			print *, "n_clear > 0"
+			! print *, "n_clear > 0"
 			
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (original_clear_LWP_indexes (n_clear, 2))
@@ -265,7 +265,7 @@ contains
 			call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, temp_n_GLQ_clear)
 		
 			!Write to files for test purposes
-			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1)
+			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
 		
 			!Save coordinates of the points to an array containing all the GLQ points
 			do N_g = 1, temp_n_GLQ_clear
@@ -281,21 +281,21 @@ contains
 		else
 			temp_n_GLQ_clear = 0
 		end if
-		print *, "finished cloudless collumns"
+		! print *, "finished cloudless collumns"
 
 
 		!Cloudy Sky Gauss-Legendre
 		!Select only the collumns with a nonzero cloudratio
-		print *, "starting clouded collumns"
+		! print *, "starting clouded collumns"
 		n_classes = 0
 		class_size = 0
 		n_GLQ_cloudtop = 0
 		!Perform the finding of GLQ points for the clouded collumns
-		print *, "n_clear", n_clear
-		print *, "n_clouds", n_clouds
-		print *, "n_clouds+n_clear", n_clouds+n_clear
+		! print *, "n_clear", n_clear
+		! print *, "n_clouds", n_clouds
+		! print *, "n_clouds+n_clear", n_clouds+n_clear
 		if (n_clouds > 0) then
-			print *, "n_clouds > 0"
+			! print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 			
 			!Place the clouds in order on basis of cloudtop height from low to high.
@@ -314,12 +314,12 @@ contains
 			
 			!Write to file for testing purposes
 			!print *, "LookIfActuallyIncreasing"
-			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, n_clouds, 1, 1)
+			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, n_clouds, 1, 1, .true.)
 			
 			!Determined:
 			!   cloudtop_height_ordered
 			
-			write(*,*)
+			! write(*,*)
 
 			!Initialise the classes
 			!First tries to fill n_classes_initial with the same amount of collumns, 
@@ -338,7 +338,7 @@ contains
 
 				!Write to file for testing purposes
 				!print *, "write to file"
-				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1)
+				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1, .true.)
 				
 				!print *, "quantiles_value"
 				!print *, quantiles_value
@@ -406,12 +406,12 @@ contains
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 				!print *, "no merging fail"
 			end if
-			print *, "cloud and classes finished"
+			! print *, "cloud and classes finished"
 			!print *, "n_classes", n_classes
 			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
 			!print *, "LWP_flattened before allocation"
-			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
 			n_RT = (imax*jmax)/(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
@@ -431,21 +431,21 @@ contains
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
 			!print *, "LWP_flattened after allocation"
-			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
-			print *, "start going through classes"
+			! print *, "start going through classes"
 			do n = 1, n_classes
 				!print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case
-				! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop)
-				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
-				! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop)
+				! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop, .true.)
+				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop, .true.)
+				! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop, .true.)
 				
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
 				!print *, "Place the original LWP values"
 				!print *, "LWP_flattened before placing the original LWP values"
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 				do j = 1, jmax
 					do i = 1, imax
 						if (cloud_class(i,j) == n) then
@@ -458,7 +458,7 @@ contains
 					end do
 				end do
 				!print *, "LWP_flattened after placing the original LWP values"
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 				
 				!print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
@@ -470,18 +470,18 @@ contains
 				!Class size is suddenly 4095???
 				!print *, cloudtop_LWP_ordered(:,n)
 				!print *, "LWP_flattened1"
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1)
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4095, 1, 1)
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, class_size, 1, 1)
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4095, 1, 1, .true.)
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, class_size, 1, 1, .true.)
 				!print *, "LWP_flattened2"
-				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, imax*jmax, 1, 1)
+				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, imax*jmax, 1, 1, .true.)
 				!print *, "cloudtop LWP ordered"
 				!print *, "n", n
 				!print *, "class size", class_size
 				!print *, "n_classes", n_classes
-				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4096, 1, 1)
-				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1)
-				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1)
+				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4096, 1, 1, .true.)
+				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1, .true.)
+				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1, .true.)
 			
 				!print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
@@ -499,7 +499,7 @@ contains
 			deallocate(cloudtop_LWP_ordered)
 		end if
 		
-		print *, "finished clouded collumns"
+		! print *, "finished clouded collumns"
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
@@ -572,23 +572,25 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1)
-		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1)
-		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1)
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
+		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
+		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .true.)
 		
-		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1)
-		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1)
-		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1)
+		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1, .true.)
+		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
+		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1, .true.)
 		
-		call writeinttofile("n_RT_Ratio", n_RT_Ratio)
-		call writeinttofile("n_RT", n_RT)
-		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear)
-		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop)
+		call writerealtofile("total_cloud_fraction", total_cloud_fraction, .false.)
+		
+		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .true.)
+		call writeinttofile("n_RT", n_RT, .true.)
+		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .true.)
+		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
-		call writeinttofile("n_clear", n_clear)
-		call writeinttofile("n_clouds", n_clouds)
-		call writeinttofile("n_classes", n_classes)
-		call writeinttofile("class_size", class_size)
+		call writeinttofile("n_clear", n_clear, .false.)
+		call writeinttofile("n_clouds", n_clouds, .false.)
+		call writeinttofile("n_classes", n_classes, .false.)
+		call writeinttofile("class_size", class_size, .false.)
 
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
