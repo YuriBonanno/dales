@@ -1207,6 +1207,7 @@ contains
 	
 	use modraddata
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
+	use modradrrtmgyuriroutines, only : Results
 	implicit none
 	
 	integer :: i, j, k, inverse_k, cur_cloud_bot, cur_cloud_top
