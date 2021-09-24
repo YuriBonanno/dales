@@ -1309,24 +1309,24 @@ contains
 		do j=1,jmax
 			do k=1,k1
 				if (LWP_grid(i,j,k) /= 0.0) then
-					cur_cloud_bot = cur_cloud_bot + 1
 					if (k == 1) then
 						cloud_edge_indexes(cur_cloud_bot,1) = 1
 					else
 						cloud_edge_indexes(cur_cloud_bot,1) = k-1
 					end if
+					cur_cloud_bot = cur_cloud_bot + 1
 					EXIT
 				end if
 			end do
 			do k=1,k1
 				inverse_k = k1 + 1 - k
 				if (LWP_grid(i,j,inverse_k) /= 0.0) then
-					cur_cloud_top = cur_cloud_top + 1
 					if (inverse_k == k1) then
 						cloud_edge_indexes(cur_cloud_top,2) = k1
 					else
 						cloud_edge_indexes(cur_cloud_top,2) = inverse_k+1
 					end if
+					cur_cloud_top = cur_cloud_top + 1
 					EXIT
 				end if
 			end do
