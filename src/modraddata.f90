@@ -182,12 +182,21 @@ SAVE
 	
 	real(kind=kind_rb) :: startTime, endTime, netTime
 	
+	
+	
 	real(kind=kind_rb) :: LWP_temp
 	real(kind=kind_rb) :: LWP_total
+	
 	integer,dimension(:) :: LWP_index (4)
 	real(kind=kind_rb),dimension(:) :: LWP_index_heights (4)
 	integer,dimension(:) :: LWP_index_percent (4)
 	real(kind=kind_rb),dimension(:) :: LWP_index_heights_percent (4)
+	
+	integer, allocatable, dimension(:,:) :: cloud_edge_indexes
+	real(kind=kind_rb), dimension(:) :: average_cloud_edge_indexes(2)
+	real(kind=kind_rb), dimension(:) :: stddev_cloud_edge_indexes(2)
+	real(kind=kind_rb), dimension(:) :: var_cloud_edge_indexes(2)
+	
 	real(kind=kind_rb),allocatable,dimension(:) :: LWP_vertical 		!vertical slab average LWP
 	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid

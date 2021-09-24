@@ -207,9 +207,14 @@ contains
 	allocate(LWP_grid(imax, jmax, krad1))
 	allocate(LWP_flattened(imax,jmax))
 	allocate(LWP_vertical(krad1))
+	! allocate(cloud_edge_indexes(imax*jmax, 2))
+	
 	LWP_vertical(:) = 0.0
 	LWP_flattened(:,:) = 0.0
 	LWP_grid(:,:,:) = 0.0
+	cloud_edge_indexes(:,:) = 0
+	average_cloud_edge_indexes(:) = 0
+	
 	total_value_test = 0
 	
 	if (diagnostic_run) then
@@ -229,6 +234,7 @@ contains
 	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
 	deallocate(LWP_vertical)
+	! deallocate(cloud_edge_indexes)
 
 !End Added myself ------------------	
     do k=1,kmax
@@ -1203,7 +1209,15 @@ contains
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
 	implicit none
 	
-	integer :: i, j, k, inverse_k
+	integer :: i, j, k, inverse_k, cur_cloud_bot, cur_cloud_top
+	
+	real(kind=kind_rb) :: SumMean, SumVar, x
+	real(kind=kind_rb) :: Mean, Std, Var
+	
+	LWP_index(:) = 0
+	LWP_index_heights(:) = 0
+	LWP_index_percent(:) = 0
+	LWP_index_heights_percent(:) = 0
 	
 	do k=1, k1
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
@@ -1285,6 +1299,59 @@ contains
 		end if
 	end do
 	
+	!!!!!!!!!!!!!!!!!!!!! cloud edge indexes
+	allocate(cloud_edge_indexes(n_clouds, 2))
+	cloud_edge_indexes = 0
+	cur_cloud_bot = 1
+	cur_cloud_top = 1
+	do i=1,imax
+		do j=1,jmax
+			do k=1,k1
+				if (LWP_grid(i,j,k) /= 0.0) then
+					cur_cloud_bot = cur_cloud_bot + 1
+					if (k == 1) then
+						cloud_edge_indexes(cur_cloud_bot,1) = 1
+					else
+						cloud_edge_indexes(cur_cloud_bot,1) = k-1
+					end if
+					EXIT
+				end if
+			end do
+			do k=1,k1
+				inverse_k = k1 + 1 - k
+				if (LWP_grid(i,j,inverse_k) /= 0.0) then
+					cur_cloud_top = cur_cloud_top + 1
+					if (inverse_k == k1) then
+						cloud_edge_indexes(cur_cloud_top,2) = k1
+					else
+						cloud_edge_indexes(cur_cloud_top,2) = inverse_k+1
+					end if
+					EXIT
+				end if
+			end do
+		end do
+	end do
+	
+
+	do j=1,2
+		SumMean = 0.0
+		SumVar = 0.0
+		do i=1,n_clouds
+				x = cloud_edge_indexes(i,j)
+				SumMean = SumMean + x
+				SumVar = SumVar + x*x
+		enddo
+		
+		call  Results(SumMean, SumVar, n_clouds, Mean, Std, Var)  ! compute results
+		
+		average_cloud_edge_indexes(j) = Mean
+		stddev_cloud_edge_indexes(j) = Std
+		var_cloud_edge_indexes(j) = Var
+	enddo
+	
+	deallocate(cloud_edge_indexes)
+	!!!!!!!!!!!!!!!!!!!!! cloud edge indexes
+	
   end subroutine LWPDataCollection
 ! ==============================================================================;
 ! ==============================================================================;
@@ -1315,6 +1382,11 @@ contains
 	call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
 	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
 	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
+	
+	call writetofiledefinedsize("average_cloud_edge_indexes_" // trim(NameSuffix), average_cloud_edge_indexes, 1, 2, 1, 1, .false.)
+	call writetofiledefinedsize("stddev_cloud_edge_indexes_" // trim(NameSuffix), stddev_cloud_edge_indexes, 1, 2, 1, 1, .false.)
+	call writetofiledefinedsize("var_cloud_edge_indexes_" // trim(NameSuffix), var_cloud_edge_indexes, 1, 2, 1, 1, .false.)
+	
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	
