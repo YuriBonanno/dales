@@ -217,7 +217,7 @@ contains
 		SumMean = 0.0
 		SumVar = 0.0
 
-		frmt = "("
+		frmt = "(F18.10"
 		do k=1,zsize
 			x = 0.0
 			SumMean = 0.0
@@ -229,10 +229,13 @@ contains
 					SumVar = SumVar + x*x
 				enddo
 			enddo
+			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Std(k), Var(k))  ! compute results
+			if k==1 then
+				continue
+			end if
 			frmt = trim(frmt)
 			frmt = trim(frmt) // ",F18.10 "
 			frmt = trim(frmt)
-			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Std(k), Var(k))  ! compute results
 			
 		enddo
 		frmt = trim(frmt) // ", A)"
