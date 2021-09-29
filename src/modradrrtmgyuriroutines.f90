@@ -230,7 +230,7 @@ contains
 				enddo
 			enddo
 			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Std(k), Var(k))  ! compute results
-			if k==1 then
+			if (k==1) then
 				continue
 			end if
 			frmt = trim(frmt)
