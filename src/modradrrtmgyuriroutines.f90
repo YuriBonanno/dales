@@ -232,11 +232,12 @@ contains
 			call  Results(SumMean, SumVar, Ncolumns, Mean(k), Std(k), Var(k))  ! compute results
 			if (k==1) then
 				continue
+			else
+				frmt = trim(frmt)
+				frmt = trim(frmt) // ",F18.10 "
+				frmt = trim(frmt)
 			end if
-			frmt = trim(frmt)
-			frmt = trim(frmt) // ",F18.10 "
-			frmt = trim(frmt)
-			
+
 		enddo
 		frmt = trim(frmt) // ", A)"
 		
