@@ -346,7 +346,7 @@ contains
 		close(12)
 		deallocate(fullpath)
 		deallocate(makedir)
-	end subroutine MeanVariance
+	end subroutine MeanVarianceOnlyClouds
 	
 	
 	! --------------------------------------------------------------------
