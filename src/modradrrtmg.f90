@@ -1755,28 +1755,28 @@ contains
 		!
 		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index), "partial_lwu", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = lwu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = lwu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_lwu_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
 		!
 		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index), "partial_lwd", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = lwd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = lwd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_lwd_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
 		!
 		call MeanVariance(swu(x1:x2,y1:y2,LWP_index), "partial_swu", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = swu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = swu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_swu_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
 		!
 		call MeanVariance(swd(x1:x2,y1:y2,LWP_index), "partial_swd", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = swd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = swd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
@@ -1785,32 +1785,33 @@ contains
 		!
 		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwu", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = lwu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = lwu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_lwu_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
 		!
 		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwd", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = lwd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = lwd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_lwd_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
 		!
 		call MeanVariance(swu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swu", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = swu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = swu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swu_Clouds_Only", xsize, ysize, 4, n_clouds)
 		
 		!
 		call MeanVariance(swd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swd", xsize, ysize, 4)
 		do k=1,4
-			tempRadArrayK(k) = swd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+			tempRadArrayK(:,:,k) = swd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
 	
 		deallocate(tempRadArray)
+		deallocate(tempRadArrayK)
 	end subroutine CompileStatistics
 	
 	subroutine EndCompileStatistics
