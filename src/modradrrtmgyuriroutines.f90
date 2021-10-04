@@ -181,7 +181,7 @@ contains
 		character(*) :: filename
 		character(:), allocatable :: fullpath
 		character(:), allocatable :: makedir
-		character(500) :: frmt
+		character(5000) :: frmt
 
 		makedir = "datadir"
 		call execute_command_line ('mkdir -p ' // trim(makedir))
