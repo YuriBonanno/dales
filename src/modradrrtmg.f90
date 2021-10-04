@@ -1223,6 +1223,8 @@ contains
 	do k=1, k1
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
 	end do
+	
+	cloudFracModRad(:,:) = 0
 
 	n_clouds = 0
 	do i=1,imax
