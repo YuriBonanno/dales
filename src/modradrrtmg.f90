@@ -1731,8 +1731,6 @@ contains
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
 		
-		MeanVarianceOnlyClouds(dataset, filename, xsize, ysize, zsize, NColumns)
-		
 		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
 		tempRadArray = SW_up_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
