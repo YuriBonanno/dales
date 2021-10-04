@@ -593,6 +593,8 @@ contains
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
 
+		! cloudFracModRad = cloudFrac
+
 		!!!print *, GLQ_points_cloudtop(:, 1)
 		! call writetofiledefinedsizeint("GLQ_clear_LWP_indexes", GLQ_clear_LWP_indexes, 2, temp_n_GLQ_clear, 2, 1)
 		! call writetofiledefinedsizeint("GLQ_cloudtop_LWP_indexes", GLQ_cloudtop_LWP_indexes, 2, n_GLQ_cloudtop, 2, 1)

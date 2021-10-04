@@ -207,6 +207,7 @@ contains
 	allocate(LWP_grid(imax, jmax, krad1))
 	allocate(LWP_flattened(imax,jmax))
 	allocate(LWP_vertical(krad1))
+	allocate(cloudFracModRad(imax,jmax))
 	! allocate(cloud_edge_indexes(imax*jmax, 2))
 	
 	LWP_vertical(:) = 0.0
@@ -232,6 +233,7 @@ contains
 	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
 	deallocate(LWP_vertical)
+	deallocate(cloudFracModRad)
 	! deallocate(cloud_edge_indexes)
 
 !End Added myself ------------------	
@@ -1227,6 +1229,7 @@ contains
 		do j=1,jmax
 			LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
 			if (LWP_flattened(i,j) > cloud_threshold) then
+				cloudFracModRad(i,j) = 1
 				n_clouds = n_clouds + 1
 			end if
 		end do
@@ -1709,10 +1712,13 @@ contains
 	subroutine CompileStatistics
 	  	use modraddata
 		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-		use modradrrtmgyuriroutines, only : MeanVariance
+		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds
 	
 		integer :: xsize, ysize									!helper integers for easy size allocation of writetofiles
 		integer :: x1, x2, y1, y2
+		integer :: k
+		real(kind=kind_rb), allocatable, dimension(:,:) :: tempRadArray
+		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayK
   		
 		xsize = i1+ih - (2-ih) - 1
 		ysize = j1+jh - (2-jh) - 1
@@ -1722,42 +1728,131 @@ contains
 		y1 = 3-jh
 		y2 = j1+jh-1
 		
+		allocate(tempRadArray(x2-x1+1, y2-y1+1))
+		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
+		
+		MeanVarianceOnlyClouds(dataset, filename, xsize, ysize, zsize, NColumns)
+		
+		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
+		tempRadArray = SW_up_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
+		call MeanVarianceOnlyClouds(tempRadArray,"SW_up_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
+		!
 		call MeanVariance(SW_dn_TOA(x1:x2,y1:y2),"SW_dn_TOA", xsize, ysize, 1)
+		tempRadArray = SW_dn_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
+		call MeanVarianceOnlyClouds(tempRadArray,"SW_dn_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
+		!
 		call MeanVariance(LW_up_TOA(x1:x2,y1:y2),"LW_up_TOA", xsize, ysize, 1)
+		tempRadArray = LW_up_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
+		call MeanVarianceOnlyClouds(tempRadArray,"LW_up_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
+		!
 		call MeanVariance(LW_dn_TOA(x1:x2,y1:y2),"LW_dn_TOA", xsize, ysize, 1)
-	
+		tempRadArray = LW_dn_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
+		call MeanVarianceOnlyClouds(tempRadArray,"LW_dn_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
+		
+
 		! the values found at LWP_index
+		!
 		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index), "partial_lwu", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = lwu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_lwu_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
+		!
 		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index), "partial_lwd", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = lwd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_lwd_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
+		!
 		call MeanVariance(swu(x1:x2,y1:y2,LWP_index), "partial_swu", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = swu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_swu_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
+		!
 		call MeanVariance(swd(x1:x2,y1:y2,LWP_index), "partial_swd", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = swd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
 
 		! the values found at LWP_index_percent
+		!
 		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwu", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = lwu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_lwu_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
+		!
 		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwd", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = lwd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_lwd_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
+		!
 		call MeanVariance(swu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swu", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = swu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swu_Clouds_Only", xsize, ysize, 4, n_clouds)
+		
+		!
 		call MeanVariance(swd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swd", xsize, ysize, 4)
+		do k=1,4
+			tempRadArrayK(k) = swd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
 	
+		deallocate(tempRadArray)
 	end subroutine CompileStatistics
 	
 	subroutine EndCompileStatistics
 		use modradrrtmgyuriroutines, only : finishstatisticsline
 	
 		call finishstatisticsline("SW_up_TOA")
+		call finishstatisticsline("SW_up_TOA_Clouds_Only")
+		
 		call finishstatisticsline("SW_dn_TOA")
+		call finishstatisticsline("SW_dn_TOA_Clouds_Only")
+		
 		call finishstatisticsline("LW_up_TOA")
+		call finishstatisticsline("LW_up_TOA_Clouds_Only")
+		
 		call finishstatisticsline("LW_dn_TOA")
+		call finishstatisticsline("LW_dn_TOA_Clouds_Only")
+		
 		
 		call finishstatisticsline("partial_lwu")
+		call finishstatisticsline("partial_lwu_Clouds_Only")
+		
 		call finishstatisticsline("partial_lwd")
+		call finishstatisticsline("partial_lwd_Clouds_Only")
+		
 		call finishstatisticsline("partial_swu")
+		call finishstatisticsline("partial_swu_Clouds_Only")
+		
 		call finishstatisticsline("partial_swd")
+		call finishstatisticsline("partial_swd_Clouds_Only")
+		
 		
 		call finishstatisticsline("partial_percent_lwu")
+		call finishstatisticsline("partial_percent_lwu_Clouds_Only")
+		
 		call finishstatisticsline("partial_percent_lwd")
+		call finishstatisticsline("partial_percent_lwd_Clouds_Only")
+		
 		call finishstatisticsline("partial_percent_swu")
+		call finishstatisticsline("partial_percent_swu_Clouds_Only")
+		
 		call finishstatisticsline("partial_percent_swd")
+		call finishstatisticsline("partial_percent_swd_Clouds_Only")
 	end subroutine EndCompileStatistics
 
 end module modradrrtmg

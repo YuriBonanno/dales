@@ -251,6 +251,103 @@ contains
 		deallocate(makedir)
 	end subroutine MeanVariance
 
+	subroutine MeanVarianceOnlyClouds(dataset, filename, xsize, ysize, zsize, NColumns)
+		integer :: xsize, ysize, zsize
+		REAL(kind=kind_rb)    :: SumMean, SumVar, x
+		REAL(kind=kind_rb)    :: Mean(zsize), Std(zsize), Var(zsize)
+		integer :: Ncolumns
+		integer :: dims, i, j, k, m
+		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		logical :: fileexists=.false.
+		character(*) :: filename
+		character(:), allocatable :: fullpath
+		character(:), allocatable :: makedir
+		character(5000) :: frmt
+
+		makedir = "datadir"
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		! for mean
+		fullpath = trim(makedir) // '/' // trim(filename) // '_mean'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(10, file=fullpath, status="old", position="append", action="write")
+		else
+			open(10, file=fullpath, status="new", action="write")
+		end if
+
+		! for stdev
+		fullpath = trim(makedir) // '/' // trim(filename) // '_stdev'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(11, file=fullpath, status="old", position="append", action="write")
+		else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		! for var
+		fullpath = trim(makedir) // '/' // trim(filename) // '_var'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(12, file=fullpath, status="old", position="append", action="write")
+		else
+			open(12, file=fullpath, status="new", action="write")
+		end if
+
+		x = 0.0
+		SumMean = 0.0
+		SumVar = 0.0
+
+		if (NColumns /= 0) then
+			frmt = "(F18.10"
+			do k=1,zsize
+				x = 0.0
+				SumMean = 0.0
+				SumVar = 0.0
+				do i=1,xsize
+					do j=1,ysize
+						x = dataset(i, j, k)
+						SumMean = SumMean + x
+						SumVar = SumVar + x*x
+					enddo
+				enddo
+				call  Results(SumMean, SumVar, Ncolumns, Mean(k), Std(k), Var(k))  ! compute results
+				if (k==1) then
+					continue
+				else
+					frmt = trim(frmt)
+					frmt = trim(frmt) // ",F18.10 "
+					frmt = trim(frmt)
+				end if
+
+			enddo
+			frmt = trim(frmt) // ", A)"
+		else
+			Mean(:) = 0
+			Std(:) = 0
+			Var(:) = 0
+			frmt = "(F18.10"
+			do k=1,zsize
+				if (k==1) then
+					continue
+				else
+					frmt = trim(frmt)
+					frmt = trim(frmt) // ",F18.10 "
+					frmt = trim(frmt)
+				end if
+			end do
+			frmt = trim(frmt) // ", A)"
+		end if
+		
+		write(10, frmt, advance="no")  Mean(:), ","
+		write(11, frmt, advance="no")  Std(:), ","
+		write(12, frmt, advance="no")  Var(:), ","
+		close(10)
+		close(11)
+		close(12)
+		deallocate(fullpath)
+		deallocate(makedir)
+	end subroutine MeanVariance
+	
 	
 	! --------------------------------------------------------------------
 	! SUBROUTINE  Results():
