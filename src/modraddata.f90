@@ -169,6 +169,9 @@ SAVE
 	!These values should be read from namoptions file
 	logical :: diagnostic_run = .false.							!Boolean for doing the diagnostics run
 	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
+	logical :: use_gauleg = .true.							!Use gaussLegendre placement
+	logical :: use_evenly_spaced = .false.					!Use evenly spaced placement
+	logical :: use_bin = .false.							!Use bin placement
 	integer :: n_GLQ_clear != 30 							!Amount of points for clear column GLQ, defined in namoptions
 	integer :: temp_n_GLQ_clear != 30 						!Amount of points for clear column GLQ, temporary value in order to not overwrite n_GLQ_clear which is defined in namoptions
 	integer :: n_classes_initial != 20            			!maximum number of cloudtop altitude classes
@@ -200,14 +203,16 @@ SAVE
 	real(kind=kind_rb),allocatable, dimension(:,:) :: cloudFracModRad
 	
 	real(kind=kind_rb),allocatable,dimension(:) :: LWP_vertical 		!vertical slab average LWP
-	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
+	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		!Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
+	real(kind=kind_rb),allocatable,dimension(:,:) :: qv_flattened 											!Moved up from modradrrtmgyuri for test purposes
+	
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid
 
 	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 
 	!Using krad1 and imax, jmax is not allowed here
 	! real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
-	! real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		%Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
+	! real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		!Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
 	! real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)
 
 	!----------------------------------------

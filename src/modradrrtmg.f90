@@ -206,12 +206,14 @@ contains
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
 	allocate(LWP_grid(imax, jmax, krad1))
 	allocate(LWP_flattened(imax,jmax))
+	allocate(qv_flattened(imax,jmax))!Changed This (PIER_QV)
 	allocate(LWP_vertical(krad1))
 	allocate(cloudFracModRad(imax,jmax))
 	! allocate(cloud_edge_indexes(imax*jmax, 2))
 	
 	LWP_vertical(:) = 0.0
 	LWP_flattened(:,:) = 0.0
+	qv_flattened(:,:) = 0.0 !Changed This (PIER_QV)
 	LWP_grid(:,:,:) = 0.0
 	
 	total_value_test = 0
@@ -232,6 +234,7 @@ contains
 	end if
 	deallocate(LWP_grid)
 	deallocate(LWP_flattened)
+	deallocate(qv_flattened)!Changed This (PIER_QV)
 	deallocate(LWP_vertical)
 	deallocate(cloudFracModRad)
 	! deallocate(cloud_edge_indexes)
@@ -1394,10 +1397,10 @@ contains
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	
-	! call writetofiledefinedsize("lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	call writetofiledefinedsize("full_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	call writetofiledefinedsize("full_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	call writetofiledefinedsize("full_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	call writetofiledefinedsize("full_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
@@ -1716,14 +1719,17 @@ contains
 		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
 		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds
 	
-		integer :: xsize, ysize									!helper integers for easy size allocation of writetofiles
+		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
 		integer :: x1, x2, y1, y2
 		integer :: k
 		real(kind=kind_rb), allocatable, dimension(:,:) :: tempRadArray
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayK
+		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayColumn
   		
 		xsize = i1+ih - (2-ih) - 1
 		ysize = j1+jh - (2-jh) - 1
+		zsize = k1
+		
 		
 		x1 = 3-ih
 		x2 = i1+ih-1
@@ -1732,6 +1738,7 @@ contains
 		
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
+		allocate(tempRadArrayColumn(x2-x1+1, y2-y1+1, k1))
 		
 		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
@@ -1749,6 +1756,8 @@ contains
 		call MeanVariance(LW_dn_TOA(x1:x2,y1:y2),"LW_dn_TOA", xsize, ysize, 1)
 		tempRadArray = LW_dn_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
 		call MeanVarianceOnlyClouds(tempRadArray,"LW_dn_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
+		
+		
 		
 
 		! the values found at LWP_index
@@ -1810,6 +1819,36 @@ contains
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
 	
+		! the values for the whole column
+		!
+		call MeanVariance(lwu(x1:x2,y1:y2,:), "column_lwu", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(:,:,k) = lwu(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_lwu_Clouds_Only", xsize, ysize, zsize, n_clouds)
+		
+		!
+		call MeanVariance(lwd(x1:x2,y1:y2,:), "column_lwd", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(:,:,k) = lwd(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_lwd_Clouds_Only", xsize, ysize, zsize, n_clouds)
+		
+		!
+		call MeanVariance(swu(x1:x2,y1:y2,:), "column_swu", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(:,:,k) = swu(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_swu_Clouds_Only", xsize, ysize, zsize, n_clouds)
+		
+		!
+		call MeanVariance(swd(x1:x2,y1:y2,:), "column_swd", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(:,:,k) = swd(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_swd_Clouds_Only", xsize, ysize, zsize, n_clouds)
+	
+	
 		deallocate(tempRadArray)
 		deallocate(tempRadArrayK)
 	end subroutine CompileStatistics
@@ -1854,6 +1893,19 @@ contains
 		
 		call finishstatisticsline("partial_percent_swd")
 		call finishstatisticsline("partial_percent_swd_Clouds_Only")
+		
+		
+		call finishstatisticsline("column_lwu")
+		call finishstatisticsline("column_lwu_Clouds_Only")
+		
+		call finishstatisticsline("column_lwd")
+		call finishstatisticsline("column_lwd_Clouds_Only")
+		
+		call finishstatisticsline("column_swu")
+		call finishstatisticsline("column_swu_Clouds_Only")
+		
+		call finishstatisticsline("column_swd")
+		call finishstatisticsline("column_swd_Clouds_Only")
 	end subroutine EndCompileStatistics
 
 end module modradrrtmg

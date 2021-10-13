@@ -21,7 +21,8 @@ contains
 		
 		implicit none
 		
-		integer :: i,j,k,inverse_k, n
+		integer :: i,j,k,inverse_k, n, nbin
+		integer :: im, jm, ksounding !Changed This (PIER_QV)
 		
 		!acceleration
 		integer :: n_RT != nx * ny / n_RT_Ratio		!Actual number of Radtiative transfer calculations
@@ -33,6 +34,7 @@ contains
 		integer :: GLQ_counter													!counter necessary for full list of GLQ indexes
 		integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
+		real(kind=kind_rb) :: binwidth, GLQ_val, valuewidth
 		
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
@@ -76,6 +78,7 @@ contains
 		!This definition not necessary because it is defined later
 		!real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
+		real(kind=kind_rb),allocatable,dimension(:) :: clear_qv_ordered			!Ordered QV for cloudless collumns !Changed This (PIER_QV)
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
 		
@@ -87,6 +90,10 @@ contains
 		real(kind=kind_rb),dimension(:,:,:) :: interfaceP_grid	(imax, jmax, krad2)		!pressure at grid interface (half-level)
 		real(kind=kind_rb),dimension(:,:,:) :: layerMass_grid	(imax, jmax, krad1)		!mass within a gridpoint
 		real(kind=kind_rb),dimension(:,:,:) :: qcl_grid			(imax, jmax, kradmax)	!actually just ql0
+		
+		
+		real(kind=kind_rb),dimension(:,:,:) :: qv_grid			(imax, jmax, kradmax)	 								!Changed This (PIER_QV)
+		! real(kind=kind_rb),dimension(:,:) :: qv_flattened 		(imax, jmax)			!flattened collumns LWP content !Changed This (PIER_QV)
 
 		!This variable might nog be necessary
 		integer,dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
@@ -136,6 +143,21 @@ contains
 		end do
 		layerP_grid(1:imax,1:jmax, krad1)   = 0.5*presh_input(krad1)!749
 
+		!define qv
+		do i=2,i1
+			im=i-1
+			do j=2,j1
+				jm=j-1
+				do k=1,kmax
+					qv_grid(im,jm,k) = max(qt0(i,j,k) - ql0(i,j,k),1e-18) !avoid RRTMG reading negative initial values 
+				enddo
+				ksounding=npatch_start
+				do k=kmax+1,kradmax
+					qv_grid(im,jm,k) = qsnd(ksounding)
+					ksounding=ksounding+1
+				enddo
+			enddo
+		enddo
 		
 		!interface_P
 		do k=1, krad1
@@ -165,7 +187,6 @@ contains
 		! print *, "starting cloud and LWP data"
 
 		
-		
 		!Define the total LWP of every collumn
 		!Define where the clouds are and at what height
 		n_clear = 0
@@ -177,6 +198,7 @@ contains
 		   do j=1,jmax
 				! Defines LWP_flattened and sets cloudFrac to 1 when LWP larger than cloud_threshold
 				LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
+				qv_flattened(i,j) = SUM(qv_grid(i,j,:)) !Changed This (PIER_QV)
 				!Something could go wrong here with cloud threshold =/= cloud patch threshold,
 				!there could be more n_clouds than SUM(cloudtop_distribution)
 				if (LWP_flattened(i,j)>cloud_threshold) then
@@ -236,6 +258,7 @@ contains
 			! print *, "n_clear > 0"
 			
 			allocate (clear_LWP_ordered (n_clear))
+			allocate (clear_qv_ordered (n_clear))!Changed This (PIER_QV)
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
 			counter = 0
@@ -246,6 +269,7 @@ contains
 					if (LWP_flattened(i,j) <= cloud_threshold) then
 						counter = counter + 1
 						clear_LWP_ordered(counter) = LWP_flattened(i,j)
+						clear_qv_ordered(counter) = qv_flattened(i,j)!Changed This (PIER_QV)
 						!!Shift with a single index due to i=1 and j=1 being boundary values
 						original_clear_LWP_indexes(counter, 1) = i + 1
 						original_clear_LWP_indexes(counter, 2) = j + 1
@@ -254,7 +278,8 @@ contains
 			end do
 
 			!Order on basis of LWP
-			call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)
+			! call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)!Changed This (PIER_QV) 13/10/2021
+			call quicksortindexes(clear_qv_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)!Changed This (PIER_QV)
 		
 			!Determine the indexes of the Gauss-Legendre points
 			allocate (GLQ_points_clear 	(temp_n_GLQ_clear))
@@ -262,8 +287,28 @@ contains
 			allocate (GLQ_clear_LWP_indexes (temp_n_GLQ_clear, 2))
 		
 			!Determine GLQ points
-			call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, temp_n_GLQ_clear)
-		
+			if (use_gauleg) then
+				call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, temp_n_GLQ_clear)
+			else
+				if (use_evenly_spaced) then
+				binwidth = float(n_clear)/float(temp_n_GLQ_clear)
+					do nbin=1,temp_n_GLQ_clear
+						GLQ_points_clear(nbin) = binwidth/2.0 + 0.5 + binwidth*(nbin-1)
+					enddo
+					GLQ_weights_clear(:) = 1.0 !Incorrect value, but not relevant
+				else
+					if (use_bin) then
+						valuewidth = (max(clear_qv_ordered)-min(clear_qv_ordered))/float(temp_n_GLQ_clear)
+						do nbin=1,temp_n_GLQ_clear
+							GLQ_val = valuewidth/2.0 + min(clear_qv_ordered) + valuewidth*(nbin-1)
+							GLQ_points_clear(nbin) = minloc(abs(clear_qv_ordered-GLQ_val))
+						enddo
+						GLQ_weights_clear(:) = 1.0 !Incorrect value, but not relevant
+					else
+						call gauleg(float(1), float(n_clear), GLQ_points_clear, GLQ_weights_clear, temp_n_GLQ_clear)
+					end if
+				end if
+			end if
 			!Write to files for test purposes
 			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
 		
@@ -277,7 +322,7 @@ contains
 			end do
 		
 			deallocate (clear_LWP_ordered)
-			!deallocate (GLQ_weights_clear)
+			! deallocate (GLQ_weights_clear)
 		else
 			temp_n_GLQ_clear = 0
 		end if
@@ -436,11 +481,8 @@ contains
 			! print *, "start going through classes"
 			do n = 1, n_classes
 				!print *, "gauleg"
-				!Determine Gauss-Legendre Quadrature points for the clouded case
-				! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop, .true.)
-				call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
-				! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop, .true.)
-				
+				!Determine Gauss-Legendre Quadrature points for the clouded case			
+						
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
 				!print *, "Place the original LWP values"
@@ -464,6 +506,32 @@ contains
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
 
 				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
+
+				if (use_gauleg) then
+					! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop, .true.)
+					call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
+					! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop, .true.)
+				else
+					if (use_evenly_spaced) then
+						binwidth = float(n_clouds)/float(n_GLQ_cloudtop)
+						do nbin=1,n_GLQ_cloudtop
+							GLQ_points_cloudtop(nbin, n) = binwidth/2.0 + 0.5 + binwidth*(nbin-1)
+						enddo
+						GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
+					else
+						if (use_bin) then
+							valuewidth = (max(cloudtop_LWP_ordered(:,n))-min(cloudtop_LWP_ordered(:,n)))/float(n_GLQ_cloudtop)
+							do nbin=1,n_GLQ_cloudtop
+								GLQ_val = valuewidth/2.0 + min(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
+								GLQ_points_cloudtop(nbin, n) = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
+							enddo
+							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
+						else
+							call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
+						end if
+					end if
+				end if
+
 
 				!IT GOES WRONG HERE
 
@@ -491,7 +559,6 @@ contains
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
-					
 				end do
 				!print *, "end save GLQ points"
 			end do
@@ -575,6 +642,9 @@ contains
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .true.)
+		
+		call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
+		call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .true.)
 		
 		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)

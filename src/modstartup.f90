@@ -69,7 +69,7 @@ contains
     use modraddata,        only : irad,iradiation,&
                                   rad_ls,rad_longw,rad_shortw,rad_smoke,useMcICA,&
                                   timerad,rka,dlwtop,dlwbot,sw0,gc,reff,isvsmoke,lcloudshading,&
-								  diagnostic_run, barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold
+								  diagnostic_run, barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg, use_evenly_spaced, use_bin
     use modtimedep,        only : inittimedep,ltimedep,ltimedepuv
     use modtimedepsv,      only : inittimedepsv,ltimedepsv
     use modtestbed,        only : inittestbed
@@ -108,7 +108,7 @@ contains
 	!BarkerBonanno Method
 	! ---------------------------
 	namelist/BARBON/ &
-        diagnostic_run, barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold
+        diagnostic_run, barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg, use_evenly_spaced, use_bin
 	! ---------------------------
 	!BarkerBonanno Method
 
@@ -276,6 +276,11 @@ contains
 	! ---------------------------
 	call MPI_BCAST(diagnostic_run,1,MPI_LOGICAL,0,commwrld,mpierr)
 	call MPI_BCAST(barker_method,1,MPI_LOGICAL,0,commwrld,mpierr)
+	
+	call MPI_BCAST(use_gauleg,1,MPI_LOGICAL,0,commwrld,mpierr)
+	call MPI_BCAST(use_evenly_spaced,1,MPI_LOGICAL,0,commwrld,mpierr)
+	call MPI_BCAST(use_bin,1,MPI_LOGICAL,0,commwrld,mpierr)
+	
     call MPI_BCAST(n_GLQ_clear,1,MPI_INTEGER,0,commwrld,mpierr)
     call MPI_BCAST(n_RT_Ratio,1,MPI_INTEGER,0,commwrld,mpierr)
     call MPI_BCAST(n_classes_initial,1,MPI_INTEGER,0,commwrld,mpierr)
