@@ -35,7 +35,7 @@ contains
 		integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 		real(kind=kind_rb) :: binwidth, GLQ_val, valuewidth
-		integer, dimension(:) :: temploc
+		integer, dimension(:) :: temploc(1)
 		
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
