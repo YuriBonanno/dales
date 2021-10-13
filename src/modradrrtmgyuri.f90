@@ -16,7 +16,7 @@ contains
 	subroutine findGLQPoints()
 	
 		use modglobal, only: imax, jmax, kmax, i1, j1, k1, kind_rb, grav, zf, zh
-		use modfields, only: ql0
+		use modfields, only: ql0, qt0
 		use modradrrtmgyuriroutines
 		
 		implicit none
@@ -35,6 +35,7 @@ contains
 		integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 		real(kind=kind_rb) :: binwidth, GLQ_val, valuewidth
+		integer, dimension(:) :: temploc
 		
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
 		!integer,allocatable,dimension(:,:):: original_cloudtop_height_indexes		!original indexes of cloudtop_LWP_ordered
@@ -298,10 +299,11 @@ contains
 					GLQ_weights_clear(:) = 1.0 !Incorrect value, but not relevant
 				else
 					if (use_bin) then
-						valuewidth = (max(clear_qv_ordered)-min(clear_qv_ordered))/float(temp_n_GLQ_clear)
+						valuewidth = (maxval(clear_qv_ordered)-minval(clear_qv_ordered))/float(temp_n_GLQ_clear)
 						do nbin=1,temp_n_GLQ_clear
-							GLQ_val = valuewidth/2.0 + min(clear_qv_ordered) + valuewidth*(nbin-1)
-							GLQ_points_clear(nbin) = minloc(abs(clear_qv_ordered-GLQ_val))
+							GLQ_val = valuewidth/2.0 + minval(clear_qv_ordered) + valuewidth*(nbin-1)
+							temploc = minloc(abs(clear_qv_ordered-GLQ_val))
+							GLQ_points_clear(nbin) = temploc(1)
 						enddo
 						GLQ_weights_clear(:) = 1.0 !Incorrect value, but not relevant
 					else
@@ -520,10 +522,11 @@ contains
 						GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 					else
 						if (use_bin) then
-							valuewidth = (max(cloudtop_LWP_ordered(:,n))-min(cloudtop_LWP_ordered(:,n)))/float(n_GLQ_cloudtop)
+							valuewidth = (maxval(cloudtop_LWP_ordered(:,n))-minval(cloudtop_LWP_ordered(:,n)))/float(n_GLQ_cloudtop)
 							do nbin=1,n_GLQ_cloudtop
-								GLQ_val = valuewidth/2.0 + min(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
-								GLQ_points_cloudtop(nbin, n) = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
+								GLQ_val = valuewidth/2.0 + minval(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
+								temploc = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
+								GLQ_points_cloudtop(nbin, n) = temploc(1)
 							enddo
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
