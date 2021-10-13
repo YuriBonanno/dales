@@ -1397,10 +1397,10 @@ contains
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	
-	call writetofiledefinedsize("full_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	call writetofiledefinedsize("full_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	call writetofiledefinedsize("full_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	call writetofiledefinedsize("full_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+	call writetofiledefinedsize("full_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+	call writetofiledefinedsize("full_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+	call writetofiledefinedsize("full_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+	call writetofiledefinedsize("full_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
 	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
