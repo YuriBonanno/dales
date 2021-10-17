@@ -229,7 +229,7 @@ contains
 			call PrintRadiationData("barker_" // trim(int_str_container))
 		else
 			call StephanRad(sunUp)
-			call PrintRadiationData("stephan")
+			! call PrintRadiationData("stephan")
 		end if
 	end if
 	deallocate(LWP_grid)
