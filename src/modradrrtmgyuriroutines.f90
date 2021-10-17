@@ -179,8 +179,8 @@ contains
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		logical :: fileexists=.false.
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		character(5000) :: frmt
 
 		makedir = "datadir"
@@ -247,8 +247,8 @@ contains
 		close(10)
 		close(11)
 		close(12)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 	end subroutine MeanVariance
 
 	subroutine MeanVarianceOnlyClouds(dataset, filename, xsize, ysize, zsize, NColumns)
@@ -260,8 +260,8 @@ contains
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		logical :: fileexists=.false.
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		character(5000) :: frmt
 
 		makedir = "datadir"
@@ -344,8 +344,8 @@ contains
 		close(10)
 		close(11)
 		close(12)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 	end subroutine MeanVarianceOnlyClouds
 	
 	
@@ -378,8 +378,8 @@ contains
 	subroutine finishstatisticsline(filename)
 		logical :: fileexists=.false.
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 	
 	
 		makedir = "datadir"
@@ -419,8 +419,8 @@ contains
 		close(10)
 		close(11)
 		close(12)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 	
 	end subroutine finishstatisticsline
 	
@@ -436,8 +436,8 @@ contains
 		logical :: printLast
 		integer :: dims, i, j, k
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		real(kind=kind_rb) :: dataset (imax, jmax, kradmax)
 		character(50000) :: frmt
 
@@ -505,8 +505,8 @@ contains
 		end if
 
 		close(11)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 
 	end subroutine
 
@@ -522,8 +522,8 @@ contains
 		logical :: printLast
 		integer :: dims, i, j, k
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		integer :: xsize, ysize, zsize
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
@@ -604,8 +604,8 @@ contains
 		end if
 
 		close(11)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 
 	end subroutine
 	
@@ -622,8 +622,8 @@ contains
 		logical :: printLast
 		integer :: dims, i, j, k
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		integer :: xsize, ysize, zsize
 		integer :: dataset (xsize, ysize, zsize)
 		character(50000) :: frmt
@@ -692,8 +692,8 @@ contains
 		end if
 
 		close(11)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 
 	end subroutine
 
@@ -708,8 +708,8 @@ contains
 		logical :: printLast
 		integer :: i, j, k
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		integer :: intvalue
 
 		if (printLast) then
@@ -742,8 +742,8 @@ contains
 		write(11, *) intvalue
 
 		close(11)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 
 	end subroutine
 
@@ -758,8 +758,8 @@ contains
 		logical :: printLast
 		integer :: i, j, k
 		character(*) :: filename
-		character(:), allocatable :: fullpath
-		character(:), allocatable :: makedir
+		character(200), allocatable :: fullpath
+		character(200), allocatable :: makedir
 		real(kind=kind_rb) :: realvalue
 
 		if (printLast) then
@@ -792,8 +792,8 @@ contains
 		write(11, *) realvalue
 
 		close(11)
-		deallocate(fullpath)
-		deallocate(makedir)
+		! deallocate(fullpath)
+		! deallocate(makedir)
 
 	end subroutine
 
