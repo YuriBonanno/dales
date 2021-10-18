@@ -758,8 +758,8 @@ contains
 		logical :: printLast
 		integer :: i, j, k
 		character(*) :: filename
-		character(200), allocatable :: fullpath
-		character(200), allocatable :: makedir
+		character(200) :: fullpath
+		character(200) :: makedir
 		real(kind=kind_rb) :: realvalue
 
 		if (printLast) then
