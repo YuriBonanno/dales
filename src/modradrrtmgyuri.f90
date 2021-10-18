@@ -483,7 +483,7 @@ contains
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
 			! For visualising the N_RT_Ratio (VIS_RATIO)
-			allocate(Cloudtop_LWP_GLQ_Values((n_GLQ_cloudtop, n_classes))) 
+			allocate(Cloudtop_LWP_GLQ_Values(n_GLQ_cloudtop, n_classes)) 
 			
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
