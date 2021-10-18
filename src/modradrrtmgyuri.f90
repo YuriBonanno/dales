@@ -35,6 +35,7 @@ contains
 		integer,allocatable,dimension(:,:):: GLQ_clear_LWP_indexes  		!The indexes necessary for the GLQ of the cloudless LWP
 		integer,allocatable,dimension(:,:,:):: GLQ_cloudtop_LWP_indexes   		!The indexes necessary for the GLQ of the cloudtop LWP, extra axis for the classes
 		real(kind=kind_rb) :: binwidth, GLQ_val, valuewidth
+		real(kind=kind_rb),allocatable,dimension(:) :: Clear_QV_GLQ_Values, Cloudtop_LWP_GLQ_Values
 		integer, dimension(:) :: temploc(1)
 		
 		!integer,allocatable,dimension(:,:):: GLQ_cloudtop_height_indexes
@@ -313,10 +314,14 @@ contains
 			end if
 			!Write to files for test purposes
 			call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
+			
+			! For visualising the N_RT_Ratio (VIS_RATIO)
+			allocate(Clear_QV_GLQ_Values(temp_n_GLQ_clear)) 
 		
 			!Save coordinates of the points to an array containing all the GLQ points
 			do N_g = 1, temp_n_GLQ_clear
 			  x_index  = nint(GLQ_points_clear(N_g))
+			  Clear_QV_GLQ_Values(N_g) = clear_qv_ordered(x_index) ! For visualising the N_RT_Ratio (VIS_RATIO)
 			  temp_i   = int(original_clear_LWP_indexes(x_index,1))
 			  temp_j   = int(original_clear_LWP_indexes(x_index,2))
 			  GLQ_clear_LWP_indexes(N_g, 1) = temp_i
@@ -477,6 +482,9 @@ contains
 			!print *, "GLQ_cloudtop_LWP_indexes"
 			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
 			
+			! For visualising the N_RT_Ratio (VIS_RATIO)
+			allocate(Cloudtop_LWP_GLQ_Values((n_GLQ_cloudtop, n_classes))) 
+			
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
@@ -556,8 +564,11 @@ contains
 			
 				!print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
+				
+				
 				do N_g = 1, n_GLQ_cloudtop	
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
+				    Cloudtop_LWP_GLQ_Values(N_g, n) = cloudtop_LWP_ordered(x_index, n) ! For visualising the N_RT_Ratio (VIS_RATIO)
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
@@ -665,6 +676,15 @@ contains
 
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
+
+		! For visualising the N_RT_Ratio (VIS_RATIO)
+		
+		call writetofiledefinedsize("Clear_QV_GLQ_Values_"// trim(int_str_container, Clear_QV_GLQ_Values, 1, temp_n_GLQ_clear, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values", Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		
+		if (n_clear >0) deallocate(Clear_QV_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		if (n_clouds >0) deallocate(Cloudtop_LWP_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
+
 
 		! cloudFracModRad = cloudFrac
 

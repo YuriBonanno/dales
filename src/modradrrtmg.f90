@@ -223,9 +223,9 @@ contains
 		call PrintRadiationData("diagnostics")
 	else
 		if (barker_method) then
-			call BarkerRad(sunUp)
 			write(int_str_container, "(i0)") n_RT_Ratio
 			int_str_container = adjustl(int_str_container)
+			call BarkerRad(sunUp)
 			call PrintRadiationData("barker_" // trim(int_str_container))
 		else
 			call StephanRad(sunUp)
