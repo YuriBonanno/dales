@@ -680,8 +680,8 @@ contains
 
 		! For visualising the N_RT_Ratio (VIS_RATIO)
 		
-		call writetofiledefinedsize("Clear_QV_GLQ_Values_" // trim(int_str_container), Clear_QV_GLQ_Values, 1, temp_n_GLQ_clear, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
-		call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values_" // trim(int_str_container), Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		call writetofiledefinedsize("Clear_QV_GLQ_Values", Clear_QV_GLQ_Values, 1, temp_n_GLQ_clear, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values", Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		
 		if (n_clear >0) deallocate(Clear_QV_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		if (n_clouds >0) deallocate(Cloudtop_LWP_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
