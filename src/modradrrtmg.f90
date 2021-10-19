@@ -1369,7 +1369,8 @@ contains
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
-	integer :: x1, x2, y1, y2
+	integer :: x1, x2, y1, y2, k
+	real(kind=kind_rb), dimension(:) :: tempRadColumn (k1)
   		
 	xsize = i1+ih - (2-ih) + 1
 	ysize = j1+jh - (2-jh) + 1
@@ -1397,10 +1398,27 @@ contains
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	
-	call writetofiledefinedsize("full_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
-	call writetofiledefinedsize("full_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
-	call writetofiledefinedsize("full_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
-	call writetofiledefinedsize("full_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+	do k=1,k1
+		tempRadColumn(k) = sum(lwu(x1:x2,y1:y2,k))/float(imax*jmax)
+	enddo
+	call writetofiledefinedsize("column_lwu_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
+	
+	do k=1,k1
+		tempRadColumn(k) = sum(lwd(x1:x2,y1:y2,k))/float(imax*jmax)
+	enddo
+	call writetofiledefinedsize("column_lwd_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
+	
+	do k=1,k1
+		tempRadColumn(k) = sum(swu(x1:x2,y1:y2,k))/float(imax*jmax)
+	enddo
+	call writetofiledefinedsize("column_swu_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
+	
+	do k=1,k1
+		tempRadColumn(k) = sum(swd(x1:x2,y1:y2,k))/float(imax*jmax)
+	enddo
+	call writetofiledefinedsize("column_swd_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
+		
+	
 	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
