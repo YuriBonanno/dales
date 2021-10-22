@@ -658,21 +658,21 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .false.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
-		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .true.)
+		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .false.)
 		
-		call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
-		call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .true.)
+		call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .false.)
+		call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .false.)
 		
 		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1, .true.)
 		
-		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .true.)
-		call writeinttofile("n_RT", n_RT, .true.)
-		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .true.)
-		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
+		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .false.)
+		call writeinttofile("n_RT", n_RT, .false.)
+		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .false.)
+		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .false.)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear, .false.)
 		call writeinttofile("n_clouds", n_clouds, .false.)
@@ -684,8 +684,8 @@ contains
 
 		! For visualising the N_RT_Ratio (VIS_RATIO)
 		
-		call writetofiledefinedsize("Clear_QV_GLQ_Values", Clear_QV_GLQ_Values, 1, temp_n_GLQ_clear, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
-		call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values", Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .true.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		call writetofiledefinedsize("Clear_QV_GLQ_Values", Clear_QV_GLQ_Values, 1, temp_n_GLQ_clear, 1, 1, .false.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values", Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .false.) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		
 		if (n_clear >0) deallocate(Clear_QV_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		if (n_clouds >0) deallocate(Cloudtop_LWP_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
