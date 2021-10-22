@@ -898,22 +898,23 @@ contains
 	exners = (ps/pref0) ** (rd/cp)
 
 	temp_GLQ_point = passed_GLQ_point
-	! print *, "temp_GLQ_point, passed_GLQ_point"
-	! print *, temp_GLQ_point, passed_GLQ_point
+	print *, "temp_GLQ_point, passed_GLQ_point"
+	print *, temp_GLQ_point, passed_GLQ_point
 	
 	!This piece of code is for test purposes, it puts all the values into a testarray
 	do i=1,imax
-		! print *, "looking at GLQ index all"
-		! print *, GLQ_index_all
+		print *, "looking at GLQ index all"
+		print *, GLQ_index_all
 		if (i <= slice_length) then
 			temp_i = GLQ_index_all(temp_GLQ_point,1)
 			temp_j = GLQ_index_all(temp_GLQ_point,2)
 			!!!!
+			print *, "filling testArrayIndexes"
 			testArrayIndexes(temp_GLQ_point, 1) = temp_i
 			testArrayIndexes(temp_GLQ_point, 2) = temp_j
 			!!!!	
 		end if
-		! print *, "succesful looking at GLQ index all"
+		print *, "succesful looking at GLQ index all"
 		
 
 
