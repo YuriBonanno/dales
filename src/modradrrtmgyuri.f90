@@ -528,7 +528,7 @@ contains
 					! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop, .true.)
 				else
 					if (use_evenly_spaced) then
-						binwidth = float(n_clouds)/float(n_GLQ_cloudtop)
+						binwidth = float(n_class(n))/float(n_GLQ_cloudtop)
 						do nbin=1,n_GLQ_cloudtop
 							GLQ_points_cloudtop(nbin, n) = binwidth/2.0 + 0.5 + binwidth*(nbin-1)
 						enddo
