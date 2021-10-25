@@ -466,8 +466,8 @@ contains
 			!print *, "LWP_flattened before allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
-			n_RT = (imax*jmax)/(n_RT_Ratio)
-			! n_RT = float(n_clouds)/float(n_RT_Ratio)
+			! n_RT = (imax*jmax)/(n_RT_Ratio)
+			n_RT = float(n_clouds)/float(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			if (n_GLQ_cloudtop == 0) then
 				n_GLQ_cloudtop = 1
@@ -658,21 +658,21 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .false.)
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
-		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .false.)
+		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .true.)
 		
-		call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .false.)
-		call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .false.)
+		call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
+		call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .true.)
 		
 		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("cloudFrac", cloudFrac, 2, imax, jmax, 1, .true.)
 		
-		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .false.)
-		call writeinttofile("n_RT", n_RT, .false.)
-		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .false.)
-		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .false.)
+		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .true.)
+		call writeinttofile("n_RT", n_RT, .true.)
+		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .true.)
+		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear, .false.)
 		call writeinttofile("n_clouds", n_clouds, .false.)
