@@ -466,8 +466,8 @@ contains
 			!print *, "LWP_flattened before allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
-			n_RT = (imax*jmax)/(n_RT_Ratio)
-			! n_RT = float(n_clouds)/float(n_RT_Ratio)
+			! n_RT = (imax*jmax)/(n_RT_Ratio)
+			n_RT = float(n_clouds)/float(n_RT_Ratio)
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			if (n_GLQ_cloudtop == 0) then
 				n_GLQ_cloudtop = 1
