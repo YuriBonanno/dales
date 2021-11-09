@@ -168,6 +168,7 @@ SAVE
 	
 	!These values should be read from namoptions file
 	logical :: diagnostic_run = .false.							!Boolean for doing the diagnostics run
+	logical :: cloud_nRT = .false.							!Boolean for taking fraction of domain (.false.) or clouds (.true.)
 	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
 	logical :: use_gauleg = .true.							!Use gaussLegendre placement
 	logical :: use_evenly_spaced = .false.					!Use evenly spaced placement

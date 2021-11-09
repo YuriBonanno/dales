@@ -160,6 +160,22 @@ contains
 	   return
 	   end subroutine quantiles
 
+
+	subroutine GetDiff(dataset, resultDataSet, xsize, ysize, zsize)
+		integer :: xsize, ysize, zsize
+		integer :: dims, i, j, k, m
+		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		real(kind=kind_rb) :: resultDataSet (xsize, ysize, zsize-1)
+	
+		do i=1,xsize
+			do j=1,ysize
+				do k=1,zsize-1
+					resultDataSet(i,j,k) = dataset(i,j,k+1) - dataset(i,j,k)
+				enddo
+			enddo
+		enddo
+	
+	end subroutine GetDiff
 	! --------------------------------------------------------------------
 	! PROGRAM  MeanVariance:
 	!    This program reads in an unknown number of real values and

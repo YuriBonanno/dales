@@ -1736,7 +1736,7 @@ contains
 	subroutine CompileStatistics
 	  	use modraddata
 		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds
+		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff
 	
 		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
 		integer :: x1, x2, y1, y2
@@ -1744,6 +1744,9 @@ contains
 		real(kind=kind_rb), allocatable, dimension(:,:) :: tempRadArray
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayK
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayColumn
+		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayDiffColumn
+		
+		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempDiffRadArrayDataContainer
   		
 		xsize = i1+ih - (2-ih) - 1
 		ysize = j1+jh - (2-jh) - 1
@@ -1758,6 +1761,7 @@ contains
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
 		allocate(tempRadArrayColumn(x2-x1+1, y2-y1+1, k1))
+		allocate(tempRadArrayDiffColumn(x2-x1+1, y2-y1+1, k1-1))
 		
 		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
@@ -1867,9 +1871,46 @@ contains
 		end do
 		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_swd_Clouds_Only", xsize, ysize, zsize, n_clouds)
 	
+		! the diff values for the whole column
+		!
+		allocate(tempDiffRadArrayDataContainer(xsize,ysize,zsize-1))
+		!
+		call GetDiff(lwu(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
+		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_lwu", xsize, ysize, zsize-1)
+		do k=1,zsize-1
+			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_lwu_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
+		
+		!
+		call GetDiff(lwd(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
+		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_lwd", xsize, ysize, zsize-1)
+		do k=1,zsize-1
+			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_lwd_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
+		
+		!
+		call GetDiff(swu(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
+		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_swu", xsize, ysize, zsize-1)
+		do k=1,zsize-1
+			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_swu_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
+		
+		!
+		call GetDiff(swd(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
+		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_swd", xsize, ysize, zsize-1)
+		do k=1,zsize-1
+			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_swd_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
 	
 		deallocate(tempRadArray)
 		deallocate(tempRadArrayK)
+		deallocate(tempRadArrayColumn)
+		deallocate(tempRadArrayDiffColumn)
+		deallocate(tempDiffRadArrayDataContainer)
 	end subroutine CompileStatistics
 	
 	subroutine EndCompileStatistics
@@ -1925,6 +1966,19 @@ contains
 		
 		call finishstatisticsline("column_swd")
 		call finishstatisticsline("column_swd_Clouds_Only")
+		
+		
+		call finishstatisticsline("column_diff_lwu")
+		call finishstatisticsline("column_diff_lwu_Clouds_Only")
+		
+		call finishstatisticsline("column_diff_lwd")
+		call finishstatisticsline("column_diff_lwd_Clouds_Only")
+		
+		call finishstatisticsline("column_diff_swu")
+		call finishstatisticsline("column_diff_swu_Clouds_Only")
+		
+		call finishstatisticsline("column_diff_swd")
+		call finishstatisticsline("column_diff_swd_Clouds_Only")
 	end subroutine EndCompileStatistics
 
 end module modradrrtmg
