@@ -677,19 +677,20 @@ contains
 	  if (warm_randomnizer) then
 		krand  = min(krand,kmax)
 		!!TEMP
-		qtm  = qt0
-		! negval = .False. ! No negative perturbations for qt (negative moisture is non physical)
-		! do k = 1,krand
-			! call randomnize(qtm ,k,randqt ,irandom,ih,jh,negval)
-			! call randomnize(qt0 ,k,randqt ,irandom,ih,jh,negval)
-		! end do
+		! qtm  = qt0
+		negval = .False. ! No negative perturbations for qt (negative moisture is non physical)
+		do k = 1,krand
+			call randomnize(qtm ,k,randqt ,irandom,ih,jh,negval)
+			call randomnize(qt0 ,k,randqt ,irandom,ih,jh,negval)
+		end do
 		negval = .True. ! negative perturbations allowed
 		
-		thlm = thl0
-		! do k = 1,krand
-			! call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
-			! call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
-		! end do
+		!!TEMP
+		! thlm = thl0
+		do k = 1,krand
+			call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
+			call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
+		end do
 
 		um   = u0
 		vm   = v0
