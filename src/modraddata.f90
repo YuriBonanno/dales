@@ -173,6 +173,7 @@ SAVE
 	logical :: use_gauleg = .true.							!Use gaussLegendre placement
 	logical :: use_evenly_spaced = .false.					!Use evenly spaced placement
 	logical :: use_bin = .false.							!Use bin placement
+	logical :: warm_randomnizer = .false.					!apply randomness to warmstart fields
 	integer :: n_GLQ_clear != 30 							!Amount of points for clear column GLQ, defined in namoptions
 	integer :: temp_n_GLQ_clear != 30 						!Amount of points for clear column GLQ, temporary value in order to not overwrite n_GLQ_clear which is defined in namoptions
 	integer :: n_classes_initial != 20            			!maximum number of cloudtop altitude classes

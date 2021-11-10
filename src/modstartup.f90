@@ -69,7 +69,9 @@ contains
     use modraddata,        only : irad,iradiation,&
                                   rad_ls,rad_longw,rad_shortw,rad_smoke,useMcICA,&
                                   timerad,rka,dlwtop,dlwbot,sw0,gc,reff,isvsmoke,lcloudshading,&
-								  diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg, use_evenly_spaced, use_bin
+								  diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio,& 
+								  n_classes_initial, cloud_threshold, cloud_patch_threshold,&
+									use_gauleg, use_evenly_spaced, use_bin, warm_randomnizer
     use modtimedep,        only : inittimedep,ltimedep,ltimedepuv
     use modtimedepsv,      only : inittimedepsv,ltimedepsv
     use modtestbed,        only : inittestbed
@@ -108,7 +110,9 @@ contains
 	!BarkerBonanno Method
 	! ---------------------------
 	namelist/BARBON/ &
-        diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio, n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg, use_evenly_spaced, use_bin
+        diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio,&
+         n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg,&
+         use_evenly_spaced, use_bin, warm_randomnizer
 	! ---------------------------
 	!BarkerBonanno Method
 
@@ -281,6 +285,8 @@ contains
 	call MPI_BCAST(use_gauleg,1,MPI_LOGICAL,0,commwrld,mpierr)
 	call MPI_BCAST(use_evenly_spaced,1,MPI_LOGICAL,0,commwrld,mpierr)
 	call MPI_BCAST(use_bin,1,MPI_LOGICAL,0,commwrld,mpierr)
+	
+	call MPI_BCAST(warm_randomnizer,1,MPI_LOGICAL,0,commwrld,mpierr)
 	
     call MPI_BCAST(n_GLQ_clear,1,MPI_INTEGER,0,commwrld,mpierr)
     call MPI_BCAST(n_RT_Ratio,1,MPI_INTEGER,0,commwrld,mpierr)
@@ -666,11 +672,35 @@ contains
     else !if lwarmstart
 
       call readrestartfiles
-      um   = u0
-      vm   = v0
-      wm   = w0
-      thlm = thl0
-      qtm  = qt0
+	  if (warm_randomnizer) then
+		krand  = min(krand,kmax)
+		negval = .False. ! No negative perturbations for qt (negative moisture is non physical)
+		do k = 1,krand
+			call randomnize(qtm ,k,randqt ,irandom,ih,jh,negval)
+			call randomnize(qt0 ,k,randqt ,irandom,ih,jh,negval)
+		end do
+		negval = .True. ! negative perturbations allowed
+		do k = 1,krand
+			call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
+			call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
+		end do
+
+		do k=krandumin,krandumax
+			call randomnize(um  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(u0  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(vm  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(v0  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(wm  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(w0  ,k,randu  ,irandom,ih,jh,negval)
+		end do
+	  else
+		um   = u0
+		vm   = v0
+		wm   = w0
+		thlm = thl0
+		qtm  = qt0
+	  end if
+
       svm  = sv0
       e12m = e120
       call calc_halflev
