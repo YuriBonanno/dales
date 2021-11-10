@@ -677,7 +677,7 @@ contains
 	  if (warm_randomnizer) then
 		krand  = min(krand,kmax)
 		!!TEMP
-		! qtm  = qt0
+		qtm  = qt0
 		negval = .False. ! No negative perturbations for qt (negative moisture is non physical)
 		do k = 1,krand
 			call randomnize(qtm ,k,randqt ,irandom,ih,jh,negval)
@@ -687,23 +687,23 @@ contains
 		
 		!!TEMP
 		thlm = thl0
-		! do k = 1,krand
-			! call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
-			! call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
-		! end do
+		do k = 1,krand
+			call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
+			call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
+		end do
 
 		um   = u0
 		vm   = v0
 		wm   = w0
 
-		! do k=krandumin,krandumax
-			! call randomnize(um  ,k,randu  ,irandom,ih,jh,negval)
-			! call randomnize(u0  ,k,randu  ,irandom,ih,jh,negval)
-			! call randomnize(vm  ,k,randu  ,irandom,ih,jh,negval)
-			! call randomnize(v0  ,k,randu  ,irandom,ih,jh,negval)
-			! call randomnize(wm  ,k,randu  ,irandom,ih,jh,negval)
-			! call randomnize(w0  ,k,randu  ,irandom,ih,jh,negval)
-		! end do
+		do k=krandumin,krandumax
+			call randomnize(um  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(u0  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(vm  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(v0  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(wm  ,k,randu  ,irandom,ih,jh,negval)
+			call randomnize(w0  ,k,randu  ,irandom,ih,jh,negval)
+		end do
 	  else
 		um   = u0
 		vm   = v0
