@@ -686,11 +686,11 @@ contains
 		negval = .True. ! negative perturbations allowed
 		
 		!!TEMP
-		! thlm = thl0
-		do k = 1,krand
-			call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
-			call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
-		end do
+		thlm = thl0
+		! do k = 1,krand
+			! call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
+			! call randomnize(thl0,k,randthl,irandom,ih,jh,negval)
+		! end do
 
 		um   = u0
 		vm   = v0
