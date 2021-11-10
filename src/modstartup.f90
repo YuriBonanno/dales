@@ -437,7 +437,7 @@ contains
     use modtestbed,        only : ltestbed,tb_ps,tb_thl,tb_qt,tb_u,tb_v,tb_w,tb_ug,tb_vg,&
                                   tb_dqtdxls,tb_dqtdyls,tb_qtadv,tb_thladv
 								
-	use modraddata		   only : warm_randomnizer
+	use modraddata,		   only : warm_randomnizer
 
     integer i,j,k,n
     logical negval !switch to allow or not negative values in randomnization
