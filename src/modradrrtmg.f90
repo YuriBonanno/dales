@@ -1466,7 +1466,7 @@ contains
   
   subroutine BarkerRad(sunUp)
     use modraddata
-	use modglobal, only : imax, jmax, kmax
+	use modglobal, only : imax, jmax, kmax, kind_rb
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
 	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
 	use rrtmg_lw_rad,  only : rrtmg_lw
@@ -1589,7 +1589,7 @@ contains
 ! ==============================================================================;
   subroutine StephanRad(sunUp)
 	use modraddata
-	use modglobal, only : imax, jmax, kmax, i1, j1, k1, boltz
+	use modglobal, only : imax, jmax, kmax, i1, j1, k1, boltz, kind_rb
 	use modfields,     only : thl0
     use modsurfdata ,  only : tskin
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
@@ -1689,6 +1689,7 @@ contains
   
   subroutine Diagnostics(sunUp)
   	use modraddata
+	use modglobal, only : i1, j1, k1, kind_rb, ih, jh
 	use modradrrtmgyuriroutines, only : writetofiledefinedsizeint, writetofiledefinedsize
 	implicit none
 	
@@ -1696,6 +1697,25 @@ contains
 	integer :: i, ratioSize
 	integer, dimension(:) :: ratios (13)
 	real(kind=kind_rb), dimension(:) :: timeSet (14)
+	
+	real(kind=kind_rb), dimension(:,:,:) :: temp_lwu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_lwd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_swu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_swd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_swdir (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_swdif (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_lwuca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_lwdca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_swuca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_swdca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:) :: temp_SW_up_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_SW_dn_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_LW_up_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_LW_dn_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_SW_up_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_SW_dn_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_LW_up_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
+	real(kind=kind_rb), dimension(:,:) :: temp_LW_dn_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
 	
 	!Welke datasets wil ik weergeven?
 	! - Alle TOA
@@ -1711,6 +1731,35 @@ contains
 	
 	! call cpu_time(startTime)
 	call StephanRad(sunUp)
+	
+	!PUT ALL THE TEMPRADS FROM STEPHAN INTO FILES
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	  temp_lwu(:,:,:) = lwu(:,:,:)
+	  temp_lwd(:,:,:) = lwd(:,:,:)
+	  temp_swu(:,:,:) = swu(:,:,:)
+	  temp_swd(:,:,:) = swd(:,:,:)
+
+	  temp_swdir(:,:,:) = swdir(:,:,:)
+	  temp_swdif(:,:,:) = swdif(:,:,:)
+	  temp_lwc(:,:,:) = lwc(:,:,:)
+
+	  temp_lwuca(:,:,:) = lwuca(:,:,:)
+	  temp_lwdca(:,:,:) = lwdca(:,:,:)
+	  temp_swuca(:,:,:) = swuca(:,:,:)
+	  temp_swdca(:,:,:) = swdca(:,:,:)
+
+	  temp_SW_up_TOA(:,:) = SW_up_TOA(:,:)
+	  temp_SW_dn_TOA(:,:) = SW_dn_TOA(:,:)
+	  temp_LW_up_TOA(:,:) = LW_up_TOA(:,:)
+	  temp_LW_dn_TOA(:,:) = LW_dn_TOA(:,:)
+
+	  temp_SW_up_ca_TOA(:,:) = SW_up_ca_TOA(:,:)
+	  temp_SW_dn_ca_TOA(:,:) = SW_dn_ca_TOA(:,:)
+	  temp_LW_up_ca_TOA(:,:) = LW_up_ca_TOA(:,:)
+	  temp_LW_dn_ca_TOA(:,:) = LW_dn_ca_TOA(:,:)
+	  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	
 	! call cpu_time(endTime)
 	! netTime = endTime - endTime
 	! timeSet(1) = netTime
@@ -1726,6 +1775,32 @@ contains
 		! timeSet(i+1) = netTime
 		call CompileStatistics
 	end do
+	
+	
+	  lwu(:,:,:) = temp_lwu(:,:,:)
+	  lwd(:,:,:) = temp_lwd(:,:,:)
+	  swu(:,:,:) = temp_swu(:,:,:)
+	  swd(:,:,:) = temp_swd(:,:,:)
+
+	  swdir(:,:,:) = temp_swdir(:,:,:)
+	  swdif(:,:,:) = temp_swdif(:,:,:)
+	  lwc(:,:,:) = temp_lwc(:,:,:)
+
+	  lwuca(:,:,:) = temp_lwuca(:,:,:)
+	  lwdca(:,:,:) = temp_lwdca(:,:,:)
+	  swuca(:,:,:) = temp_swuca(:,:,:)
+	  swdca(:,:,:) = temp_swdca(:,:,:)
+
+	  SW_up_TOA(:,:) = temp_SW_up_TOA(:,:)
+	  SW_dn_TOA(:,:) = temp_SW_dn_TOA(:,:)
+	  LW_up_TOA(:,:) = temp_LW_up_TOA(:,:)
+	  LW_dn_TOA(:,:) = temp_LW_dn_TOA(:,:)
+
+	  SW_up_ca_TOA(:,:) = temp_SW_up_ca_TOA(:,:)
+	  SW_dn_ca_TOA(:,:) = temp_SW_dn_ca_TOA(:,:)
+	  LW_up_ca_TOA(:,:) = temp_LW_up_ca_TOA(:,:)
+	  LW_dn_ca_TOA(:,:) = temp_LW_dn_ca_TOA(:,:)
+	
 	
 	! call writetofiledefinedsize("netTime", timeSet, 1, 14, 1, 1, .false.)
 	
