@@ -1704,6 +1704,7 @@ contains
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swdir (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swdif (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: temp_lwc (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_lwuca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_lwdca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swuca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
