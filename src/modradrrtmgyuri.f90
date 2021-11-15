@@ -640,6 +640,7 @@ contains
 		print *, "n_RT", n_RT
 		print *, "n_RT_Ratio", n_RT_Ratio
 		print *, "n_clouds", n_clouds
+		print *, "n_clear", n_clear
 		
 		
 		
