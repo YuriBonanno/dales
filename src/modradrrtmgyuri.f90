@@ -637,7 +637,6 @@ contains
 		!!GLQ_indexes
 		!print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
-		allocate(class_of_GLQ(total_amount_GLQ_points))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		if (temp_n_GLQ_clear>0) then
