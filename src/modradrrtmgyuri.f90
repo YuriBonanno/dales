@@ -643,8 +643,8 @@ contains
 		
 		
 		!!GLQ_indexes
-		! print *, "allocating this amount of points", total_amount_GLQ_points
-		! allocate(GLQ_index_all(total_amount_GLQ_points, 2))
+		print *, "allocating this amount of points", total_amount_GLQ_points
+		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		! if (temp_n_GLQ_clear>0) then
@@ -667,8 +667,8 @@ contains
 
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
-		! allocate(original_index_all(n_clear + n_clouds, 2))
-		! print *, "original indexes"
+		allocate(original_index_all(n_clear + n_clouds, 2))
+		print *, "original indexes"
 		! if (temp_n_GLQ_clear>0) then
 			! do i =1, n_clear
 				! Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
@@ -694,8 +694,7 @@ contains
 		print *, "GLQ_points_clear", GLQ_points_clear
 		print *, "total_amount_GLQ_points", total_amount_GLQ_points
 		print *, "stop printing after ..."
-		! allocate(GLQ_points_all(total_amount_GLQ_points))
-		allocate(GLQ_points_all(4126))
+		allocate(GLQ_points_all(total_amount_GLQ_points))
 		print *, "allocate(GLQ_points_all!"	
 		if (temp_n_GLQ_clear>0) then
 			do i = 1, temp_n_GLQ_clear
