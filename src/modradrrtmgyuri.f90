@@ -690,8 +690,10 @@ contains
 		
 		!! Original GLQ points
 		!This places all the GLQ point order indexes for testing purposes.
-		print *, "original GLQ points"
+		
 		allocate(GLQ_points_all(total_amount_GLQ_points))
+		print *, "original GLQ points"
+		print *, "GLQ_points_all", GLQ_points_all
 		if (temp_n_GLQ_clear>0) then
 			do i = 1, temp_n_GLQ_clear
 				GLQ_points_all(i) = GLQ_points_clear(i)
