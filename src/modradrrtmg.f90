@@ -1579,7 +1579,6 @@ contains
 	deallocate(original_index_all)
 	deallocate(GLQ_points_all)
 	deallocate(GLQ_index_all)
-	deallocate(class_of_point)
 	
 	! call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
 	
