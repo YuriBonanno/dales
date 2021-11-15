@@ -11,7 +11,7 @@ contains
 !Important Routine
 	! subroutine findGLQPoints(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
 		! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
-		! n_classes, n_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
+		! n_classes, n_in_class, class_size, total_amount_GLQ_points, GLQ_index_all, &
 		! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	subroutine findGLQPoints()
 	
@@ -52,7 +52,7 @@ contains
 		! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 		! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 		
-		! integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+		! integer,allocatable,dimension(:) :: n_in_class 								!Array that contains the amount of clouds in a certain class
 		! integer :: class_size							!Amount of clouds in individual class
 		! integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 		! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
@@ -69,7 +69,7 @@ contains
 		integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
 		integer :: min_class							!amount of clouds in smallest cloud class
 		integer :: counter,counter2						!counter that allows for cloud_top ordering
-		real(kind=kind_rb)		:: min_thresh							!Minimal size a cloud class has to have
+		real(kind=kind_rb) :: min_thresh							!Minimal size a cloud class has to have
 		character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 		
 		!Cloud ordering
@@ -341,7 +341,6 @@ contains
 		!Select only the collumns with a nonzero cloudratio
 		! print *, "starting clouded collumns"
 		n_classes = 0
-		class_size = 0
 		n_GLQ_cloudtop = 0
 		!Perform the finding of GLQ points for the clouded collumns
 		! print *, "n_clear", n_clear
@@ -397,8 +396,8 @@ contains
 				!print *, quantiles_value
 
 				!print *, "allocate n_classes"
-				allocate (n_class(n_classes))
-				n_class(:) = 0
+				allocate (n_in_class(n_classes))
+				n_in_class(:) = 0
 				cloud_class(:,:) = 0
 			
 				!determines the size of the classes and fills cloud_class with the integers of which the classes belong to
@@ -409,13 +408,13 @@ contains
 							if(ztop_field(i,j) > quantiles_value(n_classes-1)) then
 								!print *, "ztop if"
 								cloud_class(i,j) = n_classes
-								n_class(n_classes) = n_class(n_classes) + 1
+								n_in_class(n_classes) = n_in_class(n_classes) + 1
 							else
 								!print *, "ztop else"
 								do n = 1, n_classes-1
 									if(ztop_field(i,j) <= quantiles_value(n)) then
 										cloud_class(i,j) = n
-										n_class(n) = n_class(n) + 1
+										n_in_class(n) = n_in_class(n) + 1
 									end if
 								end do
 							end if
@@ -426,35 +425,37 @@ contains
 
 				!If the "smallest" class is too small, retry making classes
 				!print *, "smallest class too small?"
-				min_class  = minval(n_class(:))
+				min_class  = minval(n_in_class(:))
 				min_thresh = 0.01*float(imax*jmax) * total_cloud_fraction
 				if (min_class < min_thresh) then    ! if too few in the least populated, reduce "n_classes" by 1 and redo...
 					n_classes = n_classes - 1
 					deallocate (quantiles_value)
-					deallocate (n_class)
+					deallocate (n_in_class)
 					goto 10
 				end if
 				
 				!Checks if all the classes are the same size
 				!print *, "same size classes?"
-				class_size = n_class(1)
-				do i=2,n_classes
-					if (class_size /= n_class(i)) then
-						!print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
-						!!Maybe not necessary to stop loop?
-						n_classes = n_classes - 1
-						deallocate (quantiles_value)
-						deallocate (n_class)
-						goto 10
-					end if
-				end do
+				if (classes_same_size) then
+					class_size = n_in_class(1)
+					do i=2,n_classes
+						if (class_size /= n_in_class(i)) then
+							!print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
+							!Maybe not necessary to stop loop?
+							n_classes = n_classes - 1
+							deallocate (quantiles_value)
+							deallocate (n_in_class)
+							goto 10
+						end if
+					end do
+				end if
+
 				deallocate (quantiles_value)
 			else
 				!print *, "single class"
-				allocate (n_class(n_classes))
-				n_class(:) = 0
-				n_class(1) = n_clouds
-				class_size = n_class(1)
+				allocate (n_in_class(n_classes))
+				n_in_class(:) = 0
+				n_in_class(1) = n_clouds
 				!print *, "merging fail?"
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 				!print *, "no merging fail"
@@ -472,28 +473,65 @@ contains
 				n_RT = (imax*jmax)/(n_RT_Ratio)
 			end if
 			
-			
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))
 			if (n_GLQ_cloudtop == 0) then
 				n_GLQ_cloudtop = 1
 			endif
+			
+			allocate(GLQ_in_class(n_classes))
+			
+			if (dynamic_GLQ_per_class) then
+				if (min_GLQ_in_class>n_GLQ_cloudtop) then
+					min_GLQ_in_class = n_GLQ_cloudtop
+				end if
+				
+				do i=1,n_classes
+					GLQ_in_class(i) = min_GLQ_in_class
+					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*(n_RT- min_GLQ_in_class*n_classes))/float(sum(n_in_class)))
+				end do
+				
+				!This later
+				allocate(class_of_GLQ(sum(GLQ_in_class)))
+				class_GLQ_counter = 1
+				do i=1,sum(GLQ_in_class)
+					if (i>sum(GLQ_in_class(1:class_GLQ_counter))) then
+						class_GLQ_counter = class_GLQ_counter + 1
+					end if
+					class_of_GLQ(i) = class_GLQ_counter
+				end do
+			else
+				do i=1,n_classes
+					GLQ_in_class(i) = n_GLQ_cloudtop
+				end do
+				allocate(class_of_GLQ(sum(GLQ_in_class)))
+				class_GLQ_counter = 1
+				do i=1,sum(GLQ_in_class)
+					if (i>sum(GLQ_in_class(1:class_GLQ_counter))) THEN
+						class_GLQ_counter = class_GLQ_counter + 1
+					end if
+					class_of_GLQ(i) = class_GLQ_counter
+				end do
+			end if
+			
 			!print *, "n_RT"
 			
+			!!!!GLQ points cloudtop and weights the size should be defined differently maybe?
+			
 			!print *, "GLQ_points_cloudtop"
-			allocate (GLQ_points_cloudtop (n_GLQ_cloudtop, n_classes))
+			allocate (GLQ_points_cloudtop (maxval(GLQ_in_class), n_classes))
 			!print *, "GLQ_weight_cloudtop"
-			allocate (GLQ_weights_cloudtop(n_GLQ_cloudtop, n_classes))
+			allocate (GLQ_weights_cloudtop(maxval(GLQ_in_class), n_classes))
 			
 			!print *, "cloudtop_LWP_ordered"
-			allocate (cloudtop_LWP_ordered(class_size, n_classes))
+			allocate (cloudtop_LWP_ordered(maxval(n_in_class), n_classes))
 			!print *, "original_cloudtop_LWP_indexes"
-			allocate (original_cloudtop_LWP_indexes(class_size, 2, n_classes))
+			allocate (original_cloudtop_LWP_indexes(maxval(n_in_class), 2, n_classes))
 			
 			!print *, "GLQ_cloudtop_LWP_indexes"
-			allocate (GLQ_cloudtop_LWP_indexes(n_GLQ_cloudtop, 2, n_classes))
+			allocate (GLQ_cloudtop_LWP_indexes(maxval(GLQ_in_class), 2, n_classes))
 			
 			! For visualising the N_RT_Ratio (VIS_RATIO)
-			allocate(Cloudtop_LWP_GLQ_Values(n_GLQ_cloudtop, n_classes)) 
+			allocate(Cloudtop_LWP_GLQ_Values(maxval(GLQ_in_class), n_classes)) 
 			
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
@@ -525,30 +563,30 @@ contains
 				!print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
 
-				call quicksortindexes(cloudtop_LWP_ordered(:,n), 1, class_size, original_cloudtop_LWP_indexes(:,:,n), class_size)
+				call quicksortindexes(cloudtop_LWP_ordered(1:n_in_class(n),n), 1, n_in_class(n), original_cloudtop_LWP_indexes(1:n_in_class(n),1:n_in_class(n),n), n_in_class(n))
 
 				if (use_gauleg) then
-					! call writeinttofile("n_GLQ_cloudtop_TEST1", n_GLQ_cloudtop, .true.)
-					call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
-					! call writeinttofile("n_GLQ_cloudtop_TEST2", n_GLQ_cloudtop, .true.)
+					! call writeinttofile("n_GLQ_cloudtop_TEST1", GLQ_in_class(n), .true.)
+					call gauleg(float(1), float(n_in_class(n)), GLQ_points_cloudtop(1:GLQ_in_class(n), n), GLQ_weights_cloudtop(1:GLQ_in_class(n), n), GLQ_in_class(n))
+					! call writeinttofile("n_GLQ_cloudtop_TEST2", GLQ_in_class(n), .true.)
 				else
 					if (use_evenly_spaced) then
-						binwidth = float(n_class(n))/float(n_GLQ_cloudtop)
-						do nbin=1,n_GLQ_cloudtop
+						binwidth = float(n_in_class(n))/float(GLQ_in_class(n))
+						do nbin=1,GLQ_in_class(n)
 							GLQ_points_cloudtop(nbin, n) = binwidth/2.0 + 0.5 + binwidth*(nbin-1)
 						enddo
 						GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 					else
 						if (use_bin) then
-							valuewidth = (maxval(cloudtop_LWP_ordered(:,n))-minval(cloudtop_LWP_ordered(:,n)))/float(n_GLQ_cloudtop)
-							do nbin=1,n_GLQ_cloudtop
+							valuewidth = (maxval(cloudtop_LWP_ordered(:,n))-minval(cloudtop_LWP_ordered(:,n)))/float(GLQ_in_class(n))
+							do nbin=1,GLQ_in_class(n)
 								GLQ_val = valuewidth/2.0 + minval(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
 								temploc = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
 								GLQ_points_cloudtop(nbin, n) = temploc(1)
 							enddo
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
-							call gauleg(float(1), float(n_class(n)), GLQ_points_cloudtop(:, n), GLQ_weights_cloudtop(:, n), n_GLQ_cloudtop)
+							call gauleg(float(1), float(n_in_class(n)), GLQ_points_cloudtop(1:GLQ_in_class(n), n), GLQ_weights_cloudtop(1:GLQ_in_class(n), n), GLQ_in_class(n))
 						end if
 					end if
 				end if
@@ -576,7 +614,7 @@ contains
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
 				
 				
-				do N_g = 1, n_GLQ_cloudtop	
+				do N_g = 1, GLQ_in_class(n)	
 					x_index = nint(GLQ_points_cloudtop(N_g, n))
 				    Cloudtop_LWP_GLQ_Values(N_g, n) = cloudtop_LWP_ordered(x_index, n) ! For visualising the N_RT_Ratio (VIS_RATIO)
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
@@ -595,12 +633,12 @@ contains
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		!print *, "starting GLQ to long total array"
-		total_amount_GLQ_points = temp_n_GLQ_clear + n_GLQ_cloudtop*n_classes
+		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
 		
 		!!GLQ_indexes
 		!print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
-		
+		allocate(class_of_point(total_amount_GLQ_points))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		if (temp_n_GLQ_clear>0) then
@@ -613,7 +651,7 @@ contains
 
 		
 		do i=1,n_classes
-			do j= 1,n_GLQ_cloudtop
+			do j= 1,GLQ_in_class(i)
 				GLQ_counter = GLQ_counter + 1
 				GLQ_index_all(GLQ_counter, 1) = GLQ_cloudtop_LWP_indexes(j, 1, i)
 				GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
@@ -635,7 +673,7 @@ contains
 
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
-				do j= 1,class_size
+				do j= 1,n_in_class(n)
 					GLQ_counter = GLQ_counter + 1
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
@@ -655,7 +693,7 @@ contains
 		GLQ_counter = temp_n_GLQ_clear
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
-				do j= 1,n_GLQ_cloudtop
+				do j= 1,GLQ_in_class(i)
 					GLQ_counter = GLQ_counter + 1
 					GLQ_points_all(GLQ_counter) = GLQ_points_cloudtop(j, i)
 				enddo
@@ -665,10 +703,14 @@ contains
 		!A lot of writes for testing purposes
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
+		
+		call writetofiledefinedsizeint("n_in_class", n_in_class, 1, n_classes, 1, 1, .false.)
+		
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .true.)
 		
 		call writetofiledefinedsize("GLQ_points_clear", GLQ_points_clear, 1, temp_n_GLQ_clear, 1, 1, .true.)
-		call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .true.)
+		
+		!call writetofiledefinedsize("GLQ_points_cloudtop", GLQ_points_cloudtop, 2, n_GLQ_cloudtop, n_classes, 1, .true.)
 		
 		! call writetofiledefinedsize("LWP_flattened", LWP_flattened, 2, imax, jmax, 1, .true.)
 		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
@@ -677,12 +719,11 @@ contains
 		call writeinttofile("n_RT_Ratio", n_RT_Ratio, .true.)
 		call writeinttofile("n_RT", n_RT, .true.)
 		call writeinttofile("temp_n_GLQ_clear", temp_n_GLQ_clear, .true.)
-		call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
+		!call writeinttofile("n_GLQ_cloudtop", n_GLQ_cloudtop, .true.)
 		! call writeinttofile("n_GLQ_cloudtop_really??", n_GLQ_cloudtop)
 		call writeinttofile("n_clear", n_clear, .false.)
 		call writeinttofile("n_clouds", n_clouds, .false.)
 		call writeinttofile("n_classes", n_classes, .false.)
-		call writeinttofile("class_size", class_size, .false.)
 
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
@@ -690,7 +731,7 @@ contains
 		! For visualising the N_RT_Ratio (VIS_RATIO)
 		
 		call writetofiledefinedsize("Clear_QV_GLQ_Values", Clear_QV_GLQ_Values, 1, temp_n_GLQ_clear, 1, 1, .false.) ! For visualising the N_RT_Ratio (VIS_RATIO)
-		call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values", Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .false.) ! For visualising the N_RT_Ratio (VIS_RATIO)
+		!call writetofiledefinedsize("Cloudtop_LWP_GLQ_Values", Cloudtop_LWP_GLQ_Values, 1, n_GLQ_cloudtop, 1, 1, .false.) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		
 		if (n_clear >0) deallocate(Clear_QV_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		if (n_clouds >0) deallocate(Cloudtop_LWP_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
@@ -712,7 +753,7 @@ contains
 	!This subroutine places all the calculated values of GLQ points into the other points in the array
 	! subroutine reshuffleValues(n_GLQ_clear, GLQ_points_clear, GLQ_weights_clear, n_clear, &
 		! n_GLQ_cloudtop, GLQ_points_cloudtop, GLQ_weights_cloudtop, n_clouds, &
-		! n_classes,n_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
+		! n_classes,n_in_class, class_size, passed_GLQ_point, total_amount_GLQ_points, passed_slice_length, &
 		! original_clear_LWP_indexes, original_cloudtop_LWP_indexes)
 	subroutine reshuffleValues(passed_GLQ_point, passed_slice_length)
 	
@@ -723,7 +764,7 @@ contains
     use modsurfdata, only: tskin
 	use modraddata
 	
-	integer :: i
+	integer :: i, j
 	integer :: fill_i, fill_j
 	integer :: n, n1, n2
 	integer :: class_number															!Counter for the cloudtop classes
@@ -741,7 +782,7 @@ contains
 	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 	! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 	
-	! integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
+	! integer,allocatable,dimension(:) :: n_in_class 								!Array that contains the amount of clouds in a certain class
 	! integer :: class_size							!Amount of clouds in individual class
 	! integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
@@ -835,33 +876,32 @@ contains
 					! print *, "temp_GLQ_point > temp_n_GLQ_clear"
 					!cloudtop
 
-
-					!Necessary to determine the clouded GLQ point with respoect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
+					!Necessary to determine the clouded GLQ point with respect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
 					cloudtop_GLQ_point = temp_GLQ_point - temp_n_GLQ_clear
-					class_number = cloudtop_GLQ_point/n_GLQ_cloudtop
-					if (MODULO(cloudtop_GLQ_point, n_GLQ_cloudtop) > 0) then
-						class_number = class_number + 1
-					end if
-					cloudtop_GLQ_point = cloudtop_GLQ_point - (class_number-1)*n_GLQ_cloudtop
 					
+					class_number = class_of_GLQ(cloudtop_GLQ_point)
+					do j=1,class_number-1
+						cloudtop_GLQ_point = cloudtop_GLQ_point - GLQ_in_class(j)
+					end do
+							
 					!Determine GLQ bin edges for replacing
-					if (n_GLQ_cloudtop == 1) then
+					if (GLQ_in_class(class_number) == 1) then
 						n1=1
-						n2=class_size
+						n2=n_in_class(class_number)
 					else
 						if (cloudtop_GLQ_point == 1) then
 							n1 = 1
 							n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
 						else
 							!! TODO: might neede to make this more flexible and make n_GLQ_cloudtop class ddependent for the differently sized classes
-							if (cloudtop_GLQ_point < n_GLQ_cloudtop) then
+							if (cloudtop_GLQ_point < GLQ_in_class(class_number)) then
 								n1 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point-1, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point, class_number)) / 2)
 								n1 = n1 + 1
 								n2 = nint((GLQ_points_cloudtop(cloudtop_GLQ_point, class_number) + GLQ_points_cloudtop(cloudtop_GLQ_point+1, class_number)) / 2)
 							else
-								n1 = nint((GLQ_points_cloudtop(n_GLQ_cloudtop-1, class_number) + GLQ_points_cloudtop(n_GLQ_cloudtop, class_number)) / 2)
+								n1 = nint((GLQ_points_cloudtop(GLQ_in_class(class_number)-1, class_number) + GLQ_points_cloudtop(GLQ_in_class(class_number), class_number)) / 2)
 								n1 = n1 + 1
-								n2 = class_size
+								n2 = n_in_class(class_number)
 							end if
 						end if
 					end if

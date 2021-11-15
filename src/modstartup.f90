@@ -71,7 +71,8 @@ contains
                                   timerad,rka,dlwtop,dlwbot,sw0,gc,reff,isvsmoke,lcloudshading,&
 								  diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio,& 
 								  n_classes_initial, cloud_threshold, cloud_patch_threshold,&
-									use_gauleg, use_evenly_spaced, use_bin, warm_randomnizer
+									use_gauleg, use_evenly_spaced, use_bin, warm_randomnizer, &
+									min_GLQ_in_class, classes_same_size, dynamic_GLQ_per_class
     use modtimedep,        only : inittimedep,ltimedep,ltimedepuv
     use modtimedepsv,      only : inittimedepsv,ltimedepsv
     use modtestbed,        only : inittestbed
@@ -112,7 +113,8 @@ contains
 	namelist/BARBON/ &
         diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio,&
          n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg,&
-         use_evenly_spaced, use_bin, warm_randomnizer
+         use_evenly_spaced, use_bin, warm_randomnizer, min_GLQ_in_class, &
+		 classes_same_size, dynamic_GLQ_per_class
 	! ---------------------------
 	!BarkerBonanno Method
 
@@ -287,10 +289,13 @@ contains
 	call MPI_BCAST(use_bin,1,MPI_LOGICAL,0,commwrld,mpierr)
 	
 	call MPI_BCAST(warm_randomnizer,1,MPI_LOGICAL,0,commwrld,mpierr)
+	call MPI_BCAST(dynamic_GLQ_per_class,1,MPI_LOGICAL,0,commwrld,mpierr)
+	call MPI_BCAST(classes_same_size,1,MPI_LOGICAL,0,commwrld,mpierr)
 	
     call MPI_BCAST(n_GLQ_clear,1,MPI_INTEGER,0,commwrld,mpierr)
     call MPI_BCAST(n_RT_Ratio,1,MPI_INTEGER,0,commwrld,mpierr)
     call MPI_BCAST(n_classes_initial,1,MPI_INTEGER,0,commwrld,mpierr)
+	call MPI_BCAST(min_GLQ_in_class,1,MPI_INTEGER,0,commwrld,mpierr)
     call MPI_BCAST(cloud_threshold,1,MY_REAL,0,commwrld,mpierr)
     call MPI_BCAST(cloud_patch_threshold,1,MY_REAL,0,commwrld,mpierr)
 	! ---------------------------

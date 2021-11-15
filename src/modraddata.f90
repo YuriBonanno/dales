@@ -153,14 +153,20 @@ SAVE
 	
 	integer :: n_GLQ_cloudtop											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+	integer :: class_of_point_counter
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
 	integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
 	integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
 
-	integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
-	integer :: class_size							!Amount of clouds in individual class
+
+	integer,allocatable,dimension(:) :: n_in_class 				! Array that contains the amount of clouds in a certain class
+	integer,allocatable,dimension(:) :: GLQ_in_class			! Maybe make dynamic, now all GLQ in every class are the same
+	integer,allocatable,dimension(:) :: class_of_GLQ			! list of class value of GLQ point
+	integer :: class_GLQ_counter    !Counter for GLQ class !Could be moved to modradrrtmgyuri
+	
+	
 	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 	integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
 	
@@ -174,6 +180,11 @@ SAVE
 	logical :: use_evenly_spaced = .false.					!Use evenly spaced placement
 	logical :: use_bin = .false.							!Use bin placement
 	logical :: warm_randomnizer = .false.					!apply randomness to warmstart fields
+	
+	logical :: classes_same_size = .false.					!boolean that makes classes same size	
+	logical :: dynamic_GLQ_per_class = .false.				!boolean for non-constant amount of GLQ points per class
+	
+	integer :: min_GLQ_in_class !=5		!minimal amount og GLQ points per class !Could be moved to modradrrtmgyuri
 	integer :: n_GLQ_clear != 30 							!Amount of points for clear column GLQ, defined in namoptions
 	integer :: temp_n_GLQ_clear != 30 						!Amount of points for clear column GLQ, temporary value in order to not overwrite n_GLQ_clear which is defined in namoptions
 	integer :: n_classes_initial != 20            			!maximum number of cloudtop altitude classes
