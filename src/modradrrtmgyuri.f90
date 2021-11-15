@@ -636,7 +636,8 @@ contains
 		print *, "GLQ_in_class", GLQ_in_class
 		print *, "n_in_class", n_in_class
 		print *, "class_of_GLQ", class_of_GLQ
-		print *, "class_size", class_size
+		print *, "n_RT", n_RT
+		print *, "n_RT_Ratio", n_RT_Ratio
 		
 		
 		!!GLQ_indexes
