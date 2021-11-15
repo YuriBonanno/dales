@@ -635,7 +635,7 @@ contains
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
 		print *, "GLQ_in_class", GLQ_in_class
 		print *, "n_in_class", n_in_class
-		print *, "class_of_GLQ", class_of_GLQ
+		! print *, "class_of_GLQ", class_of_GLQ
 		print *, "n_RT", n_RT
 		print *, "n_RT_Ratio", n_RT_Ratio
 		print *, "n_clouds", n_clouds
