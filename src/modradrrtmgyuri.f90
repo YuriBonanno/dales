@@ -258,7 +258,7 @@ contains
 			if (temp_n_GLQ_clear > n_clear) then
 				temp_n_GLQ_clear = n_clear
 			end if
-			! print *, "n_clear > 0"
+			print *, "n_clear > 0"
 			
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (clear_qv_ordered (n_clear))!Changed This (PIER_QV)
@@ -347,7 +347,7 @@ contains
 		! print *, "n_clouds", n_clouds
 		! print *, "n_clouds+n_clear", n_clouds+n_clear
 		if (n_clouds > 0) then
-			! print *, "n_clouds > 0"
+			print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 			
 			!Place the clouds in order on basis of cloudtop height from low to high.
@@ -377,7 +377,7 @@ contains
 			!First tries to fill n_classes_initial with the same amount of collumns, 
 			!if that fails it tries again with n_classes-1, this repeats until either all the classes are the same size or n_classes == 0
 			!The classes are ordered on basis of cloudtop height
-			!print *, "classes"
+			print *, "classes"
 			n_classes = n_classes_initial
 		10	if (n_classes > 1) then
 		    	allocate (quantiles_value(n_classes-1))
@@ -395,7 +395,7 @@ contains
 				!print *, "quantiles_value"
 				!print *, quantiles_value
 
-				!print *, "allocate n_classes"
+				! print *, "allocate n_classes"
 				allocate (n_in_class(n_classes))
 				n_in_class(:) = 0
 				cloud_class(:,:) = 0
@@ -459,7 +459,7 @@ contains
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 				!print *, "no merging fail"
 			end if
-			! print *, "cloud and classes finished"
+			print *, "cloud and classes finished"
 			!print *, "n_classes", n_classes
 			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
@@ -512,7 +512,7 @@ contains
 				end do
 			end if
 			
-			!print *, "n_RT"
+			print *, "n_RT"
 			
 			!!!!GLQ points cloudtop and weights the size should be defined differently maybe?
 			
@@ -535,7 +535,7 @@ contains
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
-			! print *, "start going through classes"
+			print *, "start going through classes"
 			do n = 1, n_classes
 				!print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case			
@@ -631,7 +631,7 @@ contains
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
-		!print *, "starting GLQ to long total array"
+		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
 		
 		!!GLQ_indexes
