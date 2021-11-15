@@ -675,17 +675,18 @@ contains
 				Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
 			enddo
 		end if
-		! GLQ_counter = n_clear
-		! print *, "original indexes cloudtop"
-		! if (n_GLQ_cloudtop>0) then
-			! do i=1,n_classes
-				! do j= 1,n_in_class(n)
-					! GLQ_counter = GLQ_counter + 1
-					! Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
-					! Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
-				! enddo
-			! enddo
-		! end if
+		GLQ_counter = n_clear
+		print *, "original indexes cloudtop"
+		if (n_GLQ_cloudtop>0) then
+			do i=1,n_classes
+				do j= 1,n_in_class(n)
+					GLQ_counter = GLQ_counter + 1
+					print *, "GLQ_counter", GLQ_counter
+					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
+					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
+				enddo
+			enddo
+		end if
 		
 		
 		!! Original GLQ points
