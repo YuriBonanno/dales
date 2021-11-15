@@ -577,7 +577,7 @@ contains
 						GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 					else
 						if (use_bin) then
-							valuewidth = (maxval(cloudtop_LWP_ordered(:,n))-minval(cloudtop_LWP_ordered(:,n)))/float(GLQ_in_class(n))
+							valuewidth = (maxval(cloudtop_LWP_ordered(1:n_in_class(n),n))-minval(cloudtop_LWP_ordered(1:n_in_class(n),n)))/float(GLQ_in_class(n))
 							do nbin=1,GLQ_in_class(n)
 								GLQ_val = valuewidth/2.0 + minval(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
 								temploc = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
@@ -635,6 +635,8 @@ contains
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
 		print *, "GLQ_in_class", GLQ_in_class
 		print *, "n_in_class", n_in_class
+		print *, "class_of_GLQ", class_of_GLQ
+		print *, "class_size", class_size
 		
 		
 		!!GLQ_indexes
