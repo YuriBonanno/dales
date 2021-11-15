@@ -681,10 +681,11 @@ contains
 		print *, "original indexes cloudtop"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
+				print *, "i", i
 				do j= 1,n_in_class(n)
 					GLQ_counter = GLQ_counter + 1
 					! print *, "GLQ_counter", GLQ_counter
-					! print *, "i", i
+					
 					! print *, "j", j
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
