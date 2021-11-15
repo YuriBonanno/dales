@@ -686,7 +686,7 @@ contains
 					GLQ_counter = GLQ_counter + 1
 					! print *, "GLQ_counter", GLQ_counter
 					
-					! print *, "j", j
+					print *, "j", j
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
 				enddo
