@@ -437,9 +437,8 @@ contains
 				!Checks if all the classes are the same size
 				!print *, "same size classes?"
 				if (classes_same_size) then
-					class_size = n_in_class(1)
 					do i=2,n_classes
-						if (class_size /= n_in_class(i)) then
+						if (n_in_class(1) /= n_in_class(i)) then
 							!print *, "WARNING: Something went wrong with cloud allocation in modradrrtmg, reducing class size"
 							!Maybe not necessary to stop loop?
 							n_classes = n_classes - 1
@@ -638,7 +637,7 @@ contains
 		!!GLQ_indexes
 		!print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
-		allocate(class_of_point(total_amount_GLQ_points))
+		allocate(class_of_GLQ(total_amount_GLQ_points))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
 		if (temp_n_GLQ_clear>0) then
