@@ -669,12 +669,12 @@ contains
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
 		print *, "original indexes"
-		! if (temp_n_GLQ_clear>0) then
-			! do i =1, n_clear
-				! Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
-				! Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
-			! enddo
-		! end if
+		if (temp_n_GLQ_clear>0) then
+			do i =1, n_clear
+				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
+				Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
+			enddo
+		end if
 		! GLQ_counter = n_clear
 		! print *, "original indexes cloudtop"
 		! if (n_GLQ_cloudtop>0) then
