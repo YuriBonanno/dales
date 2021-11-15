@@ -635,6 +635,7 @@ contains
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
 		print *, "GLQ_in_class", GLQ_in_class
 		print *, "n_in_class", n_in_class
+		print *, "n_classes", n_classes
 		! print *, "class_of_GLQ", class_of_GLQ
 		print *, "n_RT", n_RT
 		print *, "n_RT_Ratio", n_RT_Ratio
@@ -681,7 +682,7 @@ contains
 			do i=1,n_classes
 				do j= 1,n_in_class(n)
 					GLQ_counter = GLQ_counter + 1
-					print *, "GLQ_counter", GLQ_counter
+					! print *, "GLQ_counter", GLQ_counter
 					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
 					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
 				enddo
