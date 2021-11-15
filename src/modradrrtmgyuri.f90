@@ -563,8 +563,10 @@ contains
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
 
 				call quicksortindexes(cloudtop_LWP_ordered(1:n_in_class(n),n), 1, n_in_class(n), original_cloudtop_LWP_indexes(1:n_in_class(n),1:n_in_class(n),n), n_in_class(n))
+				print *, "post quicksortindexes"
 
 				if (use_gauleg) then
+					print *, "actual gauleg"
 					! call writeinttofile("n_GLQ_cloudtop_TEST1", GLQ_in_class(n), .true.)
 					call gauleg(float(1), float(n_in_class(n)), GLQ_points_cloudtop(1:GLQ_in_class(n), n), GLQ_weights_cloudtop(1:GLQ_in_class(n), n), GLQ_in_class(n))
 					! call writeinttofile("n_GLQ_cloudtop_TEST2", GLQ_in_class(n), .true.)
@@ -585,6 +587,7 @@ contains
 							enddo
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
+							print *, "nothing gauleg" 
 							call gauleg(float(1), float(n_in_class(n)), GLQ_points_cloudtop(1:GLQ_in_class(n), n), GLQ_weights_cloudtop(1:GLQ_in_class(n), n), GLQ_in_class(n))
 						end if
 					end if
