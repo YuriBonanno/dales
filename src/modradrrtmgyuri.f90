@@ -562,7 +562,7 @@ contains
 				print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
 
-				call quicksortindexes(cloudtop_LWP_ordered(1:n_in_class(n),n), 1, n_in_class(n), original_cloudtop_LWP_indexes(1:n_in_class(n),1:n_in_class(n),n), n_in_class(n))
+				call quicksortindexes(cloudtop_LWP_ordered(1:n_in_class(n),n), 1, n_in_class(n), original_cloudtop_LWP_indexes(1:n_in_class(n),:,n), n_in_class(n))
 				print *, "post quicksortindexes"
 
 				if (use_gauleg) then
