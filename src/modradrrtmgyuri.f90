@@ -635,7 +635,7 @@ contains
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
 		
 		!!GLQ_indexes
-		!print *, "allocating this amount of points", total_amount_GLQ_points
+		print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
@@ -660,7 +660,7 @@ contains
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
-
+		print *, "original indexes"
 		if (temp_n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
@@ -668,7 +668,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_clear
-
+		print *, "original indexes cloudtop"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_in_class(n)
@@ -682,6 +682,7 @@ contains
 		
 		!! Original GLQ points
 		!This places all the GLQ point order indexes for testing purposes.
+		print *, "original GLQ points"
 		allocate(GLQ_points_all(total_amount_GLQ_points))
 		if (temp_n_GLQ_clear>0) then
 			do i = 1, temp_n_GLQ_clear
@@ -689,6 +690,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = temp_n_GLQ_clear
+		print *, "original GLQ points cloudtop"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,GLQ_in_class(i)
@@ -699,6 +701,7 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
+		print *, "A lot of writes for testing purposes"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
 		
