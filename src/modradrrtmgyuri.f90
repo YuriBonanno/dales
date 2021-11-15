@@ -633,6 +633,9 @@ contains
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
+		print *, "GLQ_in_class", GLQ_in_class
+		print *, "n_in_class", n_in_class
+		
 		
 		!!GLQ_indexes
 		print *, "allocating this amount of points", total_amount_GLQ_points
