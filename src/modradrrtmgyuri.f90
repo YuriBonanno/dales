@@ -407,20 +407,16 @@ contains
 			
 				!determines the size of the classes and fills cloud_class with the integers of which the classes belong to
 				!print *, "ztop loop"
-				print *, "quantiles_value", quantiles_value
+				! print *, "quantiles_value", quantiles_value
 				do i = 1,imax
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
 							if(ztop_field(i,j) > quantiles_value(n_classes-1)) then
-								print *, "ztop if"
 								cloud_class(i,j) = n_classes
 								n_in_class(n_classes) = n_in_class(n_classes) + 1
 							else
-								print *, "ztop else"
 								do n = 1, n_classes-1
 									if(ztop_field(i,j) <= quantiles_value(n)) then
-										print *, "n", n
-										print *, "test"
 										cloud_class(i,j) = n
 										n_in_class(n) = n_in_class(n) + 1
 										exit
@@ -523,9 +519,9 @@ contains
 				end do
 			end if
 			
-			print *, "n_RT"
-			print *, "maxval(GLQ_in_class)", maxval(GLQ_in_class)
-			print *, "maxval(n_in_class)", maxval(n_in_class)
+			! print *, "n_RT"
+			! print *, "maxval(GLQ_in_class)", maxval(GLQ_in_class)
+			! print *, "maxval(n_in_class)", maxval(n_in_class)
 			!!!!GLQ points cloudtop and weights the size should be defined differently maybe?
 			
 			!print *, "GLQ_points_cloudtop"

@@ -1529,7 +1529,7 @@ contains
 		!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 		passed_GLQ_point = current_GLQ_point
 
-		print *, "setupBarkerSlicesFromProfiles"
+		! print *, "setupBarkerSlicesFromProfiles"
 		call setupBarkerSlicesFromProfiles(npatch_start, &
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 		   passed_GLQ_point, passed_slice_length, &
@@ -1554,7 +1554,7 @@ contains
 
 		passed_GLQ_point = current_GLQ_point
 
-		print *, "reshuffleValues"
+		! print *, "reshuffleValues"
 		!Place all the flux values into the original array:
 		call reshuffleValues(passed_GLQ_point, passed_slice_length)
 
