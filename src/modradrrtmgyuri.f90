@@ -682,6 +682,8 @@ contains
 		end if
 		GLQ_counter = n_clear
 		print *, "original indexes cloudtop"
+		print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(:, 1, :)
+		! print *, ""
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,n_in_class(i)
