@@ -551,6 +551,8 @@ contains
 				!print *, "Place the original LWP values"
 				print *, "LWP_flattened before placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
+				print *, "cloud_class", cloud_class
+				
 				do j = 1, jmax
 					do i = 1, imax
 						if (cloud_class(i,j) == n) then
