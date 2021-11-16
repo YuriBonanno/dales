@@ -454,6 +454,7 @@ contains
 					end do
 				end if
 
+				deallocate (n_in_class)
 				deallocate (quantiles_value)
 			else
 				!print *, "single class"
