@@ -553,7 +553,7 @@ contains
 				!print *, "Place the original LWP values"
 				print *, "LWP_flattened before placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
-				print *, "cloud_class", cloud_class
+				! print *, "cloud_class", cloud_class
 				
 				do j = 1, jmax
 					do i = 1, imax
@@ -566,7 +566,7 @@ contains
 						end if
 					end do
 				end do
-				print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(:,1,n)
+				! print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(:,1,n)
 				print *, "LWP_flattened after placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 				
