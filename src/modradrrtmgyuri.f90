@@ -407,6 +407,7 @@ contains
 			
 				!determines the size of the classes and fills cloud_class with the integers of which the classes belong to
 				!print *, "ztop loop"
+				print *, "quantiles_value", quantiles_value
 				do i = 1,imax
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
@@ -454,7 +455,7 @@ contains
 					end do
 				end if
 
-				deallocate (n_in_class)
+				! deallocate (n_in_class)
 				deallocate (quantiles_value)
 			else
 				!print *, "single class"
