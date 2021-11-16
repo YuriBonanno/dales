@@ -395,7 +395,7 @@ contains
 
 				!Write to file for testing purposes
 				!print *, "write to file"
-				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1, .true.)
+				call writetofiledefinedsize("quantiles_value", quantiles_value, 1, (n_classes-1), 1, 1, .false.)
 				
 				!print *, "quantiles_value"
 				!print *, quantiles_value
@@ -428,6 +428,7 @@ contains
 					end do
 				end do
 
+				call writetofiledefinedsizeint("cloud_class", cloud_class, 2, imax, jmax, 1, .false.)
 
 				!If the "smallest" class is too small, retry making classes
 				!print *, "smallest class too small?"
