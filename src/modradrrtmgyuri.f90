@@ -420,6 +420,7 @@ contains
 								do n = 1, n_classes-1
 									if(ztop_field(i,j) <= quantiles_value(n)) then
 										print *, "n", n
+										print *, "test"
 										cloud_class(i,j) = n
 										n_in_class(n) = n_in_class(n) + 1
 										exit
