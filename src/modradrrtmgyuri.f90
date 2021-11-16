@@ -371,7 +371,7 @@ contains
 			
 			!Write to file for testing purposes
 			!print *, "LookIfActuallyIncreasing"
-			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, n_clouds, 1, 1, .true.)
+			call writetofiledefinedsize("LookIfActuallyIncreasing", cloudtop_height_ordered, 1, n_clouds, 1, 1, .false.)
 			
 			!Determined:
 			!   cloudtop_height_ordered
