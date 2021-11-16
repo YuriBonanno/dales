@@ -561,7 +561,7 @@ contains
 						end if
 					end do
 				end do
-				print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(n_in_class(n),1,n)
+				print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(:,1,n)
 				print *, "LWP_flattened after placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 				
