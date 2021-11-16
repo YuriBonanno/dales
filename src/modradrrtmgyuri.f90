@@ -242,8 +242,8 @@ contains
 		total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 		
 		!Write to file for test purposes
-		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .true.)
-		call writetofiledefinedsizeint("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1, .true.)
+		call writetofiledefinedsize("ztop_field", ztop_field, 2, imax, jmax, 1, .false.)
+		call writetofiledefinedsizeint("cloudtop_distribution", cloudtop_distribution, 1, k1, 1, 1, .false.)
 		
 		!Determined:
 		!   Cloud_fraction
