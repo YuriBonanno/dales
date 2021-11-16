@@ -652,45 +652,45 @@ contains
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
-		if (temp_n_GLQ_clear>0) then
-			do i =1, temp_n_GLQ_clear
-				GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
-				GLQ_index_all(i, 2) = GLQ_clear_LWP_indexes(i, 2)
-			enddo
-		end if
-		GLQ_counter = temp_n_GLQ_clear
+		! if (temp_n_GLQ_clear>0) then
+			! do i =1, temp_n_GLQ_clear
+				! GLQ_index_all(i, 1) = GLQ_clear_LWP_indexes(i, 1)
+				! GLQ_index_all(i, 2) = GLQ_clear_LWP_indexes(i, 2)
+			! enddo
+		! end if
+		! GLQ_counter = temp_n_GLQ_clear
 
 		
-		do i=1,n_classes
-			do j= 1,GLQ_in_class(i)
-				GLQ_counter = GLQ_counter + 1
-				GLQ_index_all(GLQ_counter, 1) = GLQ_cloudtop_LWP_indexes(j, 1, i)
-				GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
-			enddo
-		enddo
+		! do i=1,n_classes
+			! do j= 1,GLQ_in_class(i)
+				! GLQ_counter = GLQ_counter + 1
+				! GLQ_index_all(GLQ_counter, 1) = GLQ_cloudtop_LWP_indexes(j, 1, i)
+				! GLQ_index_all(GLQ_counter, 2) = GLQ_cloudtop_LWP_indexes(j, 2, i)
+			! enddo
+		! enddo
 
 
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
 		print *, "original indexes"
-		if (temp_n_GLQ_clear>0) then
-			do i =1, n_clear
-				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
-				Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
-			enddo
-		end if
-		GLQ_counter = n_clear
-		print *, "original indexes cloudtop"
-		if (n_GLQ_cloudtop>0) then
-			do i=1,n_classes
-				do j= 1,n_in_class(i)
-					GLQ_counter = GLQ_counter + 1
-					Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
-					Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
-				enddo
-			enddo
-		end if
+		! if (temp_n_GLQ_clear>0) then
+			! do i =1, n_clear
+				! Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
+				! Original_index_all(i, 2) = original_clear_LWP_indexes(i, 2)
+			! enddo
+		! end if
+		! GLQ_counter = n_clear
+		! print *, "original indexes cloudtop"
+		! if (n_GLQ_cloudtop>0) then
+			! do i=1,n_classes
+				! do j= 1,n_in_class(i)
+					! GLQ_counter = GLQ_counter + 1
+					! Original_index_all(GLQ_counter, 1) = original_cloudtop_LWP_indexes(j, 1, i)
+					! Original_index_all(GLQ_counter, 2) = original_cloudtop_LWP_indexes(j, 2, i)
+				! enddo
+			! enddo
+		! end if
 		
 		
 		!! Original GLQ points
