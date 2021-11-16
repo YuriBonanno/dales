@@ -551,7 +551,7 @@ contains
 				counter = 0
 				!Place the original LWP values and actual coordinates into an array containing all the indexes.
 				!print *, "Place the original LWP values"
-				print *, "LWP_flattened before placing the original LWP values"
+				! print *, "LWP_flattened before placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 				! print *, "cloud_class", cloud_class
 				
@@ -567,10 +567,10 @@ contains
 					end do
 				end do
 				! print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(:,1,n)
-				print *, "LWP_flattened after placing the original LWP values"
+				! print *, "LWP_flattened after placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 				
-				print *, "quicksortindexes"
+				! print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
 				allocate(temp_quicksort_LWP_ordered(n_in_class(n)))
 				allocate(temp_quicksort_LWP_indexes(n_in_class(n), 2))
@@ -585,7 +585,7 @@ contains
 				
 				deallocate(temp_quicksort_LWP_ordered)
 				deallocate(temp_quicksort_LWP_indexes)
-				print *, "post quicksortindexes"
+				! print *, "post quicksortindexes"
 
 				if (use_gauleg) then
 					print *, "actual gauleg"
@@ -621,7 +621,7 @@ contains
 							enddo
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
-							print *, "nothing gauleg" 
+							! print *, "nothing gauleg" 
 							allocate(temp_GLQ_points_cloudtop(GLQ_in_class(n)))
 							allocate(temp_GLQ_weights_cloudtop(GLQ_in_class(n)))
 							
@@ -658,7 +658,7 @@ contains
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, 4095, 1, 1, .true.)
 				!call writetofiledefinedsize("cloudtop_LWP_ordered", cloudtop_LWP_ordered(:,n), 1, class_size, 1, 1, .true.)
 			
-				print *, "save GLQ points"
+				! print *, "save GLQ points"
 				!Save coordinates of the points to an array containing all the clouded GLQ point indexes
 				
 				
@@ -670,7 +670,7 @@ contains
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 				end do
-				print *, "end save GLQ points"
+				! print *, "end save GLQ points"
 			end do
 			deallocate(cloudtop_height_ordered)
 			deallocate(cloudtop_LWP_ordered)
