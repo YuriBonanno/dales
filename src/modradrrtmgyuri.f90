@@ -560,7 +560,7 @@ contains
 							original_cloudtop_LWP_indexes(counter, 2, n) = j + 1
 						end if
 					end do
-				end 
+				end do
 				print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(n_in_class(n),1,n)
 				print *, "LWP_flattened after placing the original LWP values"
 				!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
