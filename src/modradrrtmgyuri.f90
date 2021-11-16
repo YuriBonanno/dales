@@ -802,7 +802,7 @@ contains
 		if (n_clear >0) deallocate(Clear_QV_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		if (n_clouds >0) deallocate(Cloudtop_LWP_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 
-
+		print *, "prints done"
 		! cloudFracModRad = cloudFrac
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
