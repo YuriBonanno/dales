@@ -518,7 +518,8 @@ contains
 			end if
 			
 			print *, "n_RT"
-			
+			print *, "maxval(GLQ_in_class)", maxval(GLQ_in_class)
+			print *, "maxval(n_in_class)", maxval(n_in_class)
 			!!!!GLQ points cloudtop and weights the size should be defined differently maybe?
 			
 			!print *, "GLQ_points_cloudtop"
