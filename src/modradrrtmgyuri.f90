@@ -412,16 +412,17 @@ contains
 					do j = 1, jmax
 						if(ztop_field(i,j) > 0) then
 							if(ztop_field(i,j) > quantiles_value(n_classes-1)) then
-								print *, "ztop if"
+								! print *, "ztop if"
 								cloud_class(i,j) = n_classes
 								n_in_class(n_classes) = n_in_class(n_classes) + 1
 							else
-								print *, "ztop else"
+								! print *, "ztop else"
 								do n = 1, n_classes-1
 									if(ztop_field(i,j) <= quantiles_value(n)) then
-										print *, "n", n
+										! print *, "n", n
 										cloud_class(i,j) = n
 										n_in_class(n) = n_in_class(n) + 1
+										exit
 									end if
 								end do
 							end if
