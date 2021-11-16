@@ -85,6 +85,11 @@ contains
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
 		
+		real(kind=kind_rb),allocatable,dimension(:) :: temp_quicksort_LWP_ordered
+		integer,allocatable,dimension(:,:):: temp_quicksort_LWP_indexes
+		
+		real(kind=kind_rb),allocatable,dimension(:) :: temp_GLQ_points_cloudtop, temp_GLQ_weights_cloudtop
+		
 		!Grid data
 		! real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
 		!real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		
@@ -561,14 +566,37 @@ contains
 				
 				print *, "quicksortindexes"
 				!Sort the clouds on basis of LWP using quicksort, some other algorhitm could be used..
-
-				call quicksortindexes(cloudtop_LWP_ordered(1:n_in_class(n),n), 1, n_in_class(n), original_cloudtop_LWP_indexes(1:n_in_class(n),:,n), n_in_class(n))
+				allocate(temp_quicksort_LWP_ordered(n_in_class(n)))
+				allocate(temp_quicksort_LWP_indexes(n_in_class(n), 2))
+				
+				temp_quicksort_LWP_ordered = cloudtop_LWP_ordered(1:n_in_class(n),n)
+				temp_quicksort_LWP_indexes = original_cloudtop_LWP_indexes(1:n_in_class(n),:,n)
+				
+				call quicksortindexes(temp_quicksort_LWP_ordered, 1, n_in_class(n), temp_quicksort_LWP_indexes, n_in_class(n))
+				
+				cloudtop_LWP_ordered(1:n_in_class(n),n) = temp_quicksort_LWP_ordered
+				original_cloudtop_LWP_indexes(1:n_in_class(n),:,n) = temp_quicksort_LWP_indexes
+				
+				deallocate(temp_quicksort_LWP_ordered)
+				deallocate(temp_quicksort_LWP_indexes)
 				print *, "post quicksortindexes"
 
 				if (use_gauleg) then
 					print *, "actual gauleg"
 					! call writeinttofile("n_GLQ_cloudtop_TEST1", GLQ_in_class(n), .true.)
-					call gauleg(float(1), float(n_in_class(n)), GLQ_points_cloudtop(1:GLQ_in_class(n), n), GLQ_weights_cloudtop(1:GLQ_in_class(n), n), GLQ_in_class(n))
+					allocate(temp_GLQ_points_cloudtop(GLQ_in_class(n)))
+					allocate(temp_GLQ_weights_cloudtop(GLQ_in_class(n)))
+					
+					temp_GLQ_points_cloudtop = GLQ_points_cloudtop(1:GLQ_in_class(n), n)
+					temp_GLQ_weights_cloudtop = GLQ_weights_cloudtop(1:GLQ_in_class(n), n)
+					
+					call gauleg(float(1), float(n_in_class(n)), temp_GLQ_points_cloudtop, temp_GLQ_weights_cloudtop, GLQ_in_class(n))
+					
+					GLQ_points_cloudtop(1:GLQ_in_class(n), n) = temp_GLQ_points_cloudtop
+					GLQ_weights_cloudtop(1:GLQ_in_class(n), n) = temp_GLQ_weights_cloudtop
+					
+					deallocate(temp_GLQ_points_cloudtop)
+					deallocate(temp_GLQ_weights_cloudtop)
 					! call writeinttofile("n_GLQ_cloudtop_TEST2", GLQ_in_class(n), .true.)
 				else
 					if (use_evenly_spaced) then
@@ -588,7 +616,19 @@ contains
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
 							print *, "nothing gauleg" 
-							call gauleg(float(1), float(n_in_class(n)), GLQ_points_cloudtop(1:GLQ_in_class(n), n), GLQ_weights_cloudtop(1:GLQ_in_class(n), n), GLQ_in_class(n))
+							allocate(temp_GLQ_points_cloudtop(GLQ_in_class(n)))
+							allocate(temp_GLQ_weights_cloudtop(GLQ_in_class(n)))
+							
+							temp_GLQ_points_cloudtop = GLQ_points_cloudtop(1:GLQ_in_class(n), n)
+							temp_GLQ_weights_cloudtop = GLQ_weights_cloudtop(1:GLQ_in_class(n), n)
+							
+							call gauleg(float(1), float(n_in_class(n)), temp_GLQ_points_cloudtop, temp_GLQ_weights_cloudtop, GLQ_in_class(n))
+							
+							GLQ_points_cloudtop(1:GLQ_in_class(n), n) = temp_GLQ_points_cloudtop
+							GLQ_weights_cloudtop(1:GLQ_in_class(n), n) = temp_GLQ_weights_cloudtop
+							
+							deallocate(temp_GLQ_points_cloudtop)
+							deallocate(temp_GLQ_weights_cloudtop)
 						end if
 					end if
 				end if
