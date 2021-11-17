@@ -625,6 +625,104 @@ contains
 
 	end subroutine
 	
+		! write to file with real(kind=kind_rb) with defined size
+	subroutine writetofiledefinedsizedifferentlengths(filename, dataset, sizeset, dims, xsize, ysize, zsize, printLast)
+	! use modraddata
+	use modglobal, only: kind_rb
+
+	! implicit none
+
+	!Files
+		logical :: fileexists=.false.
+		logical :: printLast
+		integer :: dims, i, j, k
+		character(*) :: filename
+		character(200) :: fullpath
+		character(200) :: makedir
+		integer :: xsize, ysize, zsize
+		integer, dimension(:) :: sizeset
+		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		character(50000) :: frmt
+
+		if (printLast) then
+			if (.NOT. ((tnext/1000)>=runtime)) then
+				return
+			end if
+		end if
+
+		makedir = "datadir"
+		!call execute_command_line ('mkdir -p out/' // adjustl(trim( makedir ) ) )
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		fullpath = trim(makedir) // '/' // trim(filename)
+		
+		!__________________________________________________________
+		!Make and write to files
+		if (dims<1 .or. dims>3) then
+			print *, "writing to file failed because of erroneous dimensions"
+			return
+		end if
+		
+		inquire(file=fullpath, exist=fileexists)
+		!print *, fileexists
+		if (fileexists) then
+			! open(11, file=fullpath, status="old", position="append", action="write")
+			if (printLast) then
+				open(11, file=fullpath, status="replace", action="write")
+			else
+				open(11, file=fullpath, status="old", position="append", action="write")
+			end if
+		else
+			open(11, file=fullpath, status="new", action="write")
+		end if
+		
+		! print *, "test start"
+		
+		! print *, "now starting the concatenation"
+		frmt = "(F18.10"
+		do i=2,xsize
+			frmt = trim(frmt)
+			frmt = trim(frmt) // ",F18.10 "
+			frmt = trim(frmt)
+		end do
+		frmt = trim(frmt) // ")"
+		
+		! print *, "finished concatenation"
+		
+		! print *, "concatenation result:"
+		! print *, frmt
+		! print *, "trimmed concatenation result:"
+		! print *, trim(frmt)
+		
+		! print *, "now writing to datadir"
+		if (dims == 1) then
+			!print *, "1D write"
+			! do i=1,imax
+				write(11, frmt) dataset(:,1,1)
+			! end do
+		end if
+			
+		if (dims == 2) then
+			! do i=1,imax
+				do j=1,ysize
+					write(11, frmt) dataset(:,j,1)
+				end do
+			! end do
+		end if
+		
+		if (dims == 3) then
+			! do i=1,imax
+				do j=1,ysize
+					do k=1,zsize
+						write(11, frmt) dataset(:,j,k)
+					end do
+				end do
+			! end do
+		end if
+
+		close(11)
+		! deallocate(fullpath)
+		! deallocate(makedir)
+	end subroutine
 	
 	! write to file with integers with defined size
 	subroutine writetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize, printLast)
