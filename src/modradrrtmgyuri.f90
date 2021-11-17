@@ -769,7 +769,7 @@ contains
 		print *, "A lot of writes for testing purposes"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
-		call writetofiledefinedsizeint("GLQ_in_class", GLQ_in_class, 1, n_classes, 1, 1, .true.)
+		call writetofiledefinedsizeint("GLQ_in_class", GLQ_in_class, 1, n_classes, 1, 1, .false.)
 
 		call writetofiledefinedsizeint("n_in_class", n_in_class, 1, n_classes, 1, 1, .false.)
 		
