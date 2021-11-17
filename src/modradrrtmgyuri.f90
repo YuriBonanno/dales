@@ -975,7 +975,7 @@ contains
 					!Places the values into the non GLQ places on the array
 					do n = n1, n2
 						total_value_test = total_value_test + 1
-						! print *, n2-n1
+						print *, n2-n1
 
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
