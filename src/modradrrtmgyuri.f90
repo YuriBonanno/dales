@@ -939,7 +939,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					! print *, "temp_GLQ_point > temp_n_GLQ_clear"
+					print *, "temp_GLQ_point > temp_n_GLQ_clear"
 					!cloudtop
 
 					!Necessary to determine the clouded GLQ point with respect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
