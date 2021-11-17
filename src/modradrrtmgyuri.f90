@@ -544,7 +544,7 @@ contains
 			!print *, "LWP_flattened after allocation"
 			!call writetofiledefinedsize("LWP_flattened", LWP_flattened(:,:), 1, 4096, 1, 1, .true.)
 			
-			print *, "start going through classes"
+			! print *, "start going through classes"
 			do n = 1, n_classes
 				!print *, "gauleg"
 				!Determine Gauss-Legendre Quadrature points for the clouded case			
@@ -589,7 +589,7 @@ contains
 				! print *, "post quicksortindexes"
 
 				if (use_gauleg) then
-					print *, "actual gauleg"
+					! print *, "actual gauleg"
 					! call writeinttofile("n_GLQ_cloudtop_TEST1", GLQ_in_class(n), .true.)
 					allocate(temp_GLQ_points_cloudtop(GLQ_in_class(n)))
 					allocate(temp_GLQ_weights_cloudtop(GLQ_in_class(n)))
@@ -720,7 +720,7 @@ contains
 		!!Original Indexes
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of the original points
 		allocate(original_index_all(n_clear + n_clouds, 2))
-		print *, "original indexes"
+		! print *, "original indexes"
 		if (temp_n_GLQ_clear>0) then
 			do i =1, n_clear
 				Original_index_all(i, 1) = original_clear_LWP_indexes(i, 1)
@@ -728,8 +728,8 @@ contains
 			enddo
 		end if
 		GLQ_counter = n_clear
-		print *, "original indexes cloudtop"
-		print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(1:n_in_class(1), 1, 1)
+		! print *, "original indexes cloudtop"
+		! print *, "original_cloudtop_LWP_indexes", original_cloudtop_LWP_indexes(1:n_in_class(1), 1, 1)
 		! print *, ""
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
@@ -744,19 +744,19 @@ contains
 		
 		!! Original GLQ points
 		!This places all the GLQ point order indexes for testing purposes.
-		print *, "original GLQ points"
-		print *, "GLQ_points_clear", GLQ_points_clear
-		print *, "total_amount_GLQ_points", total_amount_GLQ_points
-		print *, "stop printing after ..."
+		! print *, "original GLQ points"
+		! print *, "GLQ_points_clear", GLQ_points_clear
+		! print *, "total_amount_GLQ_points", total_amount_GLQ_points
+		! print *, "stop printing after ..."
 		allocate(GLQ_points_all(total_amount_GLQ_points))
-		print *, "allocate(GLQ_points_all!"	
+		! print *, "allocate(GLQ_points_all!"	
 		if (temp_n_GLQ_clear>0) then
 			do i = 1, temp_n_GLQ_clear
 				GLQ_points_all(i) = GLQ_points_clear(i)
 			enddo
 		end if
 		GLQ_counter = temp_n_GLQ_clear
-		print *, "original GLQ points cloudtop"
+		! print *, "original GLQ points cloudtop"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,GLQ_in_class(i)
@@ -767,7 +767,7 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		print *, "A lot of writes for testing purposes"
+		! print *, "A lot of writes for testing purposes"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
 		call writetofiledefinedsizeint("GLQ_in_class", GLQ_in_class, 1, n_classes, 1, 1, .false.)
@@ -805,7 +805,7 @@ contains
 		if (n_clear >0) deallocate(Clear_QV_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 		if (n_clouds >0) deallocate(Cloudtop_LWP_GLQ_Values) ! For visualising the N_RT_Ratio (VIS_RATIO)
 
-		print *, "prints done"
+		! print *, "prints done"
 		! cloudFracModRad = cloudFrac
 
 		!!!print *, GLQ_points_cloudtop(:, 1)
