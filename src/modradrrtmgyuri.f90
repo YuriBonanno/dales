@@ -263,7 +263,7 @@ contains
 			if (temp_n_GLQ_clear > n_clear) then
 				temp_n_GLQ_clear = n_clear
 			end if
-			print *, "n_clear > 0"
+			! print *, "n_clear > 0"
 			
 			allocate (clear_LWP_ordered (n_clear))
 			allocate (clear_qv_ordered (n_clear))!Changed This (PIER_QV)
@@ -352,7 +352,7 @@ contains
 		! print *, "n_clouds", n_clouds
 		! print *, "n_clouds+n_clear", n_clouds+n_clear
 		if (n_clouds > 0) then
-			print *, "n_clouds > 0"
+			! print *, "n_clouds > 0"
 			allocate (cloudtop_height_ordered (n_clouds))
 			
 			!Place the clouds in order on basis of cloudtop height from low to high.
@@ -382,7 +382,7 @@ contains
 			!First tries to fill n_classes_initial with the same amount of collumns, 
 			!if that fails it tries again with n_classes-1, this repeats until either all the classes are the same size or n_classes == 0
 			!The classes are ordered on basis of cloudtop height
-			print *, "classes"
+			! print *, "classes"
 			n_classes = n_classes_initial
 		10	if (n_classes > 1) then
 		    	allocate (quantiles_value(n_classes-1))
@@ -466,7 +466,7 @@ contains
 				cloud_class(:,:) = merge(1,0, cloudFrac>0)
 				!print *, "no merging fail"
 			end if
-			print *, "cloud and classes finished"
+			! print *, "cloud and classes finished"
 			!print *, "n_classes", n_classes
 			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
@@ -490,17 +490,10 @@ contains
 				if (min_GLQ_in_class>n_GLQ_cloudtop) then
 					min_GLQ_in_class = n_GLQ_cloudtop
 				end if
-				print *, "min_GLQ_in_class", min_GLQ_in_class
-				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
 				do i=1,n_classes
 					GLQ_in_class(i) = min_GLQ_in_class
-					print *, "i", i
-					print *, "GLQ_in_class(i)", GLQ_in_class(i)
 					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*max((n_RT- min_GLQ_in_class*n_classes),0))/float(sum(n_in_class)))
-					print *, "i", i
-					print *, "GLQ_in_class(i)", GLQ_in_class(i)
 				end do
-				print *, "EARLY GLQ_in_class", GLQ_in_class
 				
 				!This later
 				allocate(class_of_GLQ(sum(GLQ_in_class)))
@@ -686,21 +679,21 @@ contains
 		! print *, "original_cloudtop_LWP_indexes(:,:,:)"
 		! print *, original_cloudtop_LWP_indexes(:,:,:)
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
-		print *, "starting GLQ to long total array"
+		! print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
-		print *, "GLQ_in_class", GLQ_in_class
-		print *, "n_in_class", n_in_class
-		print *, "n_classes", n_classes
+		! print *, "GLQ_in_class", GLQ_in_class
+		! print *, "n_in_class", n_in_class
+		! print *, "n_classes", n_classes
 		! print *, "class_of_GLQ", class_of_GLQ
-		print *, "n_RT", n_RT
-		print *, "n_RT_Ratio", n_RT_Ratio
-		print *, "n_clouds", n_clouds
-		print *, "n_clear", n_clear
+		! print *, "n_RT", n_RT
+		! print *, "n_RT_Ratio", n_RT_Ratio
+		! print *, "n_clouds", n_clouds
+		! print *, "n_clear", n_clear
 		
 		
 		
 		!!GLQ_indexes
-		print *, "allocating this amount of points", total_amount_GLQ_points
+		! print *, "allocating this amount of points", total_amount_GLQ_points
 		allocate(GLQ_index_all(total_amount_GLQ_points, 2))
 
 		!Places the clouded and clear GLQ points into a single array containing all the indexes of GLQ points
@@ -947,7 +940,7 @@ contains
 					temp_GLQ_point = temp_GLQ_point + 1
 					
 				else
-					print *, "temp_GLQ_point > temp_n_GLQ_clear"
+					! print *, "temp_GLQ_point > temp_n_GLQ_clear"
 					!cloudtop
 
 					!Necessary to determine the clouded GLQ point with respect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
