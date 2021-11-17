@@ -903,7 +903,6 @@ contains
 	
 	!This piece of code is for test purposes, it puts all the values into a testarray
 	
-	print *, GLQ_index_all
 	do i=1,imax
 		! print *, "looking at GLQ index all"
 		! print *, GLQ_index_all
@@ -1498,7 +1497,7 @@ contains
 	lwUpCS_slice = 0
 	lwDownCS_slice = 0
 	
-	print *, "barker true"
+	! print *, "barker true"
 	
 	!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
 
@@ -1531,7 +1530,7 @@ contains
 		!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
 		passed_GLQ_point = current_GLQ_point
 
-		print *, "setupBarkerSlicesFromProfiles"
+		! print *, "setupBarkerSlicesFromProfiles"
 		call setupBarkerSlicesFromProfiles(npatch_start, &
 		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
 		   passed_GLQ_point, passed_slice_length, &
@@ -1556,7 +1555,7 @@ contains
 
 		passed_GLQ_point = current_GLQ_point
 
-		print *, "reshuffleValues"
+		! print *, "reshuffleValues"
 		!Place all the flux values into the original array:
 		call reshuffleValues(passed_GLQ_point, passed_slice_length)
 
