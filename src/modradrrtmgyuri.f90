@@ -490,7 +490,8 @@ contains
 				if (min_GLQ_in_class>n_GLQ_cloudtop) then
 					min_GLQ_in_class = n_GLQ_cloudtop
 				end if
-				
+				print *, "min_GLQ_in_class", min_GLQ_in_class
+				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
 				do i=1,n_classes
 					GLQ_in_class(i) = min_GLQ_in_class
 					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*(n_RT- min_GLQ_in_class*n_classes))/float(sum(n_in_class)))
