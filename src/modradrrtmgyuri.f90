@@ -494,6 +494,8 @@ contains
 				print *, "n_GLQ_cloudtop", n_GLQ_cloudtop
 				do i=1,n_classes
 					GLQ_in_class(i) = min_GLQ_in_class
+					print *, "i", i
+					print *, "GLQ_in_class(i)", GLQ_in_class(i)
 					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*(n_RT- min_GLQ_in_class*n_classes))/float(sum(n_in_class)))
 				end do
 				print *, "EARLY GLQ_in_class", GLQ_in_class
