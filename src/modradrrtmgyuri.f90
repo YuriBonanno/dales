@@ -496,6 +496,7 @@ contains
 					GLQ_in_class(i) = min_GLQ_in_class
 					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*(n_RT- min_GLQ_in_class*n_classes))/float(sum(n_in_class)))
 				end do
+				print *, "EARLY GLQ_in_class", GLQ_in_class
 				
 				!This later
 				allocate(class_of_GLQ(sum(GLQ_in_class)))
