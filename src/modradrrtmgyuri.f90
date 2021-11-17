@@ -769,7 +769,8 @@ contains
 		print *, "A lot of writes for testing purposes"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
-		
+		call writetofiledefinedsizeint("GLQ_in_class", GLQ_in_class, 1, n_classes, 1, 1, .true.)
+
 		call writetofiledefinedsizeint("n_in_class", n_in_class, 1, n_classes, 1, 1, .false.)
 		
 		call writetofiledefinedsize("GLQ_points_all", GLQ_points_all, 1, total_amount_GLQ_points, 1, 1, .true.)
@@ -790,6 +791,7 @@ contains
 		call writeinttofile("n_clear", n_clear, .false.)
 		call writeinttofile("n_clouds", n_clouds, .false.)
 		call writeinttofile("n_classes", n_classes, .false.)
+		
 
 		if (n_clear >0) deallocate(GLQ_clear_LWP_indexes)
 		if (n_clouds >0) deallocate(GLQ_cloudtop_LWP_indexes)
@@ -975,7 +977,7 @@ contains
 					!Places the values into the non GLQ places on the array
 					do n = n1, n2
 						total_value_test = total_value_test + 1
-						print *, n2-n1
+						! print *, n2-n1
 
 						fill_i = int(original_cloudtop_LWP_indexes(n, 1, class_number))
 						fill_j = int(original_cloudtop_LWP_indexes(n, 2, class_number))
