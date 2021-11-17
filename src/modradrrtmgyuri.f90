@@ -496,7 +496,7 @@ contains
 					GLQ_in_class(i) = min_GLQ_in_class
 					print *, "i", i
 					print *, "GLQ_in_class(i)", GLQ_in_class(i)
-					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*(n_RT- min_GLQ_in_class*n_classes))/float(sum(n_in_class)))
+					GLQ_in_class(i) = GLQ_in_class(i) + nint(float(n_in_class(i)*max((n_RT- min_GLQ_in_class*n_classes),0))/float(sum(n_in_class)))
 					print *, "i", i
 					print *, "GLQ_in_class(i)", GLQ_in_class(i)
 				end do
