@@ -467,7 +467,7 @@ contains
 				!print *, "no merging fail"
 			end if
 			! print *, "cloud and classes finished"
-			print *, "n_classes", n_classes
+			! print *, "n_classes", n_classes
 			
 			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
@@ -521,7 +521,7 @@ contains
 				end do
 			end if
 			
-			print *, "GLQ_in_class", GLQ_in_class
+			! print *, "GLQ_in_class", GLQ_in_class
 			
 			! print *, "n_RT"
 			! print *, "maxval(GLQ_in_class)", maxval(GLQ_in_class)
