@@ -756,7 +756,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = temp_n_GLQ_clear
-		! print *, "original GLQ points cloudtop"
+		print *, "original GLQ points cloudtop"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,GLQ_in_class(i)
@@ -767,7 +767,7 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		! print *, "A lot of writes for testing purposes"
+		print *, "A lot of writes for testing purposes"
 		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
 		call writetofiledefinedsizeint("GLQ_in_class", GLQ_in_class, 1, n_classes, 1, 1, .false.)
