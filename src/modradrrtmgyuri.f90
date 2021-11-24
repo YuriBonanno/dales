@@ -673,6 +673,14 @@ contains
 				    Cloudtop_LWP_GLQ_Values(N_g, n) = cloudtop_LWP_ordered(x_index, n) ! For visualising the N_RT_Ratio (VIS_RATIO)
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
+					if (temp_i > imax .OR. temp_j > jmax) then
+						print *, "N_g"
+						print *, N_g
+						print *, "temp_i"
+						print *, temp_i
+						print *, "temp_j"
+						print *, temp_j
+					end if
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 				end do
