@@ -674,6 +674,9 @@ contains
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
 					if (temp_i > imax .OR. temp_j > jmax) then
+					
+						print *, "x_index"
+						print *, x_index
 						print *, "n"
 						print *, n
 						print *, "N_g"
