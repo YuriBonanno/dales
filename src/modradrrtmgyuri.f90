@@ -467,7 +467,8 @@ contains
 				!print *, "no merging fail"
 			end if
 			! print *, "cloud and classes finished"
-			!print *, "n_classes", n_classes
+			print *, "n_classes", n_classes
+			print *, "GLQ_in_class", GLQ_in_class
 			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
 			!print *, "LWP_flattened before allocation"
@@ -483,6 +484,8 @@ contains
 			if (n_GLQ_cloudtop == 0) then
 				n_GLQ_cloudtop = 1
 			endif
+			
+			
 			
 			allocate(GLQ_in_class(n_classes))
 			
@@ -683,10 +686,10 @@ contains
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		! print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
-		! print *, "GLQ_in_class", GLQ_in_class
-		! print *, "n_in_class", n_in_class
-		! print *, "n_classes", n_classes
-		! print *, "class_of_GLQ", class_of_GLQ
+		print *, "GLQ_in_class", GLQ_in_class
+		print *, "n_in_class", n_in_class
+		print *, "n_classes", n_classes
+		print *, "class_of_GLQ", class_of_GLQ
 		! print *, "n_RT", n_RT
 		! print *, "n_RT_Ratio", n_RT_Ratio
 		! print *, "n_clouds", n_clouds
