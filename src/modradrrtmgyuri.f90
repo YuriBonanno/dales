@@ -621,6 +621,14 @@ contains
 							do nbin=1,GLQ_in_class(n)
 								GLQ_val = valuewidth/2.0 + minval(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
 								temploc = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
+								if (temploc>n_in_class(n)) then
+									print *, "nbin"
+									print *, nbin
+									print *, "cloudtop_LWP_ordered(:,n)-GLQ_val"
+									print *, cloudtop_LWP_ordered(:,n)-GLQ_val
+									print *, "minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))"
+									print *, minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
+								endif
 								GLQ_points_cloudtop(nbin, n) = temploc(1)
 							enddo
 							print *, "GLQ_points_cloudtop(:, n)"
@@ -674,18 +682,18 @@ contains
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
 					if (temp_i > imax .OR. temp_j > jmax) then
-						print *, "n_in_class(n)"
-						print *, n_in_class(n)
-						print *, "x_index"
-						print *, x_index
-						print *, "n"
-						print *, n
-						print *, "N_g"
-						print *, N_g
-						print *, "temp_i"
-						print *, temp_i
-						print *, "temp_j"
-						print *, temp_j
+						! print *, "n_in_class(n)"
+						! print *, n_in_class(n)
+						! print *, "x_index"
+						! print *, x_index
+						! print *, "n"
+						! print *, n
+						! print *, "N_g"
+						! print *, N_g
+						! print *, "temp_i"
+						! print *, temp_i
+						! print *, "temp_j"
+						! print *, temp_j
 					end if
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
