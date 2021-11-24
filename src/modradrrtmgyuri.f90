@@ -468,7 +468,7 @@ contains
 			end if
 			! print *, "cloud and classes finished"
 			print *, "n_classes", n_classes
-			print *, "GLQ_in_class", GLQ_in_class
+			
 			!print *, "class size", class_size
 			!Determine how many GLQ points have to be chosen for the cloudtop case
 			!print *, "LWP_flattened before allocation"
@@ -520,6 +520,8 @@ contains
 					class_of_GLQ(i) = class_GLQ_counter
 				end do
 			end if
+			
+			print *, "GLQ_in_class", GLQ_in_class
 			
 			! print *, "n_RT"
 			! print *, "maxval(GLQ_in_class)", maxval(GLQ_in_class)
