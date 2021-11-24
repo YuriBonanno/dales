@@ -621,18 +621,18 @@ contains
 							do nbin=1,GLQ_in_class(n)
 								GLQ_val = valuewidth/2.0 + minval(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
 								temploc = minloc(abs(cloudtop_LWP_ordered(1:n_in_class(n),n)-GLQ_val))
-								if (temploc(1)>n_in_class(n)) then
-									print *, "nbin"
-									print *, nbin
-									print *, "cloudtop_LWP_ordered(:,n)-GLQ_val"
-									print *, cloudtop_LWP_ordered(:,n)-GLQ_val
-									print *, "minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))"
-									print *, minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
-								endif
+								! if (temploc(1)>n_in_class(n)) then
+									! print *, "nbin"
+									! print *, nbin
+									! print *, "cloudtop_LWP_ordered(:,n)-GLQ_val"
+									! print *, cloudtop_LWP_ordered(:,n)-GLQ_val
+									! print *, "minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))"
+									! print *, minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
+								! endif
 								GLQ_points_cloudtop(nbin, n) = temploc(1)
 							enddo
-							print *, "GLQ_points_cloudtop(:, n)"
-							print *, GLQ_points_cloudtop(:, n)
+							! print *, "GLQ_points_cloudtop(:, n)"
+							! print *, GLQ_points_cloudtop(:, n)
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
 							! print *, "nothing gauleg" 
@@ -681,7 +681,7 @@ contains
 				    Cloudtop_LWP_GLQ_Values(N_g, n) = cloudtop_LWP_ordered(x_index, n) ! For visualising the N_RT_Ratio (VIS_RATIO)
 					temp_i = int(original_cloudtop_LWP_indexes(x_index, 1, n))
 					temp_j = int(original_cloudtop_LWP_indexes(x_index, 2, n))
-					if (temp_i > imax .OR. temp_j > jmax) then
+					! if (temp_i > imax .OR. temp_j > jmax) then
 						! print *, "n_in_class(n)"
 						! print *, n_in_class(n)
 						! print *, "x_index"
@@ -694,7 +694,7 @@ contains
 						! print *, temp_i
 						! print *, "temp_j"
 						! print *, temp_j
-					end if
+					! end if
 					GLQ_cloudtop_LWP_indexes(N_g, 1, n) = temp_i
 					GLQ_cloudtop_LWP_indexes(N_g, 2, n) = temp_j
 				end do
@@ -710,10 +710,10 @@ contains
 		!!!It might be unneccesary to make a total thing... ///  https://michaelgoerz.net/notes/advanced-array-passing-in-fortran.html
 		! print *, "starting GLQ to long total array"
 		total_amount_GLQ_points = temp_n_GLQ_clear + sum(GLQ_in_class)
-		print *, "GLQ_in_class", GLQ_in_class
-		print *, "n_in_class", n_in_class
-		print *, "n_classes", n_classes
-		print *, "class_of_GLQ", class_of_GLQ
+		! print *, "GLQ_in_class", GLQ_in_class
+		! print *, "n_in_class", n_in_class
+		! print *, "n_classes", n_classes
+		! print *, "class_of_GLQ", class_of_GLQ
 		! print *, "n_RT", n_RT
 		! print *, "n_RT_Ratio", n_RT_Ratio
 		! print *, "n_clouds", n_clouds
@@ -771,10 +771,10 @@ contains
 		
 		!! Original GLQ points
 		!This places all the GLQ point order indexes for testing purposes.
-		print *, "GLQ_index_all"
-		print *, GLQ_index_all
-		print *, "GLQ_cloudtop_LWP_indexes"
-		print *, GLQ_cloudtop_LWP_indexes
+		! print *, "GLQ_index_all"
+		! print *, GLQ_index_all
+		! print *, "GLQ_cloudtop_LWP_indexes"
+		! print *, GLQ_cloudtop_LWP_indexes
 		! print *, "original GLQ points"
 		! print *, "GLQ_points_clear", GLQ_points_clear
 		! print *, "total_amount_GLQ_points", total_amount_GLQ_points
@@ -787,7 +787,7 @@ contains
 			enddo
 		end if
 		GLQ_counter = temp_n_GLQ_clear
-		print *, "original GLQ points cloudtop"
+		! print *, "original GLQ points cloudtop"
 		if (n_GLQ_cloudtop>0) then
 			do i=1,n_classes
 				do j= 1,GLQ_in_class(i)
@@ -798,8 +798,8 @@ contains
 		end if
 		
 		!A lot of writes for testing purposes
-		print *, "A lot of writes for testing purposes"
-		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .false.)
+		! print *, "A lot of writes for testing purposes"
+		call writetofiledefinedsizeint("GLQ_index_all", GLQ_index_all, 2, total_amount_GLQ_points, 2, 1, .true.)
 		call writetofiledefinedsizeint("Original_index_all", Original_index_all, 2, n_clear + n_clouds, 2, 1, .true.)
 		call writetofiledefinedsizeint("GLQ_in_class", GLQ_in_class, 1, n_classes, 1, 1, .false.)
 
