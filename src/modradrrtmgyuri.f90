@@ -749,6 +749,10 @@ contains
 		
 		!! Original GLQ points
 		!This places all the GLQ point order indexes for testing purposes.
+		print *, "GLQ_index_all"
+		print *, GLQ_index_all
+		print *, "GLQ_cloudtop_LWP_indexes"
+		print *, GLQ_cloudtop_LWP_indexes
 		! print *, "original GLQ points"
 		! print *, "GLQ_points_clear", GLQ_points_clear
 		! print *, "total_amount_GLQ_points", total_amount_GLQ_points
