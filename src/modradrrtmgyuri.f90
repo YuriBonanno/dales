@@ -621,7 +621,7 @@ contains
 							do nbin=1,GLQ_in_class(n)
 								GLQ_val = valuewidth/2.0 + minval(cloudtop_LWP_ordered(:,n)) + valuewidth*(nbin-1)
 								temploc = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
-								if (temploc>n_in_class(n)) then
+								if (temploc(1)>n_in_class(n)) then
 									print *, "nbin"
 									print *, nbin
 									print *, "cloudtop_LWP_ordered(:,n)-GLQ_val"
