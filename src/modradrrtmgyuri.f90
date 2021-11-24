@@ -618,6 +618,8 @@ contains
 								temploc = minloc(abs(cloudtop_LWP_ordered(:,n)-GLQ_val))
 								GLQ_points_cloudtop(nbin, n) = temploc(1)
 							enddo
+							print *, "GLQ_points_cloudtop(:, n)"
+							print *, GLQ_points_cloudtop(:, n)
 							GLQ_weights_cloudtop(:, n) = 1.0 !Incorrect value, but not relevant
 						else
 							! print *, "nothing gauleg" 
