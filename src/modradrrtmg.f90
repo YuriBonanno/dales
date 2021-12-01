@@ -1829,8 +1829,8 @@ contains
 		
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempDiffRadArrayDataContainer
   		
-		xsize = i1+ih - (2-ih) - 1
-		ysize = j1+jh - (2-jh) - 1
+		xsize = i1-1
+		ysize = j1-1
 		zsize = k1
 		
 		
