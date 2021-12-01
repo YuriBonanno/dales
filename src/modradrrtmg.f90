@@ -1834,9 +1834,9 @@ contains
 		zsize = k1
 		
 		
-		x1 = 3-ih
+		x1 = 1+ih
 		x2 = i1+ih-1
-		y1 = 3-jh
+		y1 = 1+jh
 		y2 = j1+jh-1
 		
 		
@@ -1854,7 +1854,10 @@ contains
 		print *, y1
 		print *, "y2"
 		print *, y2
-		
+		print *, "ih"
+		print *, ih
+		print *, "jh"
+		print *, jh
 		
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
