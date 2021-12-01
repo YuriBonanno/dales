@@ -1839,8 +1839,8 @@ contains
 		y1 = 1+jh
 		y2 = j1+jh-1
 		
-		writetofiledefinedsize("TESTLWU", lwu(x1:x2,y1:y2, LWP_index(k)), 2, 64, 64, 1, .true.)
-		writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .true.)
+		call writetofiledefinedsize("TESTLWU", lwu(x1:x2,y1:y2, LWP_index(k)), 2, 64, 64, 1, .true.)
+		call writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .true.)
 		
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
