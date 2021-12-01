@@ -1840,25 +1840,6 @@ contains
 		y2 = j1+jh-1
 		
 		
-		print *, "xsize"
-		print *, xsize
-		print *, "ysize"
-		print *, ysize
-		print *, "zsize"
-		print *, zsize
-		print *, "x1"
-		print *, x1
-		print *, "x2"
-		print *, x2
-		print *, "y1"
-		print *, y1
-		print *, "y2"
-		print *, y2
-		print *, "i1"
-		print *, i1
-		print *, "j1"
-		print *, j1
-		
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
 		allocate(tempRadArrayColumn(x2-x1+1, y2-y1+1, k1))
