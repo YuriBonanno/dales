@@ -1738,7 +1738,7 @@ contains
 	! call cpu_time(startTime)
 	call StephanRad(sunUp)
 	
-	allocate(SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh))
+	! allocate(SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh))
 	
 	print *, "2-ih"
 	print *, 2-ih
