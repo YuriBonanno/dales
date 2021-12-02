@@ -1738,8 +1738,8 @@ contains
 	! call cpu_time(startTime)
 	call StephanRad(sunUp)
 	
-	call writetofiledefinedsize("TESTLWU", lwu(4:67,4:67, LWP_index(2)), 2, 64, 64, 1, .true.)
-	call writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .true.)
+	call writetofiledefinedsize("TESTLWU", lwu(4:67,4:67, LWP_index(2)), 2, 64, 64, 1, .false.)
+	call writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .false.)
 	
 	!PUT ALL THE TEMPRADS FROM STEPHAN INTO FILES
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
