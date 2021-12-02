@@ -1374,14 +1374,14 @@ contains
 	integer :: x1, x2, y1, y2, k
 	real(kind=kind_rb), dimension(:) :: tempRadColumn (k1)
   		
-	xsize = i1+ih - (2-ih) + 1
-	ysize = j1+jh - (2-jh) + 1
+	xsize = i1-1
+	ysize = j1-1
 	zsize = k1
-  
-	x1 = 2-ih
-	x2 = i1+ih
-	y1 = 2-jh
-	y2 = j1+jh
+	
+	x1 = 1+ih
+	x2 = i1+ih-1
+	y1 = 1+jh
+	y2 = j1+jh-1
 
 	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 	
@@ -1738,7 +1738,7 @@ contains
 	! call cpu_time(startTime)
 	call StephanRad(sunUp)
 	
-	call writetofiledefinedsize("TESTLWU", lwu(4:67,4:67, LWP_index(2)), 2, 64, 64, 1, .true.)
+	call writetofiledefinedsize("TESTLWU", lwu(2:65,2:65, LWP_index(2)), 2, 64, 64, 1, .true.)
 	call writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .true.)
 	
 	!PUT ALL THE TEMPRADS FROM STEPHAN INTO FILES
@@ -1836,13 +1836,11 @@ contains
 		ysize = j1-1
 		zsize = k1
 		
-		
 		x1 = 1+ih
 		x2 = i1+ih-1
 		y1 = 1+jh
 		y2 = j1+jh-1
 
-		
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
 		allocate(tempRadArrayColumn(x2-x1+1, y2-y1+1, k1))
