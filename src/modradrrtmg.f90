@@ -1738,6 +1738,13 @@ contains
 	! call cpu_time(startTime)
 	call StephanRad(sunUp)
 	
+	allocate(SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh))
+	
+	print *, "2-ih"
+	print *, 2-ih
+	print *, "i1+ih"
+	print *, i1+ih
+	
 	call writetofiledefinedsize("TESTLWU", lwu(1:70,1:70, LWP_index(2)), 2, 70, 70, 1, .false.)
 	call writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .false.)
 	
