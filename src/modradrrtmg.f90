@@ -1378,10 +1378,10 @@ contains
 	ysize = j1-1
 	zsize = k1
 	
-	x1 = 1+ih
-	x2 = i1+ih-1
-	y1 = 1+jh
-	y2 = j1+jh-1
+	x1 = 2
+	x2 = i1+1
+	y1 = 2
+	y2 = j1+1
 
 	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 	
@@ -1738,16 +1738,6 @@ contains
 	! call cpu_time(startTime)
 	call StephanRad(sunUp)
 	
-	! allocate(SW_up_TOA(2-ih:i1+ih,2-jh:j1+jh))
-	
-	print *, "2-ih"
-	print *, 2-ih
-	print *, "i1+ih"
-	print *, i1+ih
-	
-	call writetofiledefinedsize("TESTLWU", lwu(1:70,1:70, LWP_index(2)), 2, 70, 70, 1, .false.)
-	call writetofiledefinedsize("TESTCLOUDFRAC", cloudFracModRad, 2, 64, 64, 1, .false.)
-	
 	!PUT ALL THE TEMPRADS FROM STEPHAN INTO FILES
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	  temp_lwu(:,:,:) = lwu(:,:,:)
@@ -1843,10 +1833,10 @@ contains
 		ysize = j1-1
 		zsize = k1
 		
-		x1 = 1+ih
-		x2 = i1+ih-1
-		y1 = 1+jh
-		y2 = j1+jh-1
+		x1 = 2
+		x2 = 1+i1
+		y1 = 2
+		y2 = 1+j1
 
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
