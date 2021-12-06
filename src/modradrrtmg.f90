@@ -1379,9 +1379,9 @@ contains
 	zsize = k1
 	
 	x1 = 2
-	x2 = i1+1
+	x2 = i1
 	y1 = 2
-	y2 = j1+1
+	y2 = j1
 
 	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 	
@@ -1834,9 +1834,9 @@ contains
 		zsize = k1
 		
 		x1 = 2
-		x2 = 1+i1
+		x2 = i1
 		y1 = 2
-		y2 = 1+j1
+		y2 = j1
 
 		print *, "x2-x1+1"
 		print *, x2-x1+1
@@ -1851,10 +1851,10 @@ contains
 
 		! call writetofiledefinedsize("TESTSTD_LWD", lwd())
 
-		allocate(tempRadArray(x2-x1+1, y2-y1+1))
-		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
-		allocate(tempRadArrayColumn(x2-x1+1, y2-y1+1, k1))
-		allocate(tempRadArrayDiffColumn(x2-x1+1, y2-y1+1, k1-1))
+		allocate(tempRadArray(xsize, ysize))
+		allocate(tempRadArrayK(xsize, ysize, 4))
+		allocate(tempRadArrayColumn(xsize, ysize, k1))
+		allocate(tempRadArrayDiffColumn(xsize, ysize, k1-1))
 		
 		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
