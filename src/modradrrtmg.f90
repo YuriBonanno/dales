@@ -1212,7 +1212,7 @@ contains
 	
 	use modraddata
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
-	use modradrrtmgyuriroutines, only : Results
+	use modradrrtmgyuriroutines, only : Results, writetofiledefinedsize
 	implicit none
 	
 	integer :: i, j, k, inverse_k, cur_cloud_bot, cur_cloud_top
@@ -1224,6 +1224,8 @@ contains
 	LWP_index_heights(:) = 0
 	LWP_index_percent(:) = 0
 	LWP_index_heights_percent(:) = 0
+	
+	writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .true.)
 	
 	do k=1, k1
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
