@@ -1765,10 +1765,10 @@ contains
 	  temp_LW_dn_ca_TOA(:,:) = LW_dn_ca_TOA(:,:)
 	  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
-	print *, "DIM(lwu)"
-	print *, DIM(lwu)
-	print *, "DIM(temp_lwu)"
-	print *, DIM(temp_lwu)
+	print *, "SHAPE(lwu)"
+	print *, SHAPE(lwu)
+	print *, "SHAPE(temp_lwu)"
+	print *, SHAPE(temp_lwu)
 	
 	! call cpu_time(endTime)
 	! netTime = endTime - endTime
