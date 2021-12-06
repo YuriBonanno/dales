@@ -1817,7 +1817,7 @@ contains
 	subroutine CompileStatistics
 	  	use modraddata
 		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff
+		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff, writetofiledefinedsize
 	
 		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
 		integer :: x1, x2, y1, y2
@@ -1837,6 +1837,19 @@ contains
 		x2 = 1+i1
 		y1 = 2
 		y2 = 1+j1
+
+		print *, "x2-x1+1"
+		print *, x2-x1+1
+		print *, "y2-y1+1"
+		print *, y2-y1+1
+		
+		print *, "i1"
+		print *, i1
+		
+		print *, "j1"
+		print *, j1
+
+		! call writetofiledefinedsize("TESTSTD_LWD", lwd())
 
 		allocate(tempRadArray(x2-x1+1, y2-y1+1))
 		allocate(tempRadArrayK(x2-x1+1, y2-y1+1, 4))
@@ -1859,8 +1872,6 @@ contains
 		call MeanVariance(LW_dn_TOA(x1:x2,y1:y2),"LW_dn_TOA", xsize, ysize, 1)
 		tempRadArray = LW_dn_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
 		call MeanVarianceOnlyClouds(tempRadArray,"LW_dn_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
-		
-		
 		
 
 		! the values found at LWP_index
