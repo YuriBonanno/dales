@@ -1765,11 +1765,6 @@ contains
 	  temp_LW_dn_ca_TOA(:,:) = LW_dn_ca_TOA(:,:)
 	  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
-	print *, "SHAPE(lwu)"
-	print *, SHAPE(lwu)
-	print *, "SHAPE(temp_lwu)"
-	print *, SHAPE(temp_lwu)
-	
 	! call cpu_time(endTime)
 	! netTime = endTime - endTime
 	! timeSet(1) = netTime
@@ -1821,7 +1816,7 @@ contains
 	subroutine CompileStatistics
 	  	use modraddata
 		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff, writetofiledefinedsize
+		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff !, writetofiledefinedsize
 	
 		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
 		integer :: x1, x2, y1, y2
@@ -1841,17 +1836,6 @@ contains
 		x2 = i1
 		y1 = 2
 		y2 = j1
-
-		print *, "x2-x1+1"
-		print *, x2-x1+1
-		print *, "y2-y1+1"
-		print *, y2-y1+1
-		
-		print *, "i1"
-		print *, i1
-		
-		print *, "j1"
-		print *, j1
 
 		! call writetofiledefinedsize("TESTSTD_LWD", lwd())
 
