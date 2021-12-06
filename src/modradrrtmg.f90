@@ -1225,7 +1225,7 @@ contains
 	LWP_index_percent(:) = 0
 	LWP_index_heights_percent(:) = 0
 	
-	writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .true.)
+	call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .true.)
 	
 	do k=1, k1
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
