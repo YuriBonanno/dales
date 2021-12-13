@@ -1212,7 +1212,7 @@ contains
 	
 	use modraddata
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
-	use modradrrtmgyuriroutines, only : Results, writetofiledefinedsize
+	use modradrrtmgyuriroutines, only : Results
 	implicit none
 	
 	integer :: i, j, k, inverse_k, cur_cloud_bot, cur_cloud_top
@@ -1224,8 +1224,6 @@ contains
 	LWP_index_heights(:) = 0
 	LWP_index_percent(:) = 0
 	LWP_index_heights_percent(:) = 0
-	
-	call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .false.)
 	
 	do k=1, k1
 		LWP_vertical(k) = sum(LWP_grid(:,:,k))
@@ -1808,7 +1806,7 @@ contains
 	  LW_up_ca_TOA(:,:) = temp_LW_up_ca_TOA(:,:)
 	  LW_dn_ca_TOA(:,:) = temp_LW_dn_ca_TOA(:,:)
 	
-	
+	call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .false.)
 	! call writetofiledefinedsize("netTime", timeSet, 1, 14, 1, 1, .false.)
 	
 	call EndCompileStatistics
