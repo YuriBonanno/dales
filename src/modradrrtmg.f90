@@ -220,7 +220,7 @@ contains
 	
 	if (diagnostic_run) then
 		call Diagnostics(sunUp)
-		call PrintRadiationData("diagnostics")
+		! call PrintRadiationData("diagnostics")
 	else
 		if (barker_method) then
 			write(int_str_container, "(i0)") n_RT_Ratio
@@ -1770,6 +1770,7 @@ contains
 	! timeSet(1) = netTime
 	
 	call CompileStatistics
+	call PrintRadiationData("diagnostics")
 	do i=1,ratioSize
 
 		n_RT_Ratio = ratios(i)
@@ -1779,6 +1780,7 @@ contains
 		! netTime = endTime - endTime
 		! timeSet(i+1) = netTime
 		call CompileStatistics
+		call PrintRadiationData("diagnostics")
 	end do
 	
 	
