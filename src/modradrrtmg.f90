@@ -1809,7 +1809,7 @@ contains
 	  LW_up_ca_TOA(:,:) = temp_LW_up_ca_TOA(:,:)
 	  LW_dn_ca_TOA(:,:) = temp_LW_dn_ca_TOA(:,:)
 	
-	call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .false.)
+	! call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .false.)
 	! call writetofiledefinedsize("netTime", timeSet, 1, 14, 1, 1, .false.)
 	
 	call EndCompileStatistics
