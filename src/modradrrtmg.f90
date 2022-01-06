@@ -1456,7 +1456,6 @@ contains
 	! call writetofiledefinedsize("partial_percent_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
 	
 	call writetofiledefinedsize("SW_up_TOA_" // trim(NameSuffix), SW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	print *, SW_up_TOA(x1:x2, 2)
 	call writetofiledefinedsize("SW_dn_TOA_" // trim(NameSuffix), SW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
 	call writetofiledefinedsize("LW_up_TOA_" // trim(NameSuffix), LW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
 	call writetofiledefinedsize("LW_dn_TOA_" // trim(NameSuffix), LW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
