@@ -1371,7 +1371,7 @@ contains
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
-	integer :: x1, x2, y1, y2, k
+	integer :: x1, x2, y1, y2, k, testxy1, testxy2
 	real(kind=kind_rb), dimension(:) :: tempRadColumn (k1)
   		
 	xsize = i1-1
@@ -1382,6 +1382,9 @@ contains
 	x2 = i1
 	y1 = 2
 	y2 = j1
+	
+	testxy1 = i1+ih - (2-ih) + 1
+	testxy2 = testxy1
 
 	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
 	
@@ -1430,6 +1433,20 @@ contains
 	! call writetofiledefinedsize("swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	
 	! the values found at LWP_index
+	!!! All stuff for testing
+	!! printen LWP indexen
+	call testwritetofiledefinedsizeint("test_LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
+	!! printen LWP percent indexen
+	call testwritetofiledefinedsizeint("test_LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
+	!! printen volledige lwd
+	call testwritetofiledefinedsize("test_total_lwu_" // trim(NameSuffix), lwu(:,:,:), 3, testxy1, testxy2, k1, .true.)
+	!! printen partial lwd
+	call testwritetofiledefinedsize("test_partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
+	!! printen partial percent lwd
+	call testwritetofiledefinedsize("test_partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
+	
+	
+	
 	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
 	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
 	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
