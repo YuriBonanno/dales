@@ -1435,9 +1435,9 @@ contains
 	! the values found at LWP_index
 	!!! All stuff for testing
 	!! printen LWP indexen
-	call testwritetofiledefinedsizeint("test_LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
+	call testwritetofiledefinedsizeint("test_LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .true.)
 	!! printen LWP percent indexen
-	call testwritetofiledefinedsizeint("test_LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
+	call testwritetofiledefinedsizeint("test_LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .true.)
 	!! printen volledige lwd
 	call testwritetofiledefinedsize("test_total_lwu_" // trim(NameSuffix), lwu(:,:,:), 3, testxy1, testxy2, k1, .true.)
 	!! printen partial lwd
