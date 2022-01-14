@@ -1047,8 +1047,6 @@ contains
 		! deallocate(makedir)
 	! end subroutine MeanVariance
 
-end module modradrrtmgyuriroutines
-
 	subroutine testwritetofiledefinedsizeint(filename, dataset, dims, xsize, ysize, zsize, printLast)
 	! use modraddata
 	! use modglobal, only: imax, jmax, kmax, kind_rb
@@ -1134,3 +1132,7 @@ end module modradrrtmgyuriroutines
 		! deallocate(makedir)
 
 	end subroutine
+
+end module modradrrtmgyuriroutines
+
+
