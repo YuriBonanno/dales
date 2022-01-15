@@ -1453,9 +1453,9 @@ contains
 	! call testwritetofiledefinedsize("test_partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
 	
 	allocate(tempLWPFlatArray(imax, jmax))
-	call MeanVariance(LWP_flattened(:,:),"LWP_Flattened", imax, jmax, 1)
+	call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
 	tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
-	call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_Clouds_Only", imax, jmax, 1, n_clouds)
+	call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_stat_Clouds_Only", imax, jmax, 1, n_clouds)
 	deallocate(tempLWPFlatArray)
 	
 	!! LWP_grid hierin stoppen!!!!
@@ -1464,7 +1464,7 @@ contains
 	do k=1,krad1
 		tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
 	end do
-	call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat", imax, jmax, krad1, n_clouds)
+	call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat_Clouds_Only", imax, jmax, krad1, n_clouds)
 	deallocate(tempLWPGridArray)
 	
 	
