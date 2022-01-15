@@ -1371,7 +1371,7 @@ contains
 ! ==============================================================================;
   subroutine PrintRadiationData(NameSuffix)
   	use modraddata
-	use modglobal, only : imax, jmax, kmax, krad1, i1, j1, k1, kind_rb, zf, ih, jh
+	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
 	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile, testwritetofiledefinedsize, testwritetofiledefinedsizeint
 	
 	character(*) :: NameSuffix
@@ -1855,7 +1855,7 @@ contains
 
 	subroutine CompileStatistics
 	  	use modraddata
-		use modglobal, only : imax, jmax, kmax, krad1, i1, j1, k1, kind_rb, zf, ih, jh
+		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
 		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff !, writetofiledefinedsize
 	
 		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
