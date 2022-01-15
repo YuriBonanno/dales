@@ -1869,7 +1869,7 @@ contains
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempDiffRadArrayDataContainer
 		
 		real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
-		real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPGridArray
+		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
   		
 		xsize = i1-1
 		ysize = j1-1
