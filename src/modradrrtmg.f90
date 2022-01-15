@@ -1372,7 +1372,7 @@ contains
   subroutine PrintRadiationData(NameSuffix)
   	use modraddata
 	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile, testwritetofiledefinedsize, testwritetofiledefinedsizeint
+	use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile, testwritetofiledefinedsize, testwritetofiledefinedsizeint
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
@@ -2067,6 +2067,9 @@ contains
 		
 		call finishstatisticsline("LWP_Flattened_biased")
 		call finishstatisticsline("LWP_Flattened_biased_Clouds_Only")
+		
+		call finishstatisticsline("LWP_Grid_biased")
+		call finishstatisticsline("LWP_Grid_biased_Clouds_Only")
 		
 		call finishstatisticsline("partial_lwu")
 		call finishstatisticsline("partial_lwu_Clouds_Only")
