@@ -217,9 +217,11 @@ SAVE
 	
 	real(kind=kind_rb),allocatable,dimension(:) :: LWP_vertical 		!vertical slab average LWP
 	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		!Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
+	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened_biased 		!flattened collumns Ratio Biased LWP content !For test purposes!
 	real(kind=kind_rb),allocatable,dimension(:,:) :: qv_flattened 											!Moved up from modradrrtmgyuri for test purposes
 	
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid
+	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid_biased
 
 	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 

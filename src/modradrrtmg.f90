@@ -205,7 +205,9 @@ contains
 	!These points are then passed to the radiation functions for calculations.
 	!The results are then placed into the (i,j) points that were not chosen for the GLQ
 	allocate(LWP_grid(imax, jmax, krad1))
+	allocate(LWP_grid_biased(imax, jmax, krad1))! for test purposes
 	allocate(LWP_flattened(imax,jmax))
+	allocate(LWP_flattened_biased(imax,jmax))! for test purposes
 	allocate(qv_flattened(imax,jmax))!Changed This (PIER_QV)
 	allocate(LWP_vertical(krad1))
 	allocate(cloudFracModRad(imax,jmax))
@@ -213,6 +215,7 @@ contains
 	
 	LWP_vertical(:) = 0.0
 	LWP_flattened(:,:) = 0.0
+	LWP_flattened_biased(:,:) = 0.0 ! for test purposes
 	qv_flattened(:,:) = 0.0 !Changed This (PIER_QV)
 	LWP_grid(:,:,:) = 0.0
 	
@@ -233,7 +236,9 @@ contains
 		end if
 	end if
 	deallocate(LWP_grid)
+	deallocate(LWP_grid_biased)! for test purposes
 	deallocate(LWP_flattened)
+	deallocate(LWP_flattened_biased) ! for test purposes
 	deallocate(qv_flattened)!Changed This (PIER_QV)
 	deallocate(LWP_vertical)
 	deallocate(cloudFracModRad)
@@ -1366,12 +1371,14 @@ contains
 ! ==============================================================================;
   subroutine PrintRadiationData(NameSuffix)
   	use modraddata
-	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
+	use modglobal, only : imax, jmax, kmax, krad1, i1, j1, k1, kind_rb, zf, ih, jh
 	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile, testwritetofiledefinedsize, testwritetofiledefinedsizeint
 	
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: x1, x2, y1, y2, k, testxy1, testxy2
+	real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
+	real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
 	real(kind=kind_rb), dimension(:) :: tempRadColumn (k1)
   		
 	xsize = i1-1
@@ -1435,16 +1442,30 @@ contains
 	! the values found at LWP_index
 	!!! All stuff for testing
 	!! printen LWP indexen
-	call testwritetofiledefinedsizeint("test_LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .true.)
+	! call testwritetofiledefinedsizeint("test_LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .true.)
 	!! printen LWP percent indexen
-	call testwritetofiledefinedsizeint("test_LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .true.)
+	! call testwritetofiledefinedsizeint("test_LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .true.)
 	!! printen volledige lwd
-	call testwritetofiledefinedsize("test_total_lwu_" // trim(NameSuffix), lwu(:,:,:), 3, testxy1, testxy2, k1, .true.)
+	! call testwritetofiledefinedsize("test_total_lwu_" // trim(NameSuffix), lwu(:,:,:), 3, testxy1, testxy2, k1, .true.)
 	!! printen partial lwd
-	call testwritetofiledefinedsize("test_partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
+	! call testwritetofiledefinedsize("test_partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
 	!! printen partial percent lwd
-	call testwritetofiledefinedsize("test_partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
+	! call testwritetofiledefinedsize("test_partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
 	
+	allocate(tempLWPFlatArray(imax, jmax))
+	call MeanVariance(LWP_flattened(:,:),"LWP_Flattened", imax, jmax, 1)
+	tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
+	call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_Clouds_Only", imax, jmax, 1, n_clouds)
+	deallocate(tempLWPFlatArray)
+	
+	!! LWP_grid hierin stoppen!!!!
+	allocate(tempLWPGridArray(imax, jmax, krad1))
+	call MeanVariance(LWP_grid(:,:,:), "LWP_grid_stat", imax, jmax, krad1)
+	do k=1,krad1
+		tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
+	end do
+	call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat", imax, jmax, krad1, n_clouds)
+	deallocate(tempLWPGridArray)
 	
 	
 	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
@@ -1834,7 +1855,7 @@ contains
 
 	subroutine CompileStatistics
 	  	use modraddata
-		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
+		use modglobal, only : imax, jmax, kmax, krad1, i1, j1, k1, kind_rb, zf, ih, jh
 		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff !, writetofiledefinedsize
 	
 		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
@@ -1846,6 +1867,9 @@ contains
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayDiffColumn
 		
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempDiffRadArrayDataContainer
+		
+		real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
+		real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPGridArray
   		
 		xsize = i1-1
 		ysize = j1-1
@@ -1862,6 +1886,19 @@ contains
 		allocate(tempRadArrayK(xsize, ysize, 4))
 		allocate(tempRadArrayColumn(xsize, ysize, k1))
 		allocate(tempRadArrayDiffColumn(xsize, ysize, k1-1))
+		allocate(tempLWPFlatArray(imax, jmax))
+		allocate(tempLWPGridArray(imax, jmax, krad1))
+		
+		call MeanVariance(LWP_flattened_biased(:,:),"LWP_Flattened_biased", imax, jmax, 1)
+		tempLWPFlatArray = LWP_flattened_biased(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
+		call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_biased_Clouds_Only", imax, jmax, 1, n_clouds)
+		
+		call MeanVariance(LWP_grid_biased(:,:,:),"LWP_Grid_biased", imax, jmax, krad1)
+		do k=1,zsize
+			tempLWPGridArray(:,:,k) = LWP_grid_biased(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempRadArray,"LWP_Grid_biased_Clouds_Only", imax, jmax, krad1, n_clouds)	
+		
 		
 		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
@@ -2009,6 +2046,8 @@ contains
 		deallocate(tempRadArrayColumn)
 		deallocate(tempRadArrayDiffColumn)
 		deallocate(tempDiffRadArrayDataContainer)
+		deallocate(tempLWPFlatArray)
+		deallocate(tempLWPGridArray)
 	end subroutine CompileStatistics
 	
 	subroutine EndCompileStatistics
@@ -2026,6 +2065,8 @@ contains
 		call finishstatisticsline("LW_dn_TOA")
 		call finishstatisticsline("LW_dn_TOA_Clouds_Only")
 		
+		call finishstatisticsline("LWP_Flattened_biased")
+		call finishstatisticsline("LWP_Flattened_biased_Clouds_Only")
 		
 		call finishstatisticsline("partial_lwu")
 		call finishstatisticsline("partial_lwu_Clouds_Only")

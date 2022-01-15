@@ -973,6 +973,8 @@ contains
 						LW_up_ca_TOA (fill_i, fill_j) =  lwUpCS_slice  (i,krad2)
 						LW_dn_ca_TOA (fill_i, fill_j) = -lwDownCS_slice(i,krad2)
 						
+						LWP_flattened_biased(fill_i-1, fill_j-1) = LWP_flattened(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1)
+						LWP_grid_biased(fill_i-1, fill_j-1,:) = LWP_grid(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1, :)
 					end do
 					temp_GLQ_point = temp_GLQ_point + 1
 					
@@ -1052,6 +1054,8 @@ contains
 						LW_up_ca_TOA (fill_i, fill_j) =  lwUpCS_slice  (i,krad2)
 						LW_dn_ca_TOA (fill_i, fill_j) = -lwDownCS_slice(i,krad2)
 						
+						LWP_flattened_biased(fill_i-1, fill_j-1) = LWP_flattened(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1)
+						LWP_grid_biased(fill_i-1, fill_j-1,:) = LWP_grid(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1, :)
 					end do
 					temp_GLQ_point = temp_GLQ_point + 1
 				end if
