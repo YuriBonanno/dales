@@ -1898,7 +1898,7 @@ contains
 		do k=1,krad1
 			tempLWPGridArray(:,:,k) = LWP_grid_biased(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
 		end do
-		call MeanVarianceOnlyClouds(tempRadArray,"LWP_Grid_biased_Clouds_Only", imax, jmax, krad1, n_clouds)	
+		call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_Grid_biased_Clouds_Only", imax, jmax, krad1, n_clouds)	
 		
 		call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
 		tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
