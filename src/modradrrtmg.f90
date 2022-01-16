@@ -1377,8 +1377,8 @@ contains
 	character(*) :: NameSuffix
   	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
 	integer :: x1, x2, y1, y2, k, testxy1, testxy2
-	real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
-	real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
+	! real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
+	! real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
 	real(kind=kind_rb), dimension(:) :: tempRadColumn (k1)
   		
 	xsize = i1-1
@@ -1452,20 +1452,20 @@ contains
 	!! printen partial percent lwd
 	! call testwritetofiledefinedsize("test_partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
 	
-	allocate(tempLWPFlatArray(imax, jmax))
-	call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
-	tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
-	call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_stat_Clouds_Only", imax, jmax, 1, n_clouds)
-	deallocate(tempLWPFlatArray)
+	! allocate(tempLWPFlatArray(imax, jmax))
+	! call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
+	! tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
+	! call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_stat_Clouds_Only", imax, jmax, 1, n_clouds)
+	! deallocate(tempLWPFlatArray)
 	
 	!! LWP_grid hierin stoppen!!!!
-	allocate(tempLWPGridArray(imax, jmax, krad1))
-	call MeanVariance(LWP_grid(:,:,:), "LWP_grid_stat", imax, jmax, krad1)
-	do k=1,krad1
-		tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
-	end do
-	call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat_Clouds_Only", imax, jmax, krad1, n_clouds)
-	deallocate(tempLWPGridArray)
+	! allocate(tempLWPGridArray(imax, jmax, krad1))
+	! call MeanVariance(LWP_grid(:,:,:), "LWP_grid_stat", imax, jmax, krad1)
+	! do k=1,krad1
+		! tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
+	! end do
+	! call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat_Clouds_Only", imax, jmax, krad1, n_clouds)
+	! deallocate(tempLWPGridArray)
 	
 	
 	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
@@ -1899,7 +1899,16 @@ contains
 		end do
 		call MeanVarianceOnlyClouds(tempRadArray,"LWP_Grid_biased_Clouds_Only", imax, jmax, krad1, n_clouds)	
 		
+		call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
+		tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
+		call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_stat_Clouds_Only", imax, jmax, 1, n_clouds)
 		
+		call MeanVariance(LWP_grid(:,:,:), "LWP_grid_stat", imax, jmax, krad1)
+		do k=1,krad1
+			tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
+		end do
+		call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat_Clouds_Only", imax, jmax, krad1, n_clouds)
+
 		! 
 		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
 		tempRadArray = SW_up_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
