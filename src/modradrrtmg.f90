@@ -218,6 +218,7 @@ contains
 	LWP_flattened_biased(:,:) = 0.0 ! for test purposes
 	qv_flattened(:,:) = 0.0 !Changed This (PIER_QV)
 	LWP_grid(:,:,:) = 0.0
+	LWP_grid_biased(:,:,:) = 0.0
 	
 	total_value_test = 0
 	
