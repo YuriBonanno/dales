@@ -2071,6 +2071,12 @@ contains
 		call finishstatisticsline("LWP_Grid_biased")
 		call finishstatisticsline("LWP_Grid_biased_Clouds_Only")
 		
+		call finishstatisticsline("LWP_Flattened_stat")
+		call finishstatisticsline("LWP_Flattened_stat_Clouds_Only")
+		
+		call finishstatisticsline("LWP_grid_stat")
+		call finishstatisticsline("LWP_grid_stat_Clouds_Only")
+		
 		call finishstatisticsline("partial_lwu")
 		call finishstatisticsline("partial_lwu_Clouds_Only")
 		
