@@ -1410,7 +1410,7 @@ contains
 	
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
-	call writetofiledefinedsize("LWP_grid_biased_" // trim(NameSuffix), LWP_grid_biased, 3, imax, jmax, krad1, .true.)
+	! call writetofiledefinedsize("LWP_grid_biased_" // trim(NameSuffix), LWP_grid_biased, 3, imax, jmax, krad1, .true.)
 	
 	do k=1,k1
 		tempRadColumn(k) = sum(lwu(x1:x2,y1:y2,k))/float(imax*jmax)
