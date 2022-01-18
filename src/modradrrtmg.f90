@@ -215,14 +215,14 @@ contains
 	
 	
 	!!!TEMPORARY
-	LWP_vertical(1) = sum(qt0(2:i1, 2:j1, 38))/4096.
-	LWP_vertical(2) = sum(qt0(2:i1, 2:j1, 65))/4096.
-	LWP_vertical(3) = sum(qt0(2:i1, 2:j1, 92))/4096.
+	LWP_vertical(1) = sum(qt0(2:i1, 2:j1, 45))/4096.
+	LWP_vertical(2) = sum(qt0(2:i1, 2:j1, 60))/4096.
+	LWP_vertical(3) = sum(qt0(2:i1, 2:j1, 75))/4096.
 	
 	qt0(:,:,:) = 0.
 	qt0(2:i1, 2:23, 30:45) = LWP_vertical(1)
-	qt0(2:i1, 24:54, 55:75) = LWP_vertical(2)
-	qt0(2:i1, 55:j1, 85:100) = LWP_vertical(3)
+	qt0(2:i1, 24:54, 55:70) = LWP_vertical(2)
+	qt0(2:i1, 55:j1, 75:90) = LWP_vertical(3)
 	
 	ql0(:,:,:) = 0.
 	ql0h(:,:,:) = 0.
