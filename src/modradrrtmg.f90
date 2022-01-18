@@ -1448,6 +1448,7 @@ contains
 	call writetofiledefinedsizeint("tempGLQPoint_" // trim(NameSuffix), tempGLQPoint, 2, imax, jmax, 1, .true.)
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
+	call writetofiledefinedsize("LWP_flattened_biased_" // trim(NameSuffix), LWP_flattened_biased, 2, imax, jmax, 1, .true.)
 	! call writetofiledefinedsize("LWP_grid_biased_" // trim(NameSuffix), LWP_grid_biased, 3, imax, jmax, krad1, .true.)
 	
 	do k=1,k1
