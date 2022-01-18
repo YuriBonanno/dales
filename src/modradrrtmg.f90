@@ -1444,8 +1444,8 @@ contains
 	call writetofiledefinedsize("stddev_cloud_edge_indexes_" // trim(NameSuffix), stddev_cloud_edge_indexes, 1, 2, 1, 1, .false.)
 	call writetofiledefinedsize("var_cloud_edge_indexes_" // trim(NameSuffix), var_cloud_edge_indexes, 1, 2, 1, 1, .false.)
 						
-	call writetofiledefinedsizeint("testTempClass_" // trim(NameSuffix), testTempClass, 2, imax, jmax, 1, .false.)
-	call writetofiledefinedsizeint("tempGLQPoint_" // trim(NameSuffix), tempGLQPoint, 2, imax, jmax, 1, .false.)
+	call writetofiledefinedsizeint("testTempClass_" // trim(NameSuffix), testTempClass, 2, imax, jmax, 1, .true.)
+	call writetofiledefinedsizeint("tempGLQPoint_" // trim(NameSuffix), tempGLQPoint, 2, imax, jmax, 1, .true.)
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	! call writetofiledefinedsize("LWP_grid_biased_" // trim(NameSuffix), LWP_grid_biased, 3, imax, jmax, krad1, .true.)
