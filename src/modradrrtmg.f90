@@ -213,6 +213,31 @@ contains
 	allocate(cloudFracModRad(imax,jmax))
 	! allocate(cloud_edge_indexes(imax*jmax, 2))
 	
+	
+	!!!TEMPORARY
+	LWP_vertical(1) = sum(qt0(2:i1, 2:j1, 38))/4096.
+	LWP_vertical(2) = sum(qt0(2:i1, 2:j1, 65))/4096.
+	LWP_vertical(3) = sum(qt0(2:i1, 2:j1, 92))/4096.
+	
+	qt0(:,:,:) = 0.
+	qt0(2:i1, 2:23, 30:45) = LWP_vertical(1)
+	qt0(2:i1, 24:54, 55:75) = LWP_vertical(2)
+	qt0(2:i1, 55:j1, 85:100) = LWP_vertical(3)
+	
+	
+	do i=2,i1
+		do j = 2,j1
+			do k = 1,k1
+				if (qt0(i,j,k)>0.) then
+					qt0(i,j,k) = qt0(i,j,k) + (real(mod((irandom)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(1e-5,qt0(i,j,k))
+				endif
+			enddo
+		enddo
+	enddo
+	
+	!!!TEMPORARY
+	
+	
 	LWP_vertical(:) = 0.0
 	LWP_flattened(:,:) = 0.0
 	LWP_flattened_biased(:,:) = 0.0 ! for test purposes

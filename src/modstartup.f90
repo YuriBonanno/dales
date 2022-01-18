@@ -569,6 +569,43 @@ contains
         call randomnize(qtm ,k,randqt ,irandom,ih,jh,negval)
         call randomnize(qt0 ,k,randqt ,irandom,ih,jh,negval)
       end do
+	  
+		!!!TEMPORARY
+		qtm(1,1,1) = sum(qt0(2:i1, 2:j1, 38))/4096.
+		qtm(1,1,2) = sum(qt0(2:i1, 2:j1, 65))/4096.
+		qtm(1,1,3) = sum(qt0(2:i1, 2:j1, 92))/4096.
+		
+		qt0(:,:,:) = 0.
+		qt0(2:i1, 2:23, 30:45) = qtm(1,1,1)
+		qt0(2:i1, 24:54, 55:75) = qtm(1,1,2)
+		qt0(2:i1, 55:j1, 85:100) = qtm(1,1,3)
+		
+		qt0(1,1,1) = sum(qtm(2:i1, 2:j1, 38))/4096.
+		qt0(1,1,2) = sum(qtm(2:i1, 2:j1, 65))/4096.
+		qt0(1,1,3) = sum(qtm(2:i1, 2:j1, 92))/4096.
+		
+		qtm(:,:,:) = 0.
+		qtm(2:i1, 2:23, 30:45) = qt0(1,1,1)
+		qtm(2:i1, 24:54, 55:75) = qt0(1,1,2)
+		qtm(2:i1, 55:j1, 85:100) = qt0(1,1,3)
+		
+		qt0(1,1,1) = 0.
+		qt0(1,1,2) = 0.
+		qt0(1,1,3) = 0.
+		
+		do i=2,i1
+			do j = 2,j1
+				do k = 1,krand
+					if (qt0(i,j,k)>0.) then
+						qt0(i,j,k) = qt0(i,j,k) + (real(mod((irandom)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(randqt,qt0(i,j,k))
+						qtm(i,j,k) = qtm(i,j,k) + (real(mod((irandom)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(randqt,qtm(i,j,k))
+					endif
+				enddo
+			enddo
+		enddo
+		
+		!!!TEMPORARY
+	  
       negval = .True. ! negative perturbations allowed
       do k = 1,krand
         call randomnize(thlm,k,randthl,irandom,ih,jh,negval)
@@ -688,6 +725,43 @@ contains
 			call randomnize(qtm ,k,randqt ,irandom,ih,jh,negval)
 			call randomnize(qt0 ,k,randqt ,irandom,ih,jh,negval)
 		end do
+		
+		!!!TEMPORARY
+		qtm(1,1,1) = sum(qt0(2:i1, 2:j1, 38))/4096.
+		qtm(1,1,2) = sum(qt0(2:i1, 2:j1, 65))/4096.
+		qtm(1,1,3) = sum(qt0(2:i1, 2:j1, 92))/4096.
+		
+		qt0(:,:,:) = 0.
+		qt0(2:i1, 2:23, 30:45) = qtm(1,1,1)
+		qt0(2:i1, 24:54, 55:75) = qtm(1,1,2)
+		qt0(2:i1, 55:j1, 85:100) = qtm(1,1,3)
+		
+		qt0(1,1,1) = sum(qtm(2:i1, 2:j1, 38))/4096.
+		qt0(1,1,2) = sum(qtm(2:i1, 2:j1, 65))/4096.
+		qt0(1,1,3) = sum(qtm(2:i1, 2:j1, 92))/4096.
+		
+		qtm(:,:,:) = 0.
+		qtm(2:i1, 2:23, 30:45) = qt0(1,1,1)
+		qtm(2:i1, 24:54, 55:75) = qt0(1,1,2)
+		qtm(2:i1, 55:j1, 85:100) = qt0(1,1,3)
+		
+		qt0(1,1,1) = 0.
+		qt0(1,1,2) = 0.
+		qt0(1,1,3) = 0.
+		
+		do i=2,i1
+			do j = 2,j1
+				do k = 1,krand
+					if (qt0(i,j,k)>0.) then
+						qt0(i,j,k) = qt0(i,j,k) + (real(mod((irandom)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(randqt,qt0(i,j,k))
+						qtm(i,j,k) = qtm(i,j,k) + (real(mod((irandom)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(randqt,qtm(i,j,k))
+					endif
+				enddo
+			enddo
+		enddo
+		
+		!!!TEMPORARY
+		
 		negval = .True. ! negative perturbations allowed
 		
 		!!TEMP
