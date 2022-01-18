@@ -184,11 +184,11 @@ contains
 		LWP_grid(1:imax,1:jmax,1:kradmax) = qcl_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 
-		!call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax, .true.)
-		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
-		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
-		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
-		! call writetofiledefinedsize("LWP_grid_barker_" // trim(int_str_container), LWP_grid, 3, imax, jmax, krad1, .true.)
+		call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax, .true.)
+		call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
+		call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
+		call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
+		call writetofiledefinedsize("LWP_grid_barker_" // trim(int_str_container), LWP_grid, 3, imax, jmax, krad1, .true.)
 		!----------------------------------------------------------
 		! print *, "finished Define all field values"
 		! ! __________________________________________________________
