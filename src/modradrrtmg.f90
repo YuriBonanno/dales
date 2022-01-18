@@ -1809,7 +1809,8 @@ contains
 	! - Beginnen met TOA
 	!  - Eerst LWup
 	
-	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
+	! ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
+	ratios = (/64/)
 	ratioSize = size(ratios)
 	
 	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1, .true.)
