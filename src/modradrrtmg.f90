@@ -12,7 +12,7 @@ contains
                               imax,jmax,kmax,i1,j1,k1,&
                               kind_rb,SHR_KIND_R4,boltz , ih, jh !Added ih and jh myself (yuri)
     use modmpi,        only : myid
-    use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0, qt0 !Added qt0
+    use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0, qt0, gsat, ql0, ql0h !Added qt0, gsat, ql0, ql0h
     use modsurfdata ,  only : tskin
 	! Added myself ------------------
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
@@ -224,16 +224,21 @@ contains
 	qt0(2:i1, 24:54, 55:75) = LWP_vertical(2)
 	qt0(2:i1, 55:j1, 85:100) = LWP_vertical(3)
 	
-	
+	ql0(:,:,:) = 0.
+	ql0h(:,:,:) = 0.
 	do i=2,i1
 		do j = 2,j1
 			do k = 1,k1
 				if (qt0(i,j,k)>0.) then
 					qt0(i,j,k) = qt0(i,j,k) + (real(mod((43)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(1e-5,qt0(i,j,k))
 				endif
+				ql0(i,j,k) = max(qt0(i,j,k)-qsat(i,j,k),0.)
+				ql0h(i,j,k) = max(qt0(i,j,k)-qsat(i,j,k),0.)
 			enddo
 		enddo
 	enddo
+	
+	
 	
 	!!!TEMPORARY
 	
