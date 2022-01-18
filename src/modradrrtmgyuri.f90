@@ -975,6 +975,9 @@ contains
 						
 						LWP_flattened_biased(fill_i-1, fill_j-1) = LWP_flattened(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1)
 						LWP_grid_biased(fill_i-1, fill_j-1,:) = LWP_grid(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1, :)
+						
+						testTempClass(fill_i-1, fill_j-1) = -1
+						tempGLQPoint(fill_i-1, fill_j-1) = temp_GLQ_point
 					end do
 					temp_GLQ_point = temp_GLQ_point + 1
 					
@@ -1056,6 +1059,9 @@ contains
 						
 						LWP_flattened_biased(fill_i-1, fill_j-1) = LWP_flattened(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1)
 						LWP_grid_biased(fill_i-1, fill_j-1,:) = LWP_grid(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1, :)
+						
+						testTempClass(fill_i-1, fill_j-1) = class_number
+						tempGLQPoint(fill_i-1, fill_j-1) = temp_GLQ_point
 					end do
 					temp_GLQ_point = temp_GLQ_point + 1
 				end if
