@@ -986,6 +986,7 @@ contains
 					!cloudtop
 
 					!Necessary to determine the clouded GLQ point with respect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
+					!! Points in this context should actually be made "Counter"
 					cloudtop_GLQ_point = temp_GLQ_point - temp_n_GLQ_clear
 					
 					class_number = class_of_GLQ(cloudtop_GLQ_point)
