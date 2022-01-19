@@ -1779,8 +1779,8 @@ contains
 	
 	logical :: sunUp
 	integer :: i, ratioSize
-	! integer, dimension(:) :: ratios (13)
-	integer, dimension(:) :: ratios (1)
+	integer, dimension(:) :: ratios (13)
+	! integer, dimension(:) :: ratios (1)
 	real(kind=kind_rb), dimension(:) :: timeSet (14)
 	
 	real(kind=kind_rb), dimension(:,:,:) :: temp_lwu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
