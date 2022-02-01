@@ -184,10 +184,10 @@ contains
 		LWP_grid(1:imax,1:jmax,1:kradmax) = qcl_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 
-		! call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax, .true.)
-		! call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
-		! call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
-		! call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
+		!call writetofiledefinedsize("qcl_grid", qcl_grid, 3, imax, jmax, kradmax, .true.)
+		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
+		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
+		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
 		! call writetofiledefinedsize("LWP_grid_barker_" // trim(int_str_container), LWP_grid, 3, imax, jmax, krad1, .true.)
 		!----------------------------------------------------------
 		! print *, "finished Define all field values"
@@ -975,9 +975,6 @@ contains
 						
 						LWP_flattened_biased(fill_i-1, fill_j-1) = LWP_flattened(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1)
 						LWP_grid_biased(fill_i-1, fill_j-1,:) = LWP_grid(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1, :)
-						
-						testTempClass(fill_i-1, fill_j-1) = -1
-						tempGLQPoint(fill_i-1, fill_j-1) = temp_GLQ_point
 					end do
 					temp_GLQ_point = temp_GLQ_point + 1
 					
@@ -986,7 +983,6 @@ contains
 					!cloudtop
 
 					!Necessary to determine the clouded GLQ point with respect to the amount of clear GLQ points and to which class number the clouded GLQ point belongs 
-					!! Points in this context should actually be made "Counter"
 					cloudtop_GLQ_point = temp_GLQ_point - temp_n_GLQ_clear
 					
 					class_number = class_of_GLQ(cloudtop_GLQ_point)
@@ -1060,9 +1056,6 @@ contains
 						
 						LWP_flattened_biased(fill_i-1, fill_j-1) = LWP_flattened(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1)
 						LWP_grid_biased(fill_i-1, fill_j-1,:) = LWP_grid(GLQ_index_all(temp_GLQ_point, 1)-1, GLQ_index_all(temp_GLQ_point, 2)-1, :)
-						
-						testTempClass(fill_i-1, fill_j-1) = class_number
-						tempGLQPoint(fill_i-1, fill_j-1) = temp_GLQ_point
 					end do
 					temp_GLQ_point = temp_GLQ_point + 1
 				end if

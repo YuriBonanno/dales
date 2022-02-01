@@ -12,7 +12,7 @@ contains
                               imax,jmax,kmax,i1,j1,k1,&
                               kind_rb,SHR_KIND_R4,boltz , ih, jh !Added ih and jh myself (yuri)
     use modmpi,        only : myid
-    use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0, qt0, qsat, ql0, ql0h !Added qt0, qsat, ql0, ql0h
+    use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
 	! Added myself ------------------
 	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
@@ -211,40 +211,7 @@ contains
 	allocate(qv_flattened(imax,jmax))!Changed This (PIER_QV)
 	allocate(LWP_vertical(krad1))
 	allocate(cloudFracModRad(imax,jmax))
-	!TEMP
-	allocate(testTempClass(imax,jmax))
-	allocate(tempGLQPoint(imax,jmax))
 	! allocate(cloud_edge_indexes(imax*jmax, 2))
-	
-	
-	!!!TEMPORARY
-	LWP_vertical(1) = sum(qt0(2:i1, 2:j1, 45))/4096.
-	LWP_vertical(2) = sum(qt0(2:i1, 2:j1, 60))/4096.
-	LWP_vertical(3) = sum(qt0(2:i1, 2:j1, 75))/4096.
-	
-	qt0(:,:,:) = 0.
-	qt0(2:i1, 2:23, 30:45) = LWP_vertical(1)
-	qt0(2:i1, 24:54, 55:70) = LWP_vertical(2)
-	qt0(2:i1, 55:j1, 75:90) = LWP_vertical(3)
-	
-	ql0(:,:,:) = 0.
-	ql0h(:,:,:) = 0.
-	do i=2,i1
-		do j = 2,j1
-			do k = 1,k1
-				if (qt0(i,j,k)>0.) then
-					qt0(i,j,k) = qt0(i,j,k) + (real(mod((43)*8121+28411, 134456))/real(134456)-0.5)*2.0*min(1e-5,qt0(i,j,k))
-				endif
-				ql0(i,j,k) = max(qt0(i,j,k)-qsat(i,j,k),0.)
-				ql0h(i,j,k) = max(qt0(i,j,k)-qsat(i,j,k),0.)
-			enddo
-		enddo
-	enddo
-	
-	
-	
-	!!!TEMPORARY
-	
 	
 	LWP_vertical(:) = 0.0
 	LWP_flattened(:,:) = 0.0
@@ -276,9 +243,6 @@ contains
 	deallocate(qv_flattened)!Changed This (PIER_QV)
 	deallocate(LWP_vertical)
 	deallocate(cloudFracModRad)
-	!TEMP
-	deallocate(testTempClass)
-	deallocate(tempGLQPoint)
 	! deallocate(cloud_edge_indexes)
 
 !End Added myself ------------------	
@@ -1443,9 +1407,7 @@ contains
 	call writetofiledefinedsize("average_cloud_edge_indexes_" // trim(NameSuffix), average_cloud_edge_indexes, 1, 2, 1, 1, .false.)
 	call writetofiledefinedsize("stddev_cloud_edge_indexes_" // trim(NameSuffix), stddev_cloud_edge_indexes, 1, 2, 1, 1, .false.)
 	call writetofiledefinedsize("var_cloud_edge_indexes_" // trim(NameSuffix), var_cloud_edge_indexes, 1, 2, 1, 1, .false.)
-						
-	call writetofiledefinedsizeint("testTempClass_" // trim(NameSuffix), testTempClass, 2, imax, jmax, 1, .true.)
-	call writetofiledefinedsizeint("tempGLQPoint_" // trim(NameSuffix), tempGLQPoint, 2, imax, jmax, 1, .true.)
+	
 	
 	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
 	call writetofiledefinedsize("LWP_flattened_biased_" // trim(NameSuffix), LWP_flattened_biased, 2, imax, jmax, 1, .true.)
@@ -1780,7 +1742,6 @@ contains
 	logical :: sunUp
 	integer :: i, ratioSize
 	integer, dimension(:) :: ratios (13)
-	! integer, dimension(:) :: ratios (1)
 	real(kind=kind_rb), dimension(:) :: timeSet (14)
 	
 	real(kind=kind_rb), dimension(:,:,:) :: temp_lwu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
@@ -1811,7 +1772,6 @@ contains
 	!  - Eerst LWup
 	
 	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
-	! ratios = (/64/)
 	ratioSize = size(ratios)
 	
 	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1, .true.)

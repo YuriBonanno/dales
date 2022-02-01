@@ -222,10 +222,6 @@ SAVE
 	
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid_biased
-	
-	integer, allocatable, dimension(:,:) :: testTempClass
-	integer, allocatable, dimension(:,:) :: tempGLQPoint
-	
 
 	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
 
