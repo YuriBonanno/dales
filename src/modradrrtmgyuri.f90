@@ -188,7 +188,7 @@ contains
 		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
 		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
 		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
-		call writetofiledefinedsize("LWP_grid_barker_" // trim(int_str_container), LWP_grid, 3, imax, jmax, krad1, .true.)
+		call writetofiledefinedsize("LWP_grid_barker", LWP_grid, 3, imax, jmax, krad1, .true.)
 		!----------------------------------------------------------
 		! print *, "finished Define all field values"
 		! ! __________________________________________________________
