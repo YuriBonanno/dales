@@ -1471,10 +1471,10 @@ contains
 	! deallocate(tempLWPGridArray)
 	
 	
-	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
-	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
-	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
-	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
+	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
+	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
+	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
+	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
 	! call writetofiledefinedsize("partial_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
 	! call writetofiledefinedsize("partial_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
