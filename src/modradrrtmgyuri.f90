@@ -81,7 +81,7 @@ contains
 		!This definition not necessary because it is defined later
 		!real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_distribution 		!amount of cloudtops in every row, could be integer but must be real for quicksort
 		real(kind=kind_rb),allocatable,dimension(:) :: clear_LWP_ordered			!Ordered LWP for cloudless collumns
-		real(kind=kind_rb),allocatable,dimension(:) :: clear_qv_ordered			!Ordered QV for cloudless collumns !Changed This (PIER_QV)
+		real(kind=kind_rb),allocatable,dimension(:) :: clear_WVP_ordered			!Ordered QV for cloudless collumns !Changed This (PIER_QV)
 		real(kind=kind_rb),allocatable,dimension(:) :: cloudtop_height_ordered 		!ordered cloudheights
 		real(kind=kind_rb),allocatable,dimension(:,:) :: cloudtop_LWP_ordered		!Ordered LWP for cloudy collumns
 		
@@ -101,7 +101,8 @@ contains
 		
 		
 		real(kind=kind_rb),dimension(:,:,:) :: qv_grid			(imax, jmax, kradmax)	 								!Changed This (PIER_QV)
-		! real(kind=kind_rb),dimension(:,:) :: qv_flattened 		(imax, jmax)			!flattened collumns LWP content !Changed This (PIER_QV)
+		real(kind=kind_rb),dimension(:,:,:) :: WVP_grid			(imax, jmax, kradmax)	 								!Changed This (PIER_QV)
+		! real(kind=kind_rb),dimension(:,:) :: WVP_flattened 		(imax, jmax)			!flattened collumns LWP content !Changed This (PIER_QV)
 
 		!This variable might nog be necessary
 		integer,dimension(:) :: cloudtop_distribution (k1)           !Cloud height distribution amount of clouds in height index x
@@ -150,22 +151,6 @@ contains
 			layerP_grid(1:imax,1:jmax,k)    = presf_input (k) !743
 		end do
 		layerP_grid(1:imax,1:jmax, krad1)   = 0.5*presh_input(krad1)!749
-
-		!define qv
-		do i=2,i1
-			im=i-1
-			do j=2,j1
-				jm=j-1
-				do k=1,kmax
-					qv_grid(im,jm,k) = max(qt0(i,j,k) - ql0(i,j,k),1e-18) !avoid RRTMG reading negative initial values 
-				enddo
-				ksounding=npatch_start
-				do k=kmax+1,kradmax
-					qv_grid(im,jm,k) = qsnd(ksounding)
-					ksounding=ksounding+1
-				enddo
-			enddo
-		enddo
 		
 		!interface_P
 		do k=1, krad1
@@ -184,7 +169,26 @@ contains
 		LWP_grid(1:imax,1:jmax,1:kradmax) = qcl_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
 		LWP_grid(1:imax,1:jmax,krad1) = 0.
 
+		!define qv
+		do i=2,i1
+			im=i-1
+			do j=2,j1
+				jm=j-1
+				do k=1,kmax
+					qv_grid(im,jm,k) = max(qt0(i,j,k) - ql0(i,j,k),1e-18) !avoid RRTMG reading negative initial values 
+				enddo
+				ksounding=npatch_start
+				do k=kmax+1,kradmax
+					qv_grid(im,jm,k) = qsnd(ksounding)
+					ksounding=ksounding+1
+				enddo
+			enddo
+		enddo
+
+		WVP_grid(1:imax,1:jmax,1:kradmax) = qv_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
+
 		call writetofiledefinedsize("qcl_grid", qcl_grid(:,:,1:k1), 3, imax, jmax, k1, .true.)
+		call writetofiledefinedsize("WVP_grid", WVP_grid(:,:,1:k1), 3, imax, jmax, k1, .true.)
 		!call writetofiledefinedsize("layerP_grid", layerP_grid, 3, imax, jmax, krad1, .true.)
 		!call writetofiledefinedsize("interfaceP_grid", interfaceP_grid, 3, imax, jmax, krad2, .true.)
 		!call writetofiledefinedsize("layerMass_grid", layerMass_grid, 3, imax, jmax, krad1, .true.)
@@ -206,7 +210,7 @@ contains
 		   do j=1,jmax
 				! Defines LWP_flattened and sets cloudFrac to 1 when LWP larger than cloud_threshold
 				LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
-				qv_flattened(i,j) = SUM(qv_grid(i,j,:)) !Changed This (PIER_QV)
+				WVP_flattened(i,j) = SUM(WVP_grid(i,j,:)) !Changed This (PIER_QV)
 				!Something could go wrong here with cloud threshold =/= cloud patch threshold,
 				!there could be more n_clouds than SUM(cloudtop_distribution)
 				if (LWP_flattened(i,j)>cloud_threshold) then
@@ -266,7 +270,7 @@ contains
 			! print *, "n_clear > 0"
 			
 			allocate (clear_LWP_ordered (n_clear))
-			allocate (clear_qv_ordered (n_clear))!Changed This (PIER_QV)
+			allocate (clear_WVP_ordered (n_clear))!Changed This (PIER_QV)
 			allocate (original_clear_LWP_indexes (n_clear, 2))
 			
 			counter = 0
@@ -277,7 +281,7 @@ contains
 					if (LWP_flattened(i,j) <= cloud_threshold) then
 						counter = counter + 1
 						clear_LWP_ordered(counter) = LWP_flattened(i,j)
-						clear_qv_ordered(counter) = qv_flattened(i,j)!Changed This (PIER_QV)
+						clear_WVP_ordered(counter) = WVP_flattened(i,j)!Changed This (PIER_QV)
 						!!Shift with a single index due to i=1 and j=1 being boundary values
 						original_clear_LWP_indexes(counter, 1) = i + 1
 						original_clear_LWP_indexes(counter, 2) = j + 1
@@ -287,7 +291,7 @@ contains
 
 			!Order on basis of LWP
 			! call quicksortindexes(clear_LWP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)!Changed This (PIER_QV) 13/10/2021
-			call quicksortindexes(clear_qv_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)!Changed This (PIER_QV)
+			call quicksortindexes(clear_WVP_ordered, 1, n_clear, original_clear_LWP_indexes, n_clear)!Changed This (PIER_QV)
 		
 			!Determine the indexes of the Gauss-Legendre points
 			allocate (GLQ_points_clear 	(temp_n_GLQ_clear))
@@ -306,10 +310,10 @@ contains
 					GLQ_weights_clear(:) = 1.0 !Incorrect value, but not relevant
 				else
 					if (use_bin) then
-						valuewidth = (maxval(clear_qv_ordered)-minval(clear_qv_ordered))/float(temp_n_GLQ_clear)
+						valuewidth = (maxval(clear_WVP_ordered)-minval(clear_WVP_ordered))/float(temp_n_GLQ_clear)
 						do nbin=1,temp_n_GLQ_clear
-							GLQ_val = valuewidth/2.0 + minval(clear_qv_ordered) + valuewidth*(nbin-1)
-							temploc = minloc(abs(clear_qv_ordered-GLQ_val))
+							GLQ_val = valuewidth/2.0 + minval(clear_WVP_ordered) + valuewidth*(nbin-1)
+							temploc = minloc(abs(clear_WVP_ordered-GLQ_val))
 							GLQ_points_clear(nbin) = temploc(1)
 						enddo
 						GLQ_weights_clear(:) = 1.0 !Incorrect value, but not relevant
@@ -327,7 +331,7 @@ contains
 			!Save coordinates of the points to an array containing all the GLQ points
 			do N_g = 1, temp_n_GLQ_clear
 			  x_index  = nint(GLQ_points_clear(N_g))
-			  Clear_QV_GLQ_Values(N_g) = clear_qv_ordered(x_index) ! For visualising the N_RT_Ratio (VIS_RATIO)
+			  Clear_QV_GLQ_Values(N_g) = clear_WVP_ordered(x_index) ! For visualising the N_RT_Ratio (VIS_RATIO)
 			  temp_i   = int(original_clear_LWP_indexes(x_index,1))
 			  temp_j   = int(original_clear_LWP_indexes(x_index,2))
 			  GLQ_clear_LWP_indexes(N_g, 1) = temp_i
@@ -477,7 +481,7 @@ contains
 			if (cloud_nRT) then
 				n_RT = float(n_clouds)/float(n_RT_Ratio)
 			else
-				n_RT = (imax*jmax)/(n_RT_Ratio)
+				n_RT = float(imax*jmax)/float(n_RT_Ratio)
 			end if
 			
 			n_GLQ_cloudtop = nint(float(n_RT)/float(n_classes))

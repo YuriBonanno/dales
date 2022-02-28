@@ -208,7 +208,7 @@ contains
 	allocate(LWP_grid_biased(imax, jmax, krad1))! for test purposes
 	allocate(LWP_flattened(imax,jmax))
 	allocate(LWP_flattened_biased(imax,jmax))! for test purposes
-	allocate(qv_flattened(imax,jmax))!Changed This (PIER_QV)
+	allocate(WVP_flattened(imax,jmax))!Changed This (PIER_QV)
 	allocate(LWP_vertical(krad1))
 	allocate(cloudFracModRad(imax,jmax))
 	! allocate(cloud_edge_indexes(imax*jmax, 2))
@@ -216,7 +216,7 @@ contains
 	LWP_vertical(:) = 0.0
 	LWP_flattened(:,:) = 0.0
 	LWP_flattened_biased(:,:) = 0.0 ! for test purposes
-	qv_flattened(:,:) = 0.0 !Changed This (PIER_QV)
+	WVP_flattened(:,:) = 0.0 !Changed This (PIER_QV)
 	LWP_grid(:,:,:) = 0.0
 	LWP_grid_biased(:,:,:) = 0.0
 	
@@ -240,7 +240,7 @@ contains
 	deallocate(LWP_grid_biased)! for test purposes
 	deallocate(LWP_flattened)
 	deallocate(LWP_flattened_biased) ! for test purposes
-	deallocate(qv_flattened)!Changed This (PIER_QV)
+	deallocate(WVP_flattened)!Changed This (PIER_QV)
 	deallocate(LWP_vertical)
 	deallocate(cloudFracModRad)
 	! deallocate(cloud_edge_indexes)
