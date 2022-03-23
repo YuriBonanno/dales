@@ -49,116 +49,83 @@ contains
 	  if (j+1 < last)  call quicksortindexes(a, j+1, last, indexes, length)
 	end subroutine quicksortindexes
 
-	! quicksort.f -*-f90-*-
-	! Author: t-nissie
-	! License: GPLv3
-	! Gist: https://gist.github.com/t-nissie/479f0f16966925fa29ea
-	!!
-	recursive subroutine quicksort(a, first, last, length)
-	implicit none
-	integer first, last, length
-	integer i, j
-	real(kind=kind_rb) :: a(length), x, t
-	
-	!Determine the middle of the class
-	  x = a( (first+last) / 2 )
-	  i = first
-	  j = last
-	  do
-		 do while (a(i) < x)
-			i=i+1
-		 end do
-		 do while (x < a(j))
-			j=j-1
-		 end do
-		 if (i >= j) exit
-		 t = a(i);  a(i) = a(j);  a(j) = t
 
-		 i=i+1
-		 j=j-1
-	  end do
-	!Recursively go through this subroutine to order the array
-	  if (first < i-1) call quicksort(a, first, i-1, length)
-	  if (j+1 < last)  call quicksort(a, j+1, last, length)
-	end subroutine quicksort
+!This function determines the Gauss-Legendre Quadrature points
+!+-------------------------------------------------------------------
+  subroutine gauleg(x1,x2,x,w,n)
+!+-------------------------------------------------------------------
+    implicit none
+    INTEGER n
+    REAL(kind=kind_rb) :: x1,x2,x(n),w(n)
+    DOUBLE PRECISION EPS
+    PARAMETER (EPS=3.d-14)
+    INTEGER i,j,m
 
+    DOUBLE PRECISION p1,p2,p3,pp,xl,xm,z,z1
 
-	!This function determines the Gauss-Legendre Quadrature points
-	!+-------------------------------------------------------------------
-		  SUBROUTINE gauleg(x1,x2,x,w,n)
-	!+-------------------------------------------------------------------
-		  implicit none
-		  INTEGER n
-		  REAL(kind=kind_rb) :: x1,x2,x(n),w(n)
-		  DOUBLE PRECISION EPS
-		  PARAMETER (EPS=3.d-14)
-		  INTEGER i,j,m
+    m=(n+1)/2
+    xm=0.5d0*(x2+x1)
+    xl=0.5d0*(x2-x1)
+    do 12 i=1,m
+    z=cos(3.141592654d0*(i-.25d0)/(n+.5d0))
+  1       continue
+      p1=1.d0
+      p2=0.d0
+      do 11 j=1,n
+      p3=p2
+      p2=p1
+      p1=((2.d0*j-1.d0)*z*p2-(j-1.d0)*p3)/j
+  11        continue
+      pp=n*(z*p1-p2)/(z*z-1.d0)
+      z1=z
 
-		  DOUBLE PRECISION p1,p2,p3,pp,xl,xm,z,z1
+      z=z1-p1/pp
+    if(abs(z-z1).gt.EPS)goto 1
+    x(i)=xm-xl*z
+    x(n+1-i)=xm+xl*z
+    w(i)=2.d0*xl/((1.d0-z*z)*pp*pp)
+    w(n+1-i)=w(i)
+  12    continue
 
-		  m=(n+1)/2
-		  xm=0.5d0*(x2+x1)
-		  xl=0.5d0*(x2-x1)
-		  do 12 i=1,m
-			z=cos(3.141592654d0*(i-.25d0)/(n+.5d0))
-	1       continue
-			  p1=1.d0
-			  p2=0.d0
-			  do 11 j=1,n
-				p3=p2
-				p2=p1
-				p1=((2.d0*j-1.d0)*z*p2-(j-1.d0)*p3)/j
-	11        continue
-			  pp=n*(z*p1-p2)/(z*z-1.d0)
-			  z1=z
-
-			  z=z1-p1/pp
-			if(abs(z-z1).gt.EPS)goto 1
-			x(i)=xm-xl*z
-			x(n+1-i)=xm+xl*z
-			w(i)=2.d0*xl/((1.d0-z*z)*pp*pp)
-			w(n+1-i)=w(i)
-	12    continue
-
-		  return
-		  end subroutine gauleg
+    return
+  end subroutine gauleg
 		  
 		  
 	! This function determines the quantiles for the clouded classes, these quantiles are evenly spaced over the amount of points
 	!  +-----------------------------------------------------------------
-	   subroutine quantiles (n_s, n_quantiles, std, x, q)
-	   implicit none
-	   integer :: k, n_s, n_quantiles, index_11, index_12, index_q, index_median
-	   real(kind=kind_rb) :: confidence_1
-	   real(kind=kind_rb) :: x(n_s)
-	   real(kind=kind_rb) :: q(n_quantiles)
-	   logical :: std
+  subroutine quantiles (n_s, n_quantiles, std, x, q)
+   implicit none
+   integer :: k, n_s, n_quantiles, index_11, index_12, index_q, index_median
+   real(kind=kind_rb) :: confidence_1
+   real(kind=kind_rb) :: x(n_s)
+   real(kind=kind_rb) :: q(n_quantiles)
+   logical :: std
 
 
-	   confidence_1 = 0.684
+   confidence_1 = 0.684
 
-	   index_11     = ((1.0 - confidence_1) / 2.0) * n_s
-	   index_12     = n_s - index_11
-	   index_median = n_s / 2.0
+   index_11     = ((1.0 - confidence_1) / 2.0) * n_s
+   index_12     = n_s - index_11
+   index_median = n_s / 2.0
 
-	   if (std) then
+   if (std) then
 
-		  q(1) = x(index_11)
-		  q(2) = x(index_median)
-		  q(3) = x(index_12)
+    q(1) = x(index_11)
+    q(2) = x(index_median)
+    q(3) = x(index_12)
 
-	   else
+   else
 
-		  do k = 1, n_quantiles
-			 index_q = nint((float(k) / float(n_quantiles + 1)) * n_s)
-			 q(k)    = x(index_q)
+    do k = 1, n_quantiles
+     index_q = nint((float(k) / float(n_quantiles + 1)) * n_s)
+     q(k)    = x(index_q)
 
-		  end do
+    end do
 
-	   end if
+   end if
 
-	   return
-	   end subroutine quantiles
+   return
+  end subroutine quantiles
 
 
 	subroutine GetDiff(dataset, resultDataSet, xsize, ysize, zsize)

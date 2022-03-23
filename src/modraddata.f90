@@ -148,12 +148,10 @@ SAVE
 
 	!!Added by Yuri
 	!----------------------------------------
-	
-	real(kind=kind_rb) :: total_cloud_fraction										!total fraction of of grid that is covered by clouds
+	real(kind=kind_rb) :: total_cloud_fraction		!total fraction of of grid that is covered by clouds
 	
 	integer :: n_GLQ_cloudtop											!Amount of points for GLQ
 	integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
-	integer :: class_of_point_counter
 	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
 	real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
 	integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
@@ -170,11 +168,7 @@ SAVE
 	integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
 	integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
 	
-	integer :: total_value_test
-	
 	!These values should be read from namoptions file
-	logical :: diagnostic_run = .false.							!Boolean for doing the diagnostics run
-	logical :: cloud_nRT = .false.							!Boolean for taking fraction of domain (.false.) or clouds (.true.)
 	logical :: barker_method = .true.						!Boolean for doing the barker_method or regular method
 	logical :: use_gauleg = .true.							!Use gaussLegendre placement
 	logical :: use_evenly_spaced = .false.					!Use evenly spaced placement
@@ -192,44 +186,10 @@ SAVE
 	real(kind=kind_rb) :: cloud_threshold != 0.0				!for the definition of a clouded collumn
 	real(kind=kind_rb) :: cloud_patch_threshold != 0.0		!for the definition of cloud top
 	
-	!!!This is for testpurposes, this makes it possible to check whether the program functions nicely
-	integer,allocatable,dimension(:,:):: original_index_all
-	real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_all
-	
-	real(kind=kind_rb) :: startTime, endTime, netTime
-	
-	
-	
-	real(kind=kind_rb) :: LWP_temp
-	real(kind=kind_rb) :: LWP_total
-	
-	integer,dimension(:) :: LWP_index (4)
-	real(kind=kind_rb),dimension(:) :: LWP_index_heights (4)
-	integer,dimension(:) :: LWP_index_percent (4)
-	real(kind=kind_rb),dimension(:) :: LWP_index_heights_percent (4)
-	
-	integer, allocatable, dimension(:,:) :: cloud_edge_indexes
-	real(kind=kind_rb), dimension(:) :: average_cloud_edge_indexes(2)
-	real(kind=kind_rb), dimension(:) :: stddev_cloud_edge_indexes(2)
-	real(kind=kind_rb), dimension(:) :: var_cloud_edge_indexes(2)
-	
-	real(kind=kind_rb),allocatable, dimension(:,:) :: cloudFracModRad
-	
 	real(kind=kind_rb),allocatable,dimension(:) :: LWP_vertical 		!vertical slab average LWP
 	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		!Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
-	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened_biased 		!flattened collumns Ratio Biased LWP content !For test purposes!
 	real(kind=kind_rb),allocatable,dimension(:,:) :: WVP_flattened 											!Moved up from modradrrtmgyuri for test purposes
-	
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid
-	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid_biased
-
-	character(len=6) :: int_str_container									!Is used to write ratio number into filenames
-
-	!Using krad1 and imax, jmax is not allowed here
-	! real(kind=kind_rb),dimension(:) :: LWP_vertical 		(krad1)			!vertical slab average LWP
-	! real(kind=kind_rb),dimension(:,:) :: LWP_flattened 		(imax, jmax)			!flattened collumns LWP content		!Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
-	! real(kind=kind_rb),dimension(:,:,:) :: LWP_grid    		(imax, jmax, krad1)
-
 	!----------------------------------------
 	
   real,parameter :: mwdry = 28.966, &

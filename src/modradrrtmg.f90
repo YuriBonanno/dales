@@ -14,10 +14,10 @@ contains
     use modmpi,        only : myid
     use modfields,     only : initial_presh,initial_presf,rhof,exnf,thl0
     use modsurfdata ,  only : tskin
-	! Added myself ------------------
-	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
-	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
-	!End Added myself ------------------
+    ! Added myself ------------------
+    use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
+    use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
+    !End Added myself ------------------
     use rrtmg_lw_init, only : rrtmg_lw_ini
     use rrtmg_lw_rad,  only : rrtmg_lw
     use shr_orb_mod,   only : shr_orb_params
@@ -28,23 +28,23 @@ contains
     integer                :: npatch    ! Sounding levels above domain
     integer                :: i,j,k,ierr(3)
     logical                :: sunUp
-	
-	! logical :: barker_method											!Boolean for doing the barker_method or regular method	
-	! integer :: n_classes_initial            		!maximum number of cloudtop altitude classes
-	! integer :: n_GLQ_cloudtop, n_GLQ_clear											!Amount of points for GLQ
-	! integer :: total_amount_GLQ_points										!Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
-	! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear	!GLQ values cloudless
-	! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop	!GLQ values cloudtop, extra axis for the classes
-	! integer,allocatable,dimension(:,:):: GLQ_index_all					!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	! integer,allocatable,dimension(:,:):: original_clear_LWP_indexes 			!original indexes of cloudless_LWP_ordered
-	! integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes		!original indexes of the sorted LWP
+    
+    ! logical :: barker_method                                          !Boolean for doing the barker_method or regular method  
+    ! integer :: n_classes_initial                  !maximum number of cloudtop altitude classes
+    ! integer :: n_GLQ_cloudtop, n_GLQ_clear                                            !Amount of points for GLQ
+    ! integer :: total_amount_GLQ_points                                        !Total amount of GLQ points (n_GLQ_clear + n_GLQ_cloudtop*n_classes)
+    ! real(kind=kind_rb),allocatable,dimension(:) :: GLQ_points_clear, GLQ_weights_clear    !GLQ values cloudless
+    ! real(kind=kind_rb),allocatable,dimension(:,:) :: GLQ_points_cloudtop, GLQ_weights_cloudtop    !GLQ values cloudtop, extra axis for the classes
+    ! integer,allocatable,dimension(:,:):: GLQ_index_all                    !All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
+    ! integer,allocatable,dimension(:,:):: original_clear_LWP_indexes           !original indexes of cloudless_LWP_ordered
+    ! integer,allocatable,dimension(:,:,:):: original_cloudtop_LWP_indexes      !original indexes of the sorted LWP
 
-	! integer,allocatable,dimension(:) :: n_class 								!Array that contains the amount of clouds in a certain class
-	! integer :: class_size							!Amount of clouds in individual class
-	! integer :: n_clouds, n_clear					!number of collums with clouds and number of clear collumns
-	! integer :: n_classes		            		!actual amount opf used classes, can be less then initial classes
+    ! integer,allocatable,dimension(:) :: n_class                               !Array that contains the amount of clouds in a certain class
+    ! integer :: class_size                         !Amount of clouds in individual class
+    ! integer :: n_clouds, n_clear                  !number of collums with clouds and number of clear collumns
+    ! integer :: n_classes                          !actual amount opf used classes, can be less then initial classes
 
-	!End Added myself ------------------
+    !End Added myself ------------------
     real(SHR_KIND_R4),save ::  eccen, & ! Earth's eccentricity factor (unitless) (typically 0 to 0.1)
                                obliq, & ! Earth's obliquity angle (deg) (-90 to +90) (typically 22-26)
                                mvelp, & ! Earth's moving vernal equinox at perhelion (deg)(0 to 360.0)
@@ -107,9 +107,9 @@ contains
 !
                LWP_slice   (imax,krad1),       &
                IWP_slice   (imax,krad1),       &
-! Added myself ------------------	   
-!			   LWP_collumns   (imax, jmax, krad1),       &
-!			   LWP_flattened   (imax, jmax),       &
+! Added myself ------------------      
+!              LWP_collumns   (imax, jmax, krad1),       &
+!              LWP_flattened   (imax, jmax),       &
 !End Added myself ------------------
                presh_input      (krad1),       &
                  STAT=ierr(1))
@@ -198,54 +198,33 @@ contains
     ! lwDown_slice = 0
     ! lwUpCS_slice = 0
     ! lwDownCS_slice = 0
-	
+    
 ! Added myself ------------------
-	!This is the "Barker method" where a set of points (i,j) are chosen to represent the whole set.
-	!The points are chosen on basis of Gauss-Legendre Quadrature
-	!These points are then passed to the radiation functions for calculations.
-	!The results are then placed into the (i,j) points that were not chosen for the GLQ
-	allocate(LWP_grid(imax, jmax, krad1))
-	allocate(LWP_grid_biased(imax, jmax, krad1))! for test purposes
-	allocate(LWP_flattened(imax,jmax))
-	allocate(LWP_flattened_biased(imax,jmax))! for test purposes
-	allocate(WVP_flattened(imax,jmax))!Changed This (PIER_QV)
-	allocate(LWP_vertical(krad1))
-	allocate(cloudFracModRad(imax,jmax))
-	! allocate(cloud_edge_indexes(imax*jmax, 2))
-	
-	LWP_vertical(:) = 0.0
-	LWP_flattened(:,:) = 0.0
-	LWP_flattened_biased(:,:) = 0.0 ! for test purposes
-	WVP_flattened(:,:) = 0.0 !Changed This (PIER_QV)
-	LWP_grid(:,:,:) = 0.0
-	LWP_grid_biased(:,:,:) = 0.0
-	
-	total_value_test = 0
-	
-	if (diagnostic_run) then
-		call Diagnostics(sunUp)
-		! call PrintRadiationData("diagnostics")
-	else
-		if (barker_method) then
-			write(int_str_container, "(i0)") n_RT_Ratio
-			int_str_container = adjustl(int_str_container)
-			call BarkerRad(sunUp)
-			call PrintRadiationData("barker_" // trim(int_str_container))
-		else
-			call StephanRad(sunUp)
-			call PrintRadiationData("stephan")
-		end if
-	end if
-	deallocate(LWP_grid)
-	deallocate(LWP_grid_biased)! for test purposes
-	deallocate(LWP_flattened)
-	deallocate(LWP_flattened_biased) ! for test purposes
-	deallocate(WVP_flattened)!Changed This (PIER_QV)
-	deallocate(LWP_vertical)
-	deallocate(cloudFracModRad)
-	! deallocate(cloud_edge_indexes)
+    !This is the "Barker method" where a set of points (i,j) are chosen to represent the whole set.
+    !The points are chosen on basis of Gauss-Legendre Quadrature
+    !These points are then passed to the radiation functions for calculations.
+    !The results are then placed into the (i,j) points that were not chosen for the GLQ
+    allocate(LWP_grid(imax, jmax, krad1))
+    allocate(LWP_flattened(imax,jmax))
+    allocate(WVP_flattened(imax,jmax))
+    
+    LWP_vertical(:) = 0.0
+    LWP_flattened(:,:) = 0.0
+    WVP_flattened(:,:) = 0.0
+    LWP_grid(:,:,:) = 0.0
+    LWP_grid_biased(:,:,:) = 0.0
+    
+    if (barker_method) then
+      call BarkerRad(sunUp)
+    else
+      call StephanRad(sunUp)
+    end if
+    
+    deallocate(LWP_grid)
+    deallocate(LWP_flattened)
+    deallocate(WVP_flattened)
 
-!End Added myself ------------------	
+!End Added myself ------------------    
     do k=1,kmax
       do j=2,j1
         do i=2,i1
@@ -590,8 +569,7 @@ contains
 ! ==============================================================================;
 
   subroutine setupSlicesFromProfiles(j,npatch_start, &
-           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe)!, &
-		   ! current_GLQ_point, testArrayIndexes)
+           LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -604,229 +582,214 @@ contains
   ! JvdDussen, 24-6-2010                                                        !
   ! ============================================================================!
 
-      use modglobal, only: imax,jmax,kmax,i1,k1,grav,kind_rb,rlv,cp,Rd,pref0
-      use modfields, only: thl0,ql0,qt0,exnf
-      use modsurfdata, only: tskin,ps
-      use modmicrodata, only : Nc_0,sig_g
-      use modmpi, only: myid
+    use modglobal, only: imax,jmax,kmax,i1,k1,grav,kind_rb,rlv,cp,Rd,pref0
+    use modfields, only: thl0,ql0,qt0,exnf
+    use modsurfdata, only: tskin,ps
+    use modmicrodata, only : Nc_0,sig_g
+    use modmpi, only: myid
 
-      implicit none
+    implicit none
 
-      integer,intent(in) :: j,npatch_start
-      real(KIND=kind_rb),intent(out) ::    LWP_slice(imax,krad1), &
-                                           IWP_slice(imax,krad1), &
-                                           cloudFrac(imax,krad1), &
-                                           liquidRe (imax,krad1), &
-                                           iceRe    (imax,krad1)
-      integer :: i,k,ksounding,im
-      real (KIND=kind_rb) :: exners
-      real(KIND=kind_rb) :: layerMass(imax,krad1)
-      !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
-      real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
-      real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
-      real , parameter :: rho_liq = 1000.
+    integer,intent(in) :: j,npatch_start
+    real(KIND=kind_rb),intent(out) ::    LWP_slice(imax,krad1), &
+                                         IWP_slice(imax,krad1), &
+                                         cloudFrac(imax,krad1), &
+                                         liquidRe (imax,krad1), &
+                                         iceRe    (imax,krad1)
+    integer :: i,k,ksounding,im
+    real (KIND=kind_rb) :: exners
+    real(KIND=kind_rb) :: layerMass(imax,krad1)
+    !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
+    real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
+    real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
+    real , parameter :: rho_liq = 1000.
 
-	  !!!! temp
-	  ! integer,allocatable, dimension(:,:) :: testArrayIndexes
-	  !! integer,allocatable,dimension(:,:) :: GLQ_index_all		!All GLQ indexes in a single array starting with cloudless and appending the first clouded class after being followed by second clouded etc.
-	  !! integer :: total_amount_GLQ_points
-	  ! integer :: current_GLQ_point
-	  !!!! temp
+    real :: reff_factor
+    real :: ilratio
+    real :: tempC  !temperature in celsius
+    real :: IWC0 ,B_function !cstep needed for ice effective radius following Eqs. (14) and (35) from Wyser 1998
 
-      real :: reff_factor
-      real :: ilratio
-      real :: tempC  !temperature in celsius
-      real :: IWC0 ,B_function !cstep needed for ice effective radius following Eqs. (14) and (35) from Wyser 1998
+    IWC0 = 50e-3  !kg/m3, Wyser 1998 Eq. 14 (he gives 50 g/m3)
+    reff_factor = 1e6*(3. /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
 
-      IWC0 = 50e-3  !kg/m3, Wyser 1998 Eq. 14 (he gives 50 g/m3)
-      reff_factor = 1e6*(3. /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
+    ! Compute absolute temperature and water contents (without border points)
 
-      ! Compute absolute temperature and water contents (without border points)
+   ! tabs(:,:) = 0.;
+    sstxy(:,:) = 0.
+    tabs_slice(:,:) = 0.; qv_slice(:,:) = 0.; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
+    rho_slice(:,:) = 0.
 
-     ! tabs(:,:) = 0.;
-      sstxy(:,:) = 0.
-      tabs_slice(:,:) = 0.; qv_slice(:,:) = 0.; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
-      rho_slice(:,:) = 0.
+    exners = (ps/pref0) ** (rd/cp)
 
-      exners = (ps/pref0) ** (rd/cp)
+    do i=2,i1
+    do k=1,kmax
+        im = i-1
+        tabs_slice(im,k) = thl0(i,j,k) * exnf(k) &
+                        + (rlv / cp) * ql0(i,j,k)
+    enddo
+    enddo
 
-      do i=2,i1
+    !tabs(:,:)     = thl0(2:i1,j,2:k1) * spread(exnf(2:k1),dim=1,ncopies=imax) &
+    !                  + (rlv / cp) * ql0(2:i1,j,2:k1)
+
+    do i=2,i1
+      im=i-1
+      
+      !tg_slice  (im)   = sst
+      tg_slice  (im)   = tskin(i,j) * exners  ! Note: tskin = thlskin...
+
       do k=1,kmax
-          im = i-1
-          tabs_slice(im,k) = thl0(i,j,k) * exnf(k) &
-                          + (rlv / cp) * ql0(i,j,k)
-      enddo
-      enddo
+         qv_slice  (im,k) = max(qt0(i,j,k) - ql0(i,j,k),1e-18) !avoid RRTMG reading negative initial values 
+         qcl_slice (im,k) = ql0(i,j,k)
+         qci_slice (im,k) = 0.
+         o3_slice  (im,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
 
-      !tabs(:,:)     = thl0(2:i1,j,2:k1) * spread(exnf(2:k1),dim=1,ncopies=imax) &
-      !                  + (rlv / cp) * ql0(2:i1,j,2:k1)
-
-      do i=2,i1
-        im=i-1
-		
-		!!!!
-		! if ( (i == GLQ_index_all(current_GLQ_point, 1)) .and. (j == GLQ_index_all(current_GLQ_point, 2))) then
-			! testArrayIndexes(current_GLQ_point, 1) = i
-			! testArrayIndexes(current_GLQ_point, 2) = j
-			! current_GLQ_point = current_GLQ_point + 1
-		! end if
-        !!!!
-		
-		!tg_slice  (im)   = sst
-        tg_slice  (im)   = tskin(i,j) * exners  ! Note: tskin = thlskin...
-
-        do k=1,kmax
-           qv_slice  (im,k) = max(qt0(i,j,k) - ql0(i,j,k),1e-18) !avoid RRTMG reading negative initial values 
-           qcl_slice (im,k) = ql0(i,j,k)
-           qci_slice (im,k) = 0.
-           o3_slice  (im,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
-
-           h2ovmr    (im,k) = mwdry/mwh2o * qv_slice(im, k)
+         h2ovmr    (im,k) = mwdry/mwh2o * qv_slice(im, k)
 !           h2ovmr    (im,k) = mwdry/mwh2o * (qv_slice(im,k)/(1-qv_slice(im,k)))
-           layerT    (im,k) = tabs_slice(im,k)
-           layerP    (im,k) = presf_input(k)
-        enddo
+         layerT    (im,k) = tabs_slice(im,k)
+         layerP    (im,k) = presf_input(k)
       enddo
+    enddo
 
-     ! Patch sounding on top (no qcl or qci above domain; hard coded)
-	  do i=1,imax
+   ! Patch sounding on top (no qcl or qci above domain; hard coded)
+    do i=1,imax
+    ksounding=npatch_start
+    do k=kmax+1,kradmax
+       tabs_slice(i,k) =  tsnd(ksounding)
+       qv_slice  (i,k) =  qsnd(ksounding)
+       qcl_slice (i,k) = 0.
+       qci_slice (i,k) = 0.
+       rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
+       ksounding=ksounding+1
+    enddo
+    enddo
+
+    ! o3 profile provided by user (user03=true) or reference prof from RRTMG
+    if (usero3) then
+      do i=1,imax
       ksounding=npatch_start
       do k=kmax+1,kradmax
-         tabs_slice(i,k) =  tsnd(ksounding)
-         qv_slice  (i,k) =  qsnd(ksounding)
-         qcl_slice (i,k) = 0.
-         qci_slice (i,k) = 0.
-         rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
+         o3_slice(i,k) = o3snd(ksounding)
          ksounding=ksounding+1
       enddo
+      do k=1,kradmax
+        o3vmr  (i, k)   = mwdry/mwo3 * o3_slice(i, k)
       enddo
-
-      ! o3 profile provided by user (user03=true) or reference prof from RRTMG
-      if (usero3) then
-        do i=1,imax
-        ksounding=npatch_start
-        do k=kmax+1,kradmax
-           o3_slice(i,k) = o3snd(ksounding)
-           ksounding=ksounding+1
-        enddo
-        do k=1,kradmax
-          o3vmr  (i, k)   = mwdry/mwo3 * o3_slice(i, k)
-        enddo
-        o3vmr  (i, krad1)   = o3vmr(i,kradmax)
-        enddo
-      else
-        do i=1,imax
-        do k=1,krad1
-            o3vmr   (i, k) = o3(k)
-        enddo
-        enddo
-      end if
-
-
+      o3vmr  (i, krad1)   = o3vmr(i,kradmax)
+      enddo
+    else
       do i=1,imax
-        do k=kmax+1,kradmax
+      do k=1,krad1
+          o3vmr   (i, k) = o3(k)
+      enddo
+      enddo
+    end if
 
-           !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
-           h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
-           layerP(i,k)       = presf_input (k)
-           layerT(i,k)       = tabs_slice(i,k)
-        enddo
-        ! Properly set boundary conditions
+
+    do i=1,imax
+      do k=kmax+1,kradmax
+
+         !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
+         h2ovmr  (i, k)    = mwdry/mwh2o * qv_slice(i,k)
+         layerP(i,k)       = presf_input (k)
+         layerT(i,k)       = tabs_slice(i,k)
+      enddo
+      ! Properly set boundary conditions
 !        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
-        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
-        layerP  (i, krad1)   = 0.5*presh_input(krad1)
-        layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
+      h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+      layerP  (i, krad1)   = 0.5*presh_input(krad1)
+      layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
+    enddo
+
+
+    do i=1,imax
+      do k=1,krad1
+        co2vmr  (i, k) = co2(k)
+        ch4vmr  (i, k) = ch4(k)
+        n2ovmr  (i, k) = n2o(k)
+        o2vmr   (i, k) = o2(k)
+        cfc11vmr(i, k) = cfc11(k)
+        cfc12vmr(i, k) = cfc12(k)
+        cfc22vmr(i, k) = cfc22(k)
+        ccl4vmr (i, k) = ccl4(k)
+
+        interfaceP(i,k ) =   presh_input(k)
       enddo
 
-
-      do i=1,imax
-        do k=1,krad1
-          co2vmr  (i, k) = co2(k)
-          ch4vmr  (i, k) = ch4(k)
-          n2ovmr  (i, k) = n2o(k)
-          o2vmr   (i, k) = o2(k)
-          cfc11vmr(i, k) = cfc11(k)
-          cfc12vmr(i, k) = cfc12(k)
-          cfc22vmr(i, k) = cfc22(k)
-          ccl4vmr (i, k) = ccl4(k)
-
-          interfaceP(i,k ) =   presh_input(k)
-        enddo
-
-        interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
-        do k=2,krad1
-           interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
-        enddo
-        interfaceT(i, krad2) = 2.*layerT(i, krad1) - interfaceT(i, krad1)
-        interfaceT(i, 1)  = tg_slice(i)
+      interfaceP(i, krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(1,krad1) )
+      do k=2,krad1
+         interfaceT(i, k) = (layerT(i,k-1) + layerT(i, k)) / 2.
       enddo
+      interfaceT(i, krad2) = 2.*layerT(i, krad1) - interfaceT(i, krad1)
+      interfaceT(i, 1)  = tg_slice(i)
+    enddo
 
-      do i=1,imax
-        do k=1,kradmax
-          layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
-          LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
-          IWP_slice(i,k) = qci_slice(i,k)*layerMass(i,k)*1e3
-          qci_slice(i,k) = qci_slice(i,k)*rho_slice(i,k)   !cstep, qci is now in kg/m3 needed for ice effective radius
-        enddo
-        layerMass(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
-        LWP_slice(i,krad1) = 0.
-        IWP_slice(i,krad1) = 0.
+    do i=1,imax
+      do k=1,kradmax
+        layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
+        LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
+        IWP_slice(i,k) = qci_slice(i,k)*layerMass(i,k)*1e3
+        qci_slice(i,k) = qci_slice(i,k)*rho_slice(i,k)   !cstep, qci is now in kg/m3 needed for ice effective radius
       enddo
+      layerMass(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
+      LWP_slice(i,krad1) = 0.
+      IWP_slice(i,krad1) = 0.
+    enddo
 
-      cloudFrac(:,:) = 0.
-      liquidRe (:,:) = 0.
-      iceRe    (:,:) = 0.
+    cloudFrac(:,:) = 0.
+    liquidRe (:,:) = 0.
+    iceRe    (:,:) = 0.
 
-      do i=1,imax
-        do k=1,kradmax
-			!Redundant?
-          cloudFrac(i,k) = 0.
-          liquidRe (i,k) = 0.
-          iceRe    (i,k) = 0.
-          if (LWP_slice(i,k).gt.0.) then
+    do i=1,imax
+      do k=1,kradmax
+          !Redundant?
+        cloudFrac(i,k) = 0.
+        liquidRe (i,k) = 0.
+        iceRe    (i,k) = 0.
+        if (LWP_slice(i,k).gt.0.) then
 !            liquidRe(i,k) = 14.   ! cstep temporary solution, ocean value computeRe_Liquid(real(layerT),merge(0.,1.,ocean))
-            cloudFrac(i,k) = 1.
+          cloudFrac(i,k) = 1.
 
-            !cstep liquidRe(i, k) = 1.e6*( 3.*( 1.e-3*LWP_slice(i,k)/layerMass(i,k) ) &
-            !cstep                  /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
-            !cstep: equation above contains function of many constants, are now absorbed in reff_factor
+          !cstep liquidRe(i, k) = 1.e6*( 3.*( 1.e-3*LWP_slice(i,k)/layerMass(i,k) ) &
+          !cstep                  /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
+          !cstep: equation above contains function of many constants, are now absorbed in reff_factor
 
-            liquidRe(i, k) = reff_factor  * qcl_slice(i,k)**(1./3.)
+          liquidRe(i, k) = reff_factor  * qcl_slice(i,k)**(1./3.)
 
 !  cstep, 1e6*Nc_0 assumes Nc_0 in cm^-3             /(4.*pi*1.e6*Nc_0*rho_liq) )**(1./3.) * exp(log(sigmag)**2 )
 !  cstep              write (6,*) 'reff = ',i,k,qcl_slice(i,k),liquidRe(i,k)
 
-            if (liquidRe(i,k).lt.2.5) then
-                liquidRe(i,k) = 2.5
-            endif
-
-            if (liquidRe(i,k).gt.60.) then
-                liquidRe(i,k) = 60.
-            endif
+          if (liquidRe(i,k).lt.2.5) then
+              liquidRe(i,k) = 2.5
           endif
 
-          if (IWP_slice(i,k).gt.0) then
-             cloudFrac(i,k) = 1.
-             !cstep Ou Liou: tempC = layerT(i,k)--tmelt
-             !cstep Ou Liou  iceRe(i,k) = 326.3 + 12.42 * tempC + 0.197 * tempC**2 + 0.0012 * tempC**3  !cstep : Ou Liou 1995
-             B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0) !Eq. 14 Wyser 1998
-             iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998, Eq. 35
-
-			 !HAPPENS TWICE??
-			 cloudFrac(i,k) = 1.
-			 B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0)
-             iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998
-
-             if (iceRe(i,k).lt.5.) then
-                iceRe(i,k) = 5.
-             endif
-
-             if (iceRe(i,k).gt.140.) then
-                iceRe(i,k) = 140.
-             endif
+          if (liquidRe(i,k).gt.60.) then
+              liquidRe(i,k) = 60.
           endif
-        enddo
+        endif
+
+        if (IWP_slice(i,k).gt.0) then
+           cloudFrac(i,k) = 1.
+           !cstep Ou Liou: tempC = layerT(i,k)--tmelt
+           !cstep Ou Liou  iceRe(i,k) = 326.3 + 12.42 * tempC + 0.197 * tempC**2 + 0.0012 * tempC**3  !cstep : Ou Liou 1995
+           B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0) !Eq. 14 Wyser 1998
+           iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998, Eq. 35
+
+           !HAPPENS TWICE??
+           cloudFrac(i,k) = 1.
+           B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0)
+           iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998
+
+           if (iceRe(i,k).lt.5.) then
+              iceRe(i,k) = 5.
+           endif
+
+           if (iceRe(i,k).gt.140.) then
+              iceRe(i,k) = 140.
+           endif
+        endif
       enddo
+    enddo
 
   end subroutine setupSlicesFromProfiles
 
@@ -835,7 +798,7 @@ contains
 
   subroutine setupBarkerSlicesFromProfiles(npatch_start, &
            LWP_slice,IWP_slice,cloudFrac,liquidRe,iceRe, &
-		   passed_GLQ_point, slice_length, testArrayIndexes, j)
+           passed_GLQ_point, slice_length, j)
   !=============================================================================!
   ! This subroutine sets up 2D (xz) slices of different variables:              !
   ! tabs,qv,qcl,qci(=0),tg,layerP,interfaceP,layerT,interfaceT,LWP,IWP(=0),     !
@@ -849,221 +812,198 @@ contains
   ! This code is edited to just take the GLQ points passed onto this function   !
   ! ============================================================================!
 
-  use modglobal, only: imax,jmax,kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
-  use modfields, only: thl0,ql0,qt0,exnf
-  use modsurfdata, only: tskin,ps
-  use modmicrodata, only : Nc_0,sig_g
-  use modmpi, only: myid
+    use modglobal, only: imax,jmax,kmax,k1,grav,kind_rb,rlv,cp,Rd,pref0
+    use modfields, only: thl0,ql0,qt0,exnf
+    use modsurfdata, only: tskin,ps
+    use modmicrodata, only : Nc_0,sig_g
+    use modmpi, only: myid
 
-  implicit none
-
-
-  integer,intent(in) :: npatch_start
-  real(KIND=kind_rb),intent(out) ::    LWP_slice(imax,krad1), &
-									   IWP_slice(imax,krad1), &
-									   cloudFrac(imax,krad1), &
-									   liquidRe (imax,krad1), &
-									   iceRe    (imax,krad1)
-  integer :: i,k,ksounding, temp_i, temp_j
-  integer :: passed_GLQ_point, temp_GLQ_point
-  integer :: slice_length
-  real (KIND=kind_rb) :: exners
-  real(KIND=kind_rb) :: layerMass(imax,krad1)
-  !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
-  real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
-  real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
-  real , parameter :: rho_liq = 1000.
-
-	  !!!! temp
-	  integer :: j
-	  integer,allocatable, dimension(:,:) :: testArrayIndexes
-	  !!!! temp
-
-  real :: reff_factor
-  real :: ilratio
-  real :: tempC  !temperature in celsius
-  real :: IWC0 ,B_function !cstep needed for ice effective radius following Eqs. (14) and (35) from Wyser 1998
-
-	IWC0 = 50e-3  !kg/m3, Wyser 1998 Eq. 14 (he gives 50 g/m3)
-	reff_factor = 1e6*(3. /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
-
-	! Compute absolute temperature and water contents (without border points)
-
-	!tabs(:,:) = 0.;
-	sstxy(:,:) = 0.
-	tabs_slice(:,:) = 0.; qv_slice(:,:) = 1e-18; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
-	rho_slice(:,:) = 0.
-	!!Added these to define the whole array without it being read to be some unknown value and breaking everything
-	! o3_slice(:,:) = 0. ; o3vmr(:,:) = 0. ; 
-	! co2vmr(:,:) = 0. ; ch4vmr(:,:) = 0. ; n2ovmr(:,:) = 0. ; h2ovmr(:,:) = 0. ; o2vmr(:,:) = 0. ; 
-	! cfc11vmr(:,:) = 0. ; cfc12vmr(:,:) = 0. ; cfc22vmr(:,:) = 0. ; ccl4vmr(:,:) = 0. ; 
-	! layerP(:,:) = 0. ; interfaceP(:,:) = 0. ; layerT(:,:) = 0. ; interfaceT(:,:) = 0. ;
-	! layerMass(:,:) = 0. ; LWP_slice(:,:) = 0. ; IWP_slice(:,:) = 0. ; 
-	! tg_slice(:) = 0.
-
-	exners = (ps/pref0) ** (rd/cp)
-
-	temp_GLQ_point = passed_GLQ_point
-	! print *, "temp_GLQ_point, passed_GLQ_point"
-	! print *, temp_GLQ_point, passed_GLQ_point
-	
-	!This piece of code is for test purposes, it puts all the values into a testarray
-	
-	do i=1,imax
-		! print *, "looking at GLQ index all"
-		! print *, GLQ_index_all
-		if (i <= slice_length) then
-			temp_i = GLQ_index_all(temp_GLQ_point,1)
-			temp_j = GLQ_index_all(temp_GLQ_point,2)
-			!!!!
-			! print *, "filling testArrayIndexes"
-			testArrayIndexes(temp_GLQ_point, 1) = temp_i
-			testArrayIndexes(temp_GLQ_point, 2) = temp_j
-			!!!!	
-		end if
-		! print *, "succesful looking at GLQ index all"
-		
+    implicit none
 
 
-		tg_slice(i) = tskin(temp_i,temp_j) * exners  ! Note: tskin = thlskin...
-		do k=1,kmax
-			!!! +1 in j must be checked with Stephan
-			tabs_slice(i,k) = thl0(temp_i,temp_j,k) * exnf(k) &
-								+ (rlv / cp) * ql0(temp_i,temp_j,k)
-								
-			!!! +1 in j must be checked with Stephan
-			qv_slice  (i,k) = max(qt0(temp_i,temp_j,k) - ql0(temp_i,temp_j,k),1e-18) !avoid RRTMG reading negative initial values 
-			qcl_slice (i,k) = ql0(temp_i,temp_j,k)
-			qci_slice (i,k) = 0.
-			o3_slice  (i,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
+    integer,intent(in) :: npatch_start
+    real(KIND=kind_rb),intent(out) ::    LWP_slice(imax,krad1), &
+                                         IWP_slice(imax,krad1), &
+                                         cloudFrac(imax,krad1), &
+                                         liquidRe (imax,krad1), &
+                                         iceRe    (imax,krad1)
+    integer :: i,k,ksounding, temp_i, temp_j
+    integer :: passed_GLQ_point, temp_GLQ_point
+    integer :: slice_length
+    real (KIND=kind_rb) :: exners
+    real(KIND=kind_rb) :: layerMass(imax,krad1)
+    !real(KIND=kind_rb),dimension(imax,kmax)     :: tabs         ! Absolute temperature
+    real(KIND=kind_rb),dimension(imax,jmax)     :: sstxy        ! sea surface temperature
+    real   (SHR_KIND_R4), parameter :: pi = 3.14159265358979
+    real , parameter :: rho_liq = 1000.
 
-			h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
-			layerT  (i,k) = tabs_slice(i,k)
-			layerP  (i,k) = presf_input(k)
-		enddo
-		temp_GLQ_point = temp_GLQ_point + 1
-	enddo
+    !!!! temp
+    integer :: j
+    integer,allocatable, dimension(:,:) :: testArrayIndexes
+    !!!! temp
 
+    real :: reff_factor
+    real :: ilratio
+    real :: tempC  !temperature in celsius
+    real :: IWC0 ,B_function !cstep needed for ice effective radius following Eqs. (14) and (35) from Wyser 1998
 
-	! Patch sounding on top (no qcl or qci above domain; hard coded)
-	do i=1, imax
-		ksounding=npatch_start
-		do k=kmax+1,kradmax
-			tabs_slice(i,k) =  tsnd(ksounding)
-			qv_slice  (i,k) =  qsnd(ksounding)
-			qcl_slice (i,k) = 0.
-			qci_slice (i,k) = 0.
-			rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
-			ksounding=ksounding+1
-		enddo
-	enddo
+    IWC0 = 50e-3  !kg/m3, Wyser 1998 Eq. 14 (he gives 50 g/m3)
+    reff_factor = 1e6*(3. /(4.*pi*Nc_0*rho_liq) )**(1./3.) * exp(log(sig_g)**2 )
 
+    ! Compute absolute temperature and water contents (without border points)
 
-	! o3 profile provided by user (user03=true) or reference prof from RRTMG
-	if (usero3) then
-		do i=1,imax
-			ksounding=npatch_start
-			do k=kmax+1,kradmax
-				o3_slice(i,k) = o3snd(ksounding)
-				ksounding=ksounding+1
-			enddo
-			do k=1,kradmax
-				o3vmr  (i,k)   = mwdry/mwo3 * o3_slice(i,k)
-			enddo
-			o3vmr  (i,krad1)   = o3vmr(i,kradmax)
-		enddo
-	else
-		do i=1,imax
-			do k=1,krad1
-				o3vmr   (i,k) = o3(k)
-			enddo
-		enddo
-	end if
+    !tabs(:,:) = 0.;
+    sstxy(:,:) = 0.
+    tabs_slice(:,:) = 0.; qv_slice(:,:) = 1e-18; qcl_slice(:,:) = 0.; qci_slice(:,:) = 0.;
+    rho_slice(:,:) = 0.
 
+    exners = (ps/pref0) ** (rd/cp)
 
-	do i=1,imax
-		do k=kmax+1,kradmax
-			!h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
-			h2ovmr	(i,k)    = mwdry/mwh2o * qv_slice(i,k)
-			layerP	(i,k)    = presf_input (k)
-			layerT	(i,k)    = tabs_slice(i,k)
-		enddo
-			!! Properly set boundary conditions
-			!        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
-        h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
-		layerP  (i, krad1)   = 0.5*presh_input(krad1)
-		layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
-	enddo
+    temp_GLQ_point = passed_GLQ_point
+    
+    do i=1,imax
+      if (i <= slice_length) then
+        temp_i = GLQ_index_all(temp_GLQ_point,1)
+        temp_j = GLQ_index_all(temp_GLQ_point,2)
+      end if
+
+      tg_slice(i) = tskin(temp_i,temp_j) * exners  ! Note: tskin = thlskin...
+      do k=1,kmax
+        tabs_slice(i,k) = thl0(temp_i,temp_j,k) * exnf(k) &
+                            + (rlv / cp) * ql0(temp_i,temp_j,k)
+                            
+        qv_slice  (i,k) = max(qt0(temp_i,temp_j,k) - ql0(temp_i,temp_j,k),1e-18) !avoid RRTMG reading negative initial values 
+        qcl_slice (i,k) = ql0(temp_i,temp_j,k)
+        qci_slice (i,k) = 0.
+        o3_slice  (i,k) = o3snd(npatch_start) ! o3 constant below domain top (if usero3!)
+
+        h2ovmr  (i,k) = mwdry/mwh2o * qv_slice(i,k)
+        layerT  (i,k) = tabs_slice(i,k)
+        layerP  (i,k) = presf_input(k)
+      enddo
+      temp_GLQ_point = temp_GLQ_point + 1
+    enddo
 
 
-	do i=1,imax
-		do k=1,krad1
-			co2vmr  (i,k) = co2(k)
-			ch4vmr  (i,k) = ch4(k)
-			n2ovmr  (i,k) = n2o(k)
-			o2vmr   (i,k) = o2(k)
-			cfc11vmr(i,k) = cfc11(k)
-			cfc12vmr(i,k) = cfc12(k)
-			cfc22vmr(i,k) = cfc22(k)
-			ccl4vmr (i,k) = ccl4(k)
-
-			interfaceP(i,k) =   presh_input(k)
-		enddo
-		
-		interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
-		do k=2,krad1
-		   interfaceT(i,k) = (layerT(i,k-1) + layerT(i,k)) / 2.
-		enddo
-		interfaceT(i,krad2) = 2.*layerT(i,krad1) - interfaceT(i,krad1)
-		interfaceT(i,1)  = tg_slice(i)
-	enddo
+    ! Patch sounding on top (no qcl or qci above domain; hard coded)
+    do i=1, imax
+      ksounding=npatch_start
+      do k=kmax+1,kradmax
+        tabs_slice(i,k) =  tsnd(ksounding)
+        qv_slice  (i,k) =  qsnd(ksounding)
+        qcl_slice (i,k) = 0.
+        qci_slice (i,k) = 0.
+        rho_slice (i,k) = 100*presf_input(k)/(Rd*tabs_slice(i,k)) !cstep factor 100 because pressure in hPa
+        ksounding=ksounding+1
+      enddo
+    enddo
 
 
-	do i=1,imax
-		do k=1,kradmax
-			layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
-			LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
-			IWP_slice(i,k) = qci_slice(i,k)*layerMass(i,k)*1e3
-			qci_slice(i,k) = qci_slice(i,k)*rho_slice(i,k)   !cstep, qci is now in kg/m3 needed for ice effective radius
-		enddo
-		layerMass(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
-		LWP_slice(i,krad1) = 0.
-		IWP_slice(i,krad1) = 0.
-	enddo
+    ! o3 profile provided by user (user03=true) or reference prof from RRTMG
+    if (usero3) then
+      do i=1,imax
+        ksounding=npatch_start
+        do k=kmax+1,kradmax
+            o3_slice(i,k) = o3snd(ksounding)
+            ksounding=ksounding+1
+        enddo
+        do k=1,kradmax
+            o3vmr  (i,k)   = mwdry/mwo3 * o3_slice(i,k)
+        enddo
+        o3vmr  (i,krad1)   = o3vmr(i,kradmax)
+      enddo
+    else
+      do i=1,imax
+        do k=1,krad1
+            o3vmr   (i,k) = o3(k)
+        enddo
+      enddo
+    end if
 
-	cloudFrac(:,:) = 0.
-	liquidRe (:,:) = 0.
-	iceRe    (:,:) = 0.
 
-	do i=1,imax
-		do k=1,kradmax
-			if (LWP_slice(i,k).gt.0.) then
-				cloudFrac(i,k) = 1.
-				liquidRe(i,k) = reff_factor  * qcl_slice(i,k)**(1./3.)
+    do i=1,imax
+      do k=kmax+1,kradmax
+        !h2ovmr  (i, k)    = mwdry/mwh2o * (qv_slice(i,k)/(1-qv_slice(i,k)))
+        h2ovmr  (i,k)    = mwdry/mwh2o * qv_slice(i,k)
+        layerP  (i,k)    = presf_input (k)
+        layerT  (i,k)    = tabs_slice(i,k)
+      enddo
+          !! Properly set boundary conditions
+          !        h2ovmr  (i, krad1)   = mwdry/mwh2o * qv_slice(i,kradmax)
+      h2ovmr  (i, krad1)   = h2ovmr(i,kradmax)
+      layerP  (i, krad1)   = 0.5*presh_input(krad1)
+      layerT  (i, krad1)   = 2.*tabs_slice(i, kradmax) - tabs_slice(i, kradmax-1)
+    enddo
 
-				if (liquidRe(i,k).lt.2.5) then
-					liquidRe(i,k) = 2.5
-				endif
-				if (liquidRe(i,k).gt.60.) then
-					liquidRe(i,k) = 60.
-				endif
-			endif
-			if (IWP_slice(i,k).gt.0) then
-				cloudFrac(i,k) = 1.
 
-				B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0) !Eq. 14 Wyser 1998
-				iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998, Eq. 35
+    do i=1,imax
+      do k=1,krad1
+        co2vmr  (i,k) = co2(k)
+        ch4vmr  (i,k) = ch4(k)
+        n2ovmr  (i,k) = n2o(k)
+        o2vmr   (i,k) = o2(k)
+        cfc11vmr(i,k) = cfc11(k)
+        cfc12vmr(i,k) = cfc12(k)
+        cfc22vmr(i,k) = cfc22(k)
+        ccl4vmr (i,k) = ccl4(k)
 
-				if (iceRe(i,k).lt.5.) then
-					iceRe(i,k) = 5.
-				 endif
+        interfaceP(i,k) =   presh_input(k)
+      enddo
+      
+      interfaceP(i,krad2)  = min( 1.e-4_kind_rb , 0.25*layerP(i,krad1) )
+      do k=2,krad1
+       interfaceT(i,k) = (layerT(i,k-1) + layerT(i,k)) / 2.
+      enddo
+      interfaceT(i,krad2) = 2.*layerT(i,krad1) - interfaceT(i,krad1)
+      interfaceT(i,1)  = tg_slice(i)
+    enddo
 
-				 if (iceRe(i,k).gt.140.) then
-					iceRe(i,k) = 140.
-				 endif
-			endif
-		enddo
-	enddo
+
+    do i=1,imax
+      do k=1,kradmax
+        layerMass(i,k) = 100.*( interfaceP(i,k) - interfaceP(i,k+1) ) / grav  !of full level
+        LWP_slice(i,k) = qcl_slice(i,k)*layerMass(i,k)*1e3
+        IWP_slice(i,k) = qci_slice(i,k)*layerMass(i,k)*1e3
+        qci_slice(i,k) = qci_slice(i,k)*rho_slice(i,k)   !cstep, qci is now in kg/m3 needed for ice effective radius
+      enddo
+      layerMass(i,krad1) = 100.*( interfaceP(i,krad1) - interfaceP(i,krad2) ) / grav
+      LWP_slice(i,krad1) = 0.
+      IWP_slice(i,krad1) = 0.
+    enddo
+
+    cloudFrac(:,:) = 0.
+    liquidRe (:,:) = 0.
+    iceRe    (:,:) = 0.
+
+    do i=1,imax
+      do k=1,kradmax
+        if (LWP_slice(i,k).gt.0.) then
+          cloudFrac(i,k) = 1.
+          liquidRe(i,k) = reff_factor  * qcl_slice(i,k)**(1./3.)
+
+          if (liquidRe(i,k).lt.2.5) then
+              liquidRe(i,k) = 2.5
+          endif
+          if (liquidRe(i,k).gt.60.) then
+              liquidRe(i,k) = 60.
+          endif
+        endif
+        if (IWP_slice(i,k).gt.0) then
+          cloudFrac(i,k) = 1.
+
+          B_function =  -2 + 0.001 *(273.-layerT(i,k))**1.5 * alog10(qci_slice(i,k)/IWC0) !Eq. 14 Wyser 1998
+          iceRe (i,k) = 377.4 + 203.3 * B_function + 37.91 * B_function**2 + 2.3696 * B_function**3 !micrometer, Wyser 1998, Eq. 35
+
+          if (iceRe(i,k).lt.5.) then
+              iceRe(i,k) = 5.
+          endif
+
+          if (iceRe(i,k).gt.140.) then
+              iceRe(i,k) = 140.
+          endif
+        endif
+      enddo
+    enddo
 
   end subroutine setupBarkerSlicesFromProfiles
 
@@ -1212,933 +1152,201 @@ contains
 
 ! ==============================================================================;
 ! ==============================================================================;
-  subroutine LWPDataCollection
-	!SUBROUTINE TO PRINT THE LWP DATA AND GET THE HEIGHT OF CLOUDBASE AND HEIGHT FOR THE RADIATION UNDER AND ABOVE CLOUDS
-	! LWP Goes to krad1 but radiation only goes to k1, so in this segment we only look at everything between 1 and k1.
-	
-	use modraddata
-	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf
-	use modradrrtmgyuriroutines, only : Results
-	implicit none
-	
-	integer :: i, j, k, inverse_k, cur_cloud_bot, cur_cloud_top
-	
-	real(kind=kind_rb) :: SumMean, SumVar, x
-	real(kind=kind_rb) :: Mean, Std, Var
-	
-	LWP_index(:) = 0
-	LWP_index_heights(:) = 0
-	LWP_index_percent(:) = 0
-	LWP_index_heights_percent(:) = 0
-	
-	do k=1, k1
-		LWP_vertical(k) = sum(LWP_grid(:,:,k))
-	end do
-	
-	cloudFracModRad(:,:) = 0
-
-	n_clouds = 0
-	do i=1,imax
-		do j=1,jmax
-			LWP_flattened(i,j) = SUM(LWP_grid(i,j,:))
-			if (LWP_flattened(i,j) > cloud_threshold) then
-				cloudFracModRad(i,j) = 1
-				n_clouds = n_clouds + 1
-			end if
-		end do
-	end do
-
-	
-	LWP_total = SUM(LWP_vertical(:))
-	LWP_index(1) = 1
-	LWP_index_heights(1) = zf(1)
-	LWP_index(4) = k1
-	LWP_index_heights(4) = zf(k1)
-	do k=1,k1
-		if (LWP_vertical(k) /= 0.0) then
-			if (k == 1) then
-				LWP_index(2) = 1
-				LWP_index_heights(2) = zf(1)
-			else
-				LWP_index(2) = k-1
-				LWP_index_heights(2) = zf(k-1)
-			end if
-			EXIT
-		end if
-	end do
-	do k=1,k1
-		inverse_k = k1 + 1 - k
-		if (LWP_vertical(inverse_k) /= 0.0) then
-			if (inverse_k == k1) then
-				LWP_index(3) = k1
-				LWP_index_heights(3) = zf(k1)
-			else
-				LWP_index(3) = inverse_k+1
-				LWP_index_heights(3) = zf(inverse_k+1)
-			end if
-			EXIT
-		end if
-	end do
-	
-	LWP_temp = 0.0
-	LWP_index_percent(1) = 1
-	LWP_index_heights_percent(1) = zf(1)
-	LWP_index_percent(4) = k1
-	LWP_index_heights_percent(4) = zf(k1)
-	do k=1,k1
-		LWP_temp = LWP_temp + LWP_vertical(k)
-		if (LWP_temp > (LWP_total*0.025)) then
-			if (k == 1) then
-				LWP_index_percent(2) = 1
-				LWP_index_heights_percent(2) = zf(1)
-			else
-				LWP_index_percent(2) = k-1
-				LWP_index_heights_percent(2) = zf(k-1)
-			end if
-			EXIT
-		end if
-	end do
-	LWP_temp = 0.0
-	do k=1,k1
-		inverse_k = k1 + 1 - k
-		LWP_temp = LWP_temp + LWP_vertical(inverse_k)
-		if (LWP_temp > (LWP_total*0.025)) then
-			if (inverse_k == k1) then
-				LWP_index_percent(3) = k1
-				LWP_index_heights_percent(3) = zf(k1)
-			else
-				LWP_index_percent(3) = inverse_k+1
-				LWP_index_heights_percent(3) = zf(inverse_k+1)
-			end if
-			EXIT
-		end if
-	end do
-	
-	!!!!!!!!!!!!!!!!!!!!! cloud edge indexes
-	allocate(cloud_edge_indexes(n_clouds, 2))
-	cloud_edge_indexes = 0
-	cur_cloud_bot = 1
-	cur_cloud_top = 1
-	do i=1,imax
-		do j=1,jmax
-			do k=1,k1
-				if (LWP_grid(i,j,k) /= 0.0) then
-					if (k == 1) then
-						cloud_edge_indexes(cur_cloud_bot,1) = 1
-					else
-						cloud_edge_indexes(cur_cloud_bot,1) = k-1
-					end if
-					cur_cloud_bot = cur_cloud_bot + 1
-					EXIT
-				end if
-			end do
-			do k=1,k1
-				inverse_k = k1 + 1 - k
-				if (LWP_grid(i,j,inverse_k) /= 0.0) then
-					if (inverse_k == k1) then
-						cloud_edge_indexes(cur_cloud_top,2) = k1
-					else
-						cloud_edge_indexes(cur_cloud_top,2) = inverse_k+1
-					end if
-					cur_cloud_top = cur_cloud_top + 1
-					EXIT
-				end if
-			end do
-		end do
-	end do
-	
-
-	do j=1,2
-		SumMean = 0.0
-		SumVar = 0.0
-		do i=1,n_clouds
-				x = cloud_edge_indexes(i,j)
-				SumMean = SumMean + x
-				SumVar = SumVar + x*x
-		enddo
-		
-		call  Results(SumMean, SumVar, n_clouds, Mean, Std, Var)  ! compute results
-		
-		average_cloud_edge_indexes(j) = Mean
-		stddev_cloud_edge_indexes(j) = Std
-		var_cloud_edge_indexes(j) = Var
-	enddo
-	
-	deallocate(cloud_edge_indexes)
-	!!!!!!!!!!!!!!!!!!!!! cloud edge indexes
-	
-  end subroutine LWPDataCollection
-! ==============================================================================;
-! ==============================================================================;
-  subroutine PrintRadiationData(NameSuffix)
-  	use modraddata
-	use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-	use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile, writerealtofile, testwritetofiledefinedsize, testwritetofiledefinedsizeint
-	
-	character(*) :: NameSuffix
-  	integer :: xsize, ysize, zsize										!helper integers for easy size allocation of writetofiles
-	integer :: x1, x2, y1, y2, k, testxy1, testxy2
-	! real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
-	! real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
-	real(kind=kind_rb), dimension(:) :: tempRadColumn (k1)
-  		
-	xsize = i1-1
-	ysize = j1-1
-	zsize = k1
-	
-	x1 = 2
-	x2 = i1
-	y1 = 2
-	y2 = j1
-	
-	testxy1 = i1+ih - (2-ih) + 1
-	testxy2 = testxy1
-
-	total_cloud_fraction = float(n_clouds)/float(imax*jmax)
-	
-	call writerealtofile("total_cloud_fraction_" // trim(NameSuffix), total_cloud_fraction, .false.)
-
-	call writetofiledefinedsize("LWP_vertical_" // trim(NameSuffix), LWP_vertical, 1, k1, 1, 1, .false.)
-	call writetofiledefinedsizeint("LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .false.)
-	call writetofiledefinedsize("LWP_index_heights_" // trim(NameSuffix), LWP_index_heights, 1, 4, 1, 1, .false.)
-	call writetofiledefinedsizeint("LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .false.)
-	call writetofiledefinedsize("LWP_index_heights_percent_" // trim(NameSuffix), LWP_index_heights_percent, 1, 4, 1, 1, .false.)
-	
-	call writetofiledefinedsize("average_cloud_edge_indexes_" // trim(NameSuffix), average_cloud_edge_indexes, 1, 2, 1, 1, .false.)
-	call writetofiledefinedsize("stddev_cloud_edge_indexes_" // trim(NameSuffix), stddev_cloud_edge_indexes, 1, 2, 1, 1, .false.)
-	call writetofiledefinedsize("var_cloud_edge_indexes_" // trim(NameSuffix), var_cloud_edge_indexes, 1, 2, 1, 1, .false.)
-	
-	
-	call writetofiledefinedsize("LWP_flattened_" // trim(NameSuffix), LWP_flattened, 2, imax, jmax, 1, .true.)
-	call writetofiledefinedsize("LWP_flattened_biased_" // trim(NameSuffix), LWP_flattened_biased, 2, imax, jmax, 1, .true.)
-	! call writetofiledefinedsize("LWP_grid_biased_" // trim(NameSuffix), LWP_grid_biased, 3, imax, jmax, krad1, .true.)
-	
-	do k=1,k1
-		tempRadColumn(k) = sum(lwu(x1:x2,y1:y2,k))/float(imax*jmax)
-	enddo
-	call writetofiledefinedsize("column_lwu_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
-	
-	do k=1,k1
-		tempRadColumn(k) = sum(lwd(x1:x2,y1:y2,k))/float(imax*jmax)
-	enddo
-	call writetofiledefinedsize("column_lwd_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
-	
-	do k=1,k1
-		tempRadColumn(k) = sum(swu(x1:x2,y1:y2,k))/float(imax*jmax)
-	enddo
-	call writetofiledefinedsize("column_swu_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
-	
-	do k=1,k1
-		tempRadColumn(k) = sum(swd(x1:x2,y1:y2,k))/float(imax*jmax)
-	enddo
-	call writetofiledefinedsize("column_swd_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
-		
-	
-	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwuca_" // trim(NameSuffix), lwuca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("lwdca_" // trim(NameSuffix), lwdca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	! call writetofiledefinedsize("swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-	
-	! the values found at LWP_index
-	!!! All stuff for testing
-	!! printen LWP indexen
-	! call testwritetofiledefinedsizeint("test_LWP_index_" // trim(NameSuffix), LWP_index, 1, 4, 1, 1, .true.)
-	!! printen LWP percent indexen
-	! call testwritetofiledefinedsizeint("test_LWP_index_percent_" // trim(NameSuffix), LWP_index_percent, 1, 4, 1, 1, .true.)
-	!! printen volledige lwd
-	! call testwritetofiledefinedsize("test_total_lwu_" // trim(NameSuffix), lwu(:,:,:), 3, testxy1, testxy2, k1, .true.)
-	!! printen partial lwd
-	! call testwritetofiledefinedsize("test_partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .true.)
-	!! printen partial percent lwd
-	! call testwritetofiledefinedsize("test_partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .true.)
-	
-	! allocate(tempLWPFlatArray(imax, jmax))
-	! call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
-	! tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
-	! call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_stat_Clouds_Only", imax, jmax, 1, n_clouds)
-	! deallocate(tempLWPFlatArray)
-	
-	!! LWP_grid hierin stoppen!!!!
-	! allocate(tempLWPGridArray(imax, jmax, krad1))
-	! call MeanVariance(LWP_grid(:,:,:), "LWP_grid_stat", imax, jmax, krad1)
-	! do k=1,krad1
-		! tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
-	! end do
-	! call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat_Clouds_Only", imax, jmax, krad1, n_clouds)
-	! deallocate(tempLWPGridArray)
-	
-	
-	call writetofiledefinedsize("partial_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
-	call writetofiledefinedsize("partial_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
-	call writetofiledefinedsize("partial_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
-	call writetofiledefinedsize("partial_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4, .false.)
-	! call writetofiledefinedsize("partial_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_lwuca_" // trim(NameSuffix), lwuca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_lwdca_" // trim(NameSuffix), lwdca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index), 3, xsize, ysize, 4)
-	
-	! the values found at LWP_index_percent
-	call writetofiledefinedsize("partial_percent_lwu_" // trim(NameSuffix), lwu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .false.)
-	call writetofiledefinedsize("partial_percent_lwd_" // trim(NameSuffix), lwd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .false.)
-	call writetofiledefinedsize("partial_percent_swu_" // trim(NameSuffix), swu(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .false.)
-	call writetofiledefinedsize("partial_percent_swd_" // trim(NameSuffix), swd(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4, .false.)
-	! call writetofiledefinedsize("partial_percent_swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_lwuca_" // trim(NameSuffix), lwuca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_lwdca_" // trim(NameSuffix), lwdca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swuca_" // trim(NameSuffix), swuca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	! call writetofiledefinedsize("partial_percent_swdca_" // trim(NameSuffix), swdca(x1:x2,y1:y2,LWP_index_percent), 3, xsize, ysize, 4)
-	
-	call writetofiledefinedsize("SW_up_TOA_" // trim(NameSuffix), SW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("SW_dn_TOA_" // trim(NameSuffix), SW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("LW_up_TOA_" // trim(NameSuffix), LW_up_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("LW_dn_TOA_" // trim(NameSuffix), LW_dn_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("SW_up_ca_TOA_" // trim(NameSuffix), SW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("SW_dn_ca_TOA_" // trim(NameSuffix), SW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("LW_up_ca_TOA_" // trim(NameSuffix), LW_up_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-	call writetofiledefinedsize("LW_dn_ca_TOA_" // trim(NameSuffix), LW_dn_ca_TOA(x1:x2,y1:y2), 2, xsize, ysize, 1, .true.)
-  end subroutine PrintRadiationData
   
   subroutine BarkerRad(sunUp)
     use modraddata
-	use modglobal, only : imax, jmax, kmax, kind_rb
-	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
-	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
-	use rrtmg_lw_rad,  only : rrtmg_lw
-	use rrtmg_sw_rad,  only : rrtmg_sw
-	implicit none
+    use modglobal, only : imax, jmax, kmax, kind_rb
+    use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
+    use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
+    use rrtmg_lw_rad,  only : rrtmg_lw
+    use rrtmg_sw_rad,  only : rrtmg_sw
+    implicit none
   
-	logical :: sunUp
-	integer :: j
-	integer :: slice_length, passed_slice_length						!Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
-	integer :: GLQ_slices												!Amount of slices necessary for the sliced GLQ method
-	integer :: current_GLQ_point, passed_GLQ_point					!GLQ point counter for the barker method
-	! character(len=6) :: int_str_container									!Is used to write ratio number into filenames
-	!Array is used for testing purposes
-	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
-	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
+    logical :: sunUp
+    integer :: j
+    integer :: slice_length, passed_slice_length         !Length of the slices , maximum imax and minimum 1. Necessary for quick GLQ point determination
+    integer :: GLQ_slices               !Amount of slices necessary for the sliced GLQ method
+    integer :: current_GLQ_point, passed_GLQ_point    !GLQ point counter for the barker method
 
 
 
-	swUp_slice = 0
-	swDown_slice = 0
-	swDownDir_slice = 0
-	swDownDif_slice = 0
-	swUpCS_slice = 0
-	swDownCS_slice = 0
-	lwUp_slice = 0
-	lwDown_slice = 0
-	lwUpCS_slice = 0
-	lwDownCS_slice = 0
-	
-	! print *, "barker true"
-	
-	!Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
+    swUp_slice = 0
+    swDown_slice = 0
+    swDownDir_slice = 0
+    swDownDif_slice = 0
+    swUpCS_slice = 0
+    swDownCS_slice = 0
+    lwUp_slice = 0
+    lwDown_slice = 0
+    lwUpCS_slice = 0
+    lwDownCS_slice = 0
+    
+    !Finds the Gauss-Legendre Quadrature points used for filling the radiation fields
 
-	call findGLQPoints()
+    call findGLQPoints()
 
-	!Allocate the testArrayIndexes for testing
-	allocate(testArrayIndexes(total_amount_GLQ_points, 2))
+    !Piece of code that determines how many slices have to be read.
+    !This is because amount of GLQ points <= imax*jmax
+    GLQ_slices = total_amount_GLQ_points/imax
+    slice_length = MODULO(total_amount_GLQ_points, imax)
+    if (slice_length>0) then
+      GLQ_slices = GLQ_slices + 1 
+    end if
+    current_GLQ_point = 1                   !Initialise GLQ point
+    passed_GLQ_point = current_GLQ_point    !GLQ point that is passed to functions, generally a multitude of imax.
+        
+    ! Function that Create n <= j1 slices with the necessary fields.
+    ! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
+    do j = 1, GLQ_slices
+      !Shorten slices if imax the amount of GLQ points left is smaller than imax
+      if (j == GLQ_slices .and. slice_length>0) then
+        passed_slice_length = slice_length
+      else
+        passed_slice_length = imax
+      end if
 
-	!Piece of code that determines how many slices have to be read.
-	!This is because amount of GLQ points <= imax*jmax
-	GLQ_slices = total_amount_GLQ_points/imax
-	slice_length = MODULO(total_amount_GLQ_points, imax)
-	if (slice_length>0) then
-		GLQ_slices = GLQ_slices + 1 
-	end if
-	current_GLQ_point = 1					!Initialise GLQ point
-	passed_GLQ_point = current_GLQ_point	!GLQ point that is passed to functions, generally a multitude of imax.
-		
-	! Function that Create n <= j1 slices with the necessary fields.
-		! puts the indexed collumns into (N_GLQ_clear + N_GLQ_cloudtop)/imax slices
-	do j = 1, GLQ_slices
-		!Shorten slices if imax the amount of GLQ points left is smaller than imax
-		if (j == GLQ_slices .and. slice_length>0) then
+      !This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
+      passed_GLQ_point = current_GLQ_point
 
-			passed_slice_length = slice_length
-		else
-			passed_slice_length = imax
-		end if
+      call setupBarkerSlicesFromProfiles(npatch_start, &
+         LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
+         passed_GLQ_point, passed_slice_length, j)
 
-		!This sets up the field values for the slices from the profiles. It only produces the values for the GLQ points/collumns.
-		passed_GLQ_point = current_GLQ_point
+      !Radiation routines
+      if (rad_longw) then
+          call rrtmg_lw &
+               ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+          !if(myid==0) write(*,*) 'after call to rrtmg_lw'
+      end if
 
-		! print *, "setupBarkerSlicesFromProfiles"
-		call setupBarkerSlicesFromProfiles(npatch_start, &
-		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe, &
-		   passed_GLQ_point, passed_slice_length, &
-		   testArrayIndexes, j)
+      !!
+      if (rad_shortw) then
+        call setupSW(sunUp)
+        if (sunUp) then
+          call rrtmg_sw &
+                ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+        end if
+      end if
 
-		!Radiation routines
-		if (rad_longw) then
-			call rrtmg_lw &
-				 ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
-			!if(myid==0) write(*,*) 'after call to rrtmg_lw'
-		end if
+      passed_GLQ_point = current_GLQ_point
 
-			  !!
-			  
-		if (rad_shortw) then
-			call setupSW(sunUp)
-			if (sunUp) then
-				call rrtmg_sw &
-					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
-			end if
-		end if
+      !Place all the flux values into the original array:
+      call reshuffleValues(passed_GLQ_point, passed_slice_length)
 
-		passed_GLQ_point = current_GLQ_point
+      current_GLQ_point = current_GLQ_point + passed_slice_length
+      
+      passed_GLQ_point = current_GLQ_point
+    enddo
 
-		! print *, "reshuffleValues"
-		!Place all the flux values into the original array:
-		call reshuffleValues(passed_GLQ_point, passed_slice_length)
+    if (n_clear>0) then
+      deallocate(GLQ_points_clear)
+      deallocate(GLQ_weights_clear)
+      deallocate(original_clear_LWP_indexes)
+    end if
+        
+    if (n_clouds>0) then
+      deallocate(GLQ_points_cloudtop)
+      deallocate(GLQ_weights_cloudtop)
+      deallocate(original_cloudtop_LWP_indexes)
+      deallocate(n_in_class)
+      deallocate(GLQ_in_class)
+      deallocate(class_of_GLQ)
+    end if
 
-		current_GLQ_point = current_GLQ_point + passed_slice_length
-		
-		passed_GLQ_point = current_GLQ_point
-	enddo
-
-	if (n_clear>0) then
-		deallocate(GLQ_points_clear)
-		deallocate(GLQ_weights_clear)
-		deallocate(original_clear_LWP_indexes)
-	end if
-		
-	if (n_clouds>0) then
-		deallocate(GLQ_points_cloudtop)
-		deallocate(GLQ_weights_cloudtop)
-		deallocate(original_cloudtop_LWP_indexes)
-		deallocate(n_in_class)
-		deallocate(GLQ_in_class)
-		deallocate(class_of_GLQ)
-	end if
-
-	deallocate(original_index_all)
-	deallocate(GLQ_points_all)
-	deallocate(GLQ_index_all)
-	
-	! call writetofiledefinedsizeint("testArrayIndexes_barker", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
-	
-	deallocate(testArrayIndexes)
-	
-	!vertical LWP and flattened for writing to file
-	call LWPDataCollection
+    deallocate(original_index_all)
+    deallocate(GLQ_points_all)
+    deallocate(GLQ_index_all)
+    
   end subroutine BarkerRad
 ! ==============================================================================;
 ! ==============================================================================;
   subroutine StephanRad(sunUp)
-	use modraddata
-	use modglobal, only : imax, jmax, kmax, i1, j1, k1, boltz, kind_rb
-	use modfields,     only : thl0
+    use modraddata
+    use modglobal, only : imax, jmax, kmax, i1, j1, k1, boltz, kind_rb
+    use modfields,     only : thl0
     use modsurfdata ,  only : tskin
-	use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
-	use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
-	use rrtmg_lw_rad,  only : rrtmg_lw
-	use rrtmg_sw_rad,  only : rrtmg_sw
-	implicit none
+    use modradrrtmgyuri, only : findGLQPoints, reshuffleValues
+    use modradrrtmgyuriroutines, only : writetofile, writetofiledefinedsize, writetofiledefinedsizeint, writeinttofile
+    use rrtmg_lw_rad,  only : rrtmg_lw
+    use rrtmg_sw_rad,  only : rrtmg_sw
+    implicit none
 
-	logical :: sunUp
-	integer :: i, j, k
-	!Array is used for testing purposes
-	integer,allocatable,dimension(:,:) :: testArrayIndexes						!This is used to test the values found in the array.
-	real(kind=kind_rb), dimension(:,:) :: test (100, 100)
+    logical :: sunUp
+    integer :: i, j, k
+    !Array is used for testing purposes
+    integer,allocatable,dimension(:,:) :: testArrayIndexes                      !This is used to test the values found in the array.
+    real(kind=kind_rb), dimension(:,:) :: test (100, 100)
   
-	swUp_slice = 0
-	swDown_slice = 0
-	swDownDir_slice = 0
-	swDownDif_slice = 0
-	swUpCS_slice = 0
-	swDownCS_slice = 0
-	lwUp_slice = 0
-	lwDown_slice = 0
-	lwUpCS_slice = 0
-	lwDownCS_slice = 0
+    swUp_slice = 0
+    swDown_slice = 0
+    swDownDir_slice = 0
+    swDownDif_slice = 0
+    swUpCS_slice = 0
+    swDownCS_slice = 0
+    lwUp_slice = 0
+    lwDown_slice = 0
+    lwUpCS_slice = 0
+    lwDownCS_slice = 0
   
-	! print *, "barker false"
-	do j=2,j1
-		call setupSlicesFromProfiles &
-		   ( j, npatch_start, &                                           !input
-		   LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
+    do j=2,j1
+        call setupSlicesFromProfiles &
+           ( j, npatch_start, &                                           !input
+           LWP_slice, IWP_slice, cloudFrac, liquidRe, iceRe)             !output
 
-		do i=1,imax
-			do k = 1,krad1
-				LWP_grid(i,j-1,k) = LWP_slice(i,k)
-			end do
-		end do
-		
-		if (rad_longw) then
-			call rrtmg_lw &
-				( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
-			!if(myid==0) write(*,*) 'after call to rrtmg_lw'
-		end if
+        do i=1,imax
+            do k = 1,krad1
+                LWP_grid(i,j-1,k) = LWP_slice(i,k)
+            end do
+        end do
+        
+        if (rad_longw) then
+            call rrtmg_lw &
+                ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )!input
+            !if(myid==0) write(*,*) 'after call to rrtmg_lw'
+        end if
 
-		!!
-		
-		! print *, "rad_shortw steph"
-		! print *, rad_shortw
-		if (rad_shortw) then
-		 call setupSW(sunUp)
-			 if (sunUp) then
-			   call rrtmg_sw &
-					( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
-			 end if
-		end if
-	
-	  lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
-	  lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
-	  if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
-		do i=2,i1
-		  lwd(i,j,1) =  -0.8 * boltz * thl0(i,j,1) ** 4.
-		  lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
-		end do
-	  end if
-	  
-	  swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
-	  swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
+        !!
+        if (rad_shortw) then
+         call setupSW(sunUp)
+             if (sunUp) then
+               call rrtmg_sw &
+                    ( tg_slice, cloudFrac, IWP_slice, LWP_slice, iceRe, liquidRe )
+             end if
+        end if
+    
+      lwu(2:i1,j,1:k1) =  lwUp_slice  (1:imax,1:k1)
+      lwd(2:i1,j,1:k1) = -lwDown_slice(1:imax,1:k1)
+      if (.not. rad_longw) then !we get LW at surface identically to how it is done in sunray subroutine
+        do i=2,i1
+          lwd(i,j,1) =  -0.8 * boltz * thl0(i,j,1) ** 4.
+          lwu(i,j,1) =  1.0 * boltz * tskin(i,j) ** 4.
+        end do
+      end if
+      
+      swu(2:i1,j,1:k1) =  swUp_slice  (1:imax,1:k1)
+      swd(2:i1,j,1:k1) = -swDown_slice(1:imax,1:k1)
 
-	  swdir(2:i1,j,1:k1) = -swDownDir_slice(1:imax,1:k1)
-	  swdif(2:i1,j,1:k1) = -swDownDif_slice(1:imax,1:k1)
-	  lwc  (2:i1,j,1:k1) =  LWP_slice      (1:imax,1:k1)
+      swdir(2:i1,j,1:k1) = -swDownDir_slice(1:imax,1:k1)
+      swdif(2:i1,j,1:k1) = -swDownDif_slice(1:imax,1:k1)
+      lwc  (2:i1,j,1:k1) =  LWP_slice      (1:imax,1:k1)
 
-	  lwuca(2:i1,j,1:k1) =  lwUpCS_slice  (1:imax,1:k1)
-	  lwdca(2:i1,j,1:k1) = -lwDownCS_slice(1:imax,1:k1)
-	  swuca(2:i1,j,1:k1) =  swUpCS_slice  (1:imax,1:k1)
-	  swdca(2:i1,j,1:k1) = -swDownCS_slice(1:imax,1:k1)
+      lwuca(2:i1,j,1:k1) =  lwUpCS_slice  (1:imax,1:k1)
+      lwdca(2:i1,j,1:k1) = -lwDownCS_slice(1:imax,1:k1)
+      swuca(2:i1,j,1:k1) =  swUpCS_slice  (1:imax,1:k1)
+      swdca(2:i1,j,1:k1) = -swDownCS_slice(1:imax,1:k1)
 
-	  SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
-	  SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
-	  !!FAILS
-	  LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
-	  LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
+      SW_up_TOA (2:i1,j) =  swUp_slice  (1:imax,krad2)
+      SW_dn_TOA (2:i1,j) = -swDown_slice(1:imax,krad2)
+      
+      LW_up_TOA (2:i1,j) =  lwUp_slice  (1:imax,krad2)
+      LW_dn_TOA (2:i1,j) = -lwDown_slice(1:imax,krad2)
 
-	  SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
-	  SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
-	  !!FAILS
-	  LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
-	  LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
-	end do ! Large loop over j=2,j1
-
-! Added myself ------------------
-	! call writetofiledefinedsizeint("testArrayIndexes_stephan", testArrayIndexes, 2, total_amount_GLQ_points, 2, 1)
-
-	!----------------------------------------------------------
-	!vertical LWP and flattened for writing to file
-	call LWPDataCollection
+      SW_up_ca_TOA (2:i1,j) =  swUpCS_slice  (1:imax,krad2)
+      SW_dn_ca_TOA (2:i1,j) = -swDownCS_slice(1:imax,krad2)
+      
+      LW_up_ca_TOA (2:i1,j) =  lwUpCS_slice  (1:imax,krad2)
+      LW_dn_ca_TOA (2:i1,j) = -lwDownCS_slice(1:imax,krad2)
+    end do ! Large loop over j=2,j1
   end subroutine StephanRad
-  
-  subroutine Diagnostics(sunUp)
-  	use modraddata
-	use modglobal, only : i1, j1, k1, kind_rb, ih, jh, imax, jmax
-	use modradrrtmgyuriroutines, only : writetofiledefinedsizeint, writetofiledefinedsize
-	implicit none
-	
-	logical :: sunUp
-	integer :: i, ratioSize
-	integer, dimension(:) :: ratios (13)
-	real(kind=kind_rb), dimension(:) :: timeSet (14)
-	
-	real(kind=kind_rb), dimension(:,:,:) :: temp_lwu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_lwd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_swu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_swd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_swdir (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_swdif (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_lwc (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_lwuca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_lwdca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_swuca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:,:) :: temp_swdca (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
-	real(kind=kind_rb), dimension(:,:) :: temp_SW_up_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_SW_dn_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_LW_up_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_LW_dn_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_SW_up_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_SW_dn_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_LW_up_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	real(kind=kind_rb), dimension(:,:) :: temp_LW_dn_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
-	
-	!Welke datasets wil ik weergeven?
-	! - Alle TOA
-	! - Rad op relevante hoogtes
-	
-	! - Beginnen met TOA
-	!  - Eerst LWup
-	
-	ratios = (/1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096/)
-	ratioSize = size(ratios)
-	
-	call writetofiledefinedsizeint("diagnostic_ratios", ratios, 1, ratioSize, 1, 1, .true.)
-	
-	! call cpu_time(startTime)
-	call StephanRad(sunUp)
-	
-	!PUT ALL THE TEMPRADS FROM STEPHAN INTO FILES
-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	  temp_lwu(:,:,:) = lwu(:,:,:)
-	  temp_lwd(:,:,:) = lwd(:,:,:)
-	  temp_swu(:,:,:) = swu(:,:,:)
-	  temp_swd(:,:,:) = swd(:,:,:)
-
-	  temp_swdir(:,:,:) = swdir(:,:,:)
-	  temp_swdif(:,:,:) = swdif(:,:,:)
-	  temp_lwc(:,:,:) = lwc(:,:,:)
-
-	  temp_lwuca(:,:,:) = lwuca(:,:,:)
-	  temp_lwdca(:,:,:) = lwdca(:,:,:)
-	  temp_swuca(:,:,:) = swuca(:,:,:)
-	  temp_swdca(:,:,:) = swdca(:,:,:)
-
-	  temp_SW_up_TOA(:,:) = SW_up_TOA(:,:)
-	  temp_SW_dn_TOA(:,:) = SW_dn_TOA(:,:)
-	  temp_LW_up_TOA(:,:) = LW_up_TOA(:,:)
-	  temp_LW_dn_TOA(:,:) = LW_dn_TOA(:,:)
-
-	  temp_SW_up_ca_TOA(:,:) = SW_up_ca_TOA(:,:)
-	  temp_SW_dn_ca_TOA(:,:) = SW_dn_ca_TOA(:,:)
-	  temp_LW_up_ca_TOA(:,:) = LW_up_ca_TOA(:,:)
-	  temp_LW_dn_ca_TOA(:,:) = LW_dn_ca_TOA(:,:)
-	  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
-	! call cpu_time(endTime)
-	! netTime = endTime - endTime
-	! timeSet(1) = netTime
-	
-	call CompileStatistics
-	call PrintRadiationData("diagnostics")
-	do i=1,ratioSize
-
-		n_RT_Ratio = ratios(i)
-		! call cpu_time(startTime)
-		call BarkerRad(sunUp)
-		! call cpu_time(endTime)
-		! netTime = endTime - endTime
-		! timeSet(i+1) = netTime
-		call CompileStatistics
-		call PrintRadiationData("diagnostics")
-	end do
-	
-	
-	  lwu(:,:,:) = temp_lwu(:,:,:)
-	  lwd(:,:,:) = temp_lwd(:,:,:)
-	  swu(:,:,:) = temp_swu(:,:,:)
-	  swd(:,:,:) = temp_swd(:,:,:)
-
-	  swdir(:,:,:) = temp_swdir(:,:,:)
-	  swdif(:,:,:) = temp_swdif(:,:,:)
-	  lwc(:,:,:) = temp_lwc(:,:,:)
-
-	  lwuca(:,:,:) = temp_lwuca(:,:,:)
-	  lwdca(:,:,:) = temp_lwdca(:,:,:)
-	  swuca(:,:,:) = temp_swuca(:,:,:)
-	  swdca(:,:,:) = temp_swdca(:,:,:)
-
-	  SW_up_TOA(:,:) = temp_SW_up_TOA(:,:)
-	  SW_dn_TOA(:,:) = temp_SW_dn_TOA(:,:)
-	  LW_up_TOA(:,:) = temp_LW_up_TOA(:,:)
-	  LW_dn_TOA(:,:) = temp_LW_dn_TOA(:,:)
-
-	  SW_up_ca_TOA(:,:) = temp_SW_up_ca_TOA(:,:)
-	  SW_dn_ca_TOA(:,:) = temp_SW_dn_ca_TOA(:,:)
-	  LW_up_ca_TOA(:,:) = temp_LW_up_ca_TOA(:,:)
-	  LW_dn_ca_TOA(:,:) = temp_LW_dn_ca_TOA(:,:)
-	
-	! call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .false.)
-	! call writetofiledefinedsize("netTime", timeSet, 1, 14, 1, 1, .false.)
-	
-	call EndCompileStatistics
-
-  end subroutine Diagnostics
-
-	subroutine CompileStatistics
-	  	use modraddata
-		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
-		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff !, writetofiledefinedsize
-	
-		integer :: xsize, ysize, zsize									!helper integers for easy size allocation of writetofiles
-		integer :: x1, x2, y1, y2
-		integer :: k
-		real(kind=kind_rb), allocatable, dimension(:,:) :: tempRadArray
-		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayK
-		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayColumn
-		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayDiffColumn
-		
-		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempDiffRadArrayDataContainer
-		
-		real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
-		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
-  		
-		xsize = i1-1
-		ysize = j1-1
-		zsize = k1
-		
-		x1 = 2
-		x2 = i1
-		y1 = 2
-		y2 = j1
-
-		! call writetofiledefinedsize("TESTSTD_LWD", lwd())
-
-		allocate(tempRadArray(xsize, ysize))
-		allocate(tempRadArrayK(xsize, ysize, 4))
-		allocate(tempRadArrayColumn(xsize, ysize, k1))
-		allocate(tempRadArrayDiffColumn(xsize, ysize, k1-1))
-		allocate(tempLWPFlatArray(imax, jmax))
-		allocate(tempLWPGridArray(imax, jmax, krad1))
-		
-		call MeanVariance(LWP_flattened_biased(:,:),"LWP_Flattened_biased", imax, jmax, 1)
-		tempLWPFlatArray = LWP_flattened_biased(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
-		call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_biased_Clouds_Only", imax, jmax, 1, n_clouds)
-		
-		call MeanVariance(LWP_grid_biased(:,:,:),"LWP_Grid_biased", imax, jmax, krad1)
-		do k=1,krad1
-			tempLWPGridArray(:,:,k) = LWP_grid_biased(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_Grid_biased_Clouds_Only", imax, jmax, krad1, n_clouds)	
-		
-		call MeanVariance(LWP_flattened(:,:),"LWP_Flattened_stat", imax, jmax, 1)
-		tempLWPFlatArray = LWP_flattened(:,:) * merge(1,0,cloudFracModRad>cloud_threshold)
-		call MeanVarianceOnlyClouds(tempLWPFlatArray,"LWP_Flattened_stat_Clouds_Only", imax, jmax, 1, n_clouds)
-		
-		call MeanVariance(LWP_grid(:,:,:), "LWP_grid_stat", imax, jmax, krad1)
-		do k=1,krad1
-			tempLWPGridArray(:,:,k) = LWP_grid(:,:,k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempLWPGridArray,"LWP_grid_stat_Clouds_Only", imax, jmax, krad1, n_clouds)
-
-		! 
-		call MeanVariance(SW_up_TOA(x1:x2,y1:y2),"SW_up_TOA", xsize, ysize, 1)
-		tempRadArray = SW_up_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
-		call MeanVarianceOnlyClouds(tempRadArray,"SW_up_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
-		!
-		call MeanVariance(SW_dn_TOA(x1:x2,y1:y2),"SW_dn_TOA", xsize, ysize, 1)
-		tempRadArray = SW_dn_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
-		call MeanVarianceOnlyClouds(tempRadArray,"SW_dn_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
-		!
-		call MeanVariance(LW_up_TOA(x1:x2,y1:y2),"LW_up_TOA", xsize, ysize, 1)
-		tempRadArray = LW_up_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
-		call MeanVarianceOnlyClouds(tempRadArray,"LW_up_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
-		!
-		call MeanVariance(LW_dn_TOA(x1:x2,y1:y2),"LW_dn_TOA", xsize, ysize, 1)
-		tempRadArray = LW_dn_TOA(x1:x2,y1:y2) * merge(1,0,cloudFracModRad>cloud_threshold)
-		call MeanVarianceOnlyClouds(tempRadArray,"LW_dn_TOA_Clouds_Only", xsize, ysize, 1, n_clouds)
-		
-
-		! the values found at LWP_index
-		!
-		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index), "partial_lwu", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = lwu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_lwu_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-		!
-		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index), "partial_lwd", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = lwd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_lwd_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-		!
-		call MeanVariance(swu(x1:x2,y1:y2,LWP_index), "partial_swu", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = swu(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_swu_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-		!
-		call MeanVariance(swd(x1:x2,y1:y2,LWP_index), "partial_swd", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = swd(x1:x2,y1:y2, LWP_index(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-
-		! the values found at LWP_index_percent
-		!
-		call MeanVariance(lwu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwu", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = lwu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_lwu_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-		!
-		call MeanVariance(lwd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_lwd", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = lwd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_lwd_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-		!
-		call MeanVariance(swu(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swu", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = swu(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swu_Clouds_Only", xsize, ysize, 4, n_clouds)
-		
-		!
-		call MeanVariance(swd(x1:x2,y1:y2,LWP_index_percent), "partial_percent_swd", xsize, ysize, 4)
-		do k=1,4
-			tempRadArrayK(:,:,k) = swd(x1:x2,y1:y2, LWP_index_percent(k)) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayK,"partial_percent_swd_Clouds_Only", xsize, ysize, 4, n_clouds)
-	
-		! the values for the whole column
-		!
-		call MeanVariance(lwu(x1:x2,y1:y2,:), "column_lwu", xsize, ysize, zsize)
-		do k=1,zsize
-			tempRadArrayColumn(:,:,k) = lwu(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_lwu_Clouds_Only", xsize, ysize, zsize, n_clouds)
-		
-		!
-		call MeanVariance(lwd(x1:x2,y1:y2,:), "column_lwd", xsize, ysize, zsize)
-		do k=1,zsize
-			tempRadArrayColumn(:,:,k) = lwd(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_lwd_Clouds_Only", xsize, ysize, zsize, n_clouds)
-		
-		!
-		call MeanVariance(swu(x1:x2,y1:y2,:), "column_swu", xsize, ysize, zsize)
-		do k=1,zsize
-			tempRadArrayColumn(:,:,k) = swu(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_swu_Clouds_Only", xsize, ysize, zsize, n_clouds)
-		
-		!
-		call MeanVariance(swd(x1:x2,y1:y2,:), "column_swd", xsize, ysize, zsize)
-		do k=1,zsize
-			tempRadArrayColumn(:,:,k) = swd(x1:x2,y1:y2, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayColumn,"column_swd_Clouds_Only", xsize, ysize, zsize, n_clouds)
-	
-		! the diff values for the whole column
-		!
-		allocate(tempDiffRadArrayDataContainer(xsize,ysize,zsize-1))
-		!
-		call GetDiff(lwu(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
-		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_lwu", xsize, ysize, zsize-1)
-		do k=1,zsize-1
-			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_lwu_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
-		
-		!
-		call GetDiff(lwd(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
-		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_lwd", xsize, ysize, zsize-1)
-		do k=1,zsize-1
-			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_lwd_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
-		
-		!
-		call GetDiff(swu(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
-		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_swu", xsize, ysize, zsize-1)
-		do k=1,zsize-1
-			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_swu_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
-		
-		!
-		call GetDiff(swd(x1:x2,y1:y2,:), tempDiffRadArrayDataContainer, xsize, ysize, zsize)
-		call MeanVariance(tempDiffRadArrayDataContainer, "column_diff_swd", xsize, ysize, zsize-1)
-		do k=1,zsize-1
-			tempRadArrayDiffColumn(:,:,k) = tempDiffRadArrayDataContainer(:,:, k) * merge(1,0,cloudFracModRad>cloud_threshold)
-		end do
-		call MeanVarianceOnlyClouds(tempRadArrayDiffColumn,"column_diff_swd_Clouds_Only", xsize, ysize, zsize-1, n_clouds)
-	
-		deallocate(tempRadArray)
-		deallocate(tempRadArrayK)
-		deallocate(tempRadArrayColumn)
-		deallocate(tempRadArrayDiffColumn)
-		deallocate(tempDiffRadArrayDataContainer)
-		deallocate(tempLWPFlatArray)
-		deallocate(tempLWPGridArray)
-	end subroutine CompileStatistics
-	
-	subroutine EndCompileStatistics
-		use modradrrtmgyuriroutines, only : finishstatisticsline
-	
-		call finishstatisticsline("SW_up_TOA")
-		call finishstatisticsline("SW_up_TOA_Clouds_Only")
-		
-		call finishstatisticsline("SW_dn_TOA")
-		call finishstatisticsline("SW_dn_TOA_Clouds_Only")
-		
-		call finishstatisticsline("LW_up_TOA")
-		call finishstatisticsline("LW_up_TOA_Clouds_Only")
-		
-		call finishstatisticsline("LW_dn_TOA")
-		call finishstatisticsline("LW_dn_TOA_Clouds_Only")
-		
-		call finishstatisticsline("LWP_Flattened_biased")
-		call finishstatisticsline("LWP_Flattened_biased_Clouds_Only")
-		
-		call finishstatisticsline("LWP_Grid_biased")
-		call finishstatisticsline("LWP_Grid_biased_Clouds_Only")
-		
-		call finishstatisticsline("LWP_Flattened_stat")
-		call finishstatisticsline("LWP_Flattened_stat_Clouds_Only")
-		
-		call finishstatisticsline("LWP_grid_stat")
-		call finishstatisticsline("LWP_grid_stat_Clouds_Only")
-		
-		call finishstatisticsline("partial_lwu")
-		call finishstatisticsline("partial_lwu_Clouds_Only")
-		
-		call finishstatisticsline("partial_lwd")
-		call finishstatisticsline("partial_lwd_Clouds_Only")
-		
-		call finishstatisticsline("partial_swu")
-		call finishstatisticsline("partial_swu_Clouds_Only")
-		
-		call finishstatisticsline("partial_swd")
-		call finishstatisticsline("partial_swd_Clouds_Only")
-		
-		
-		call finishstatisticsline("partial_percent_lwu")
-		call finishstatisticsline("partial_percent_lwu_Clouds_Only")
-		
-		call finishstatisticsline("partial_percent_lwd")
-		call finishstatisticsline("partial_percent_lwd_Clouds_Only")
-		
-		call finishstatisticsline("partial_percent_swu")
-		call finishstatisticsline("partial_percent_swu_Clouds_Only")
-		
-		call finishstatisticsline("partial_percent_swd")
-		call finishstatisticsline("partial_percent_swd_Clouds_Only")
-		
-		
-		call finishstatisticsline("column_lwu")
-		call finishstatisticsline("column_lwu_Clouds_Only")
-		
-		call finishstatisticsline("column_lwd")
-		call finishstatisticsline("column_lwd_Clouds_Only")
-		
-		call finishstatisticsline("column_swu")
-		call finishstatisticsline("column_swu_Clouds_Only")
-		
-		call finishstatisticsline("column_swd")
-		call finishstatisticsline("column_swd_Clouds_Only")
-		
-		
-		call finishstatisticsline("column_diff_lwu")
-		call finishstatisticsline("column_diff_lwu_Clouds_Only")
-		
-		call finishstatisticsline("column_diff_lwd")
-		call finishstatisticsline("column_diff_lwd_Clouds_Only")
-		
-		call finishstatisticsline("column_diff_swu")
-		call finishstatisticsline("column_diff_swu_Clouds_Only")
-		
-		call finishstatisticsline("column_diff_swd")
-		call finishstatisticsline("column_diff_swd_Clouds_Only")
-	end subroutine EndCompileStatistics
 
 end module modradrrtmg

@@ -292,12 +292,12 @@ contains
 	call MPI_BCAST(dynamic_GLQ_per_class,1,MPI_LOGICAL,0,commwrld,mpierr)
 	call MPI_BCAST(classes_same_size,1,MPI_LOGICAL,0,commwrld,mpierr)
 	
-    call MPI_BCAST(n_GLQ_clear,1,MPI_INTEGER,0,commwrld,mpierr)
-    call MPI_BCAST(n_RT_Ratio,1,MPI_INTEGER,0,commwrld,mpierr)
-    call MPI_BCAST(n_classes_initial,1,MPI_INTEGER,0,commwrld,mpierr)
+  call MPI_BCAST(n_GLQ_clear,1,MPI_INTEGER,0,commwrld,mpierr)
+  call MPI_BCAST(n_RT_Ratio,1,MPI_INTEGER,0,commwrld,mpierr)
+  call MPI_BCAST(n_classes_initial,1,MPI_INTEGER,0,commwrld,mpierr)
 	call MPI_BCAST(min_GLQ_in_class,1,MPI_INTEGER,0,commwrld,mpierr)
-    call MPI_BCAST(cloud_threshold,1,MY_REAL,0,commwrld,mpierr)
-    call MPI_BCAST(cloud_patch_threshold,1,MY_REAL,0,commwrld,mpierr)
+  call MPI_BCAST(cloud_threshold,1,MY_REAL,0,commwrld,mpierr)
+  call MPI_BCAST(cloud_patch_threshold,1,MY_REAL,0,commwrld,mpierr)
 	! ---------------------------
 	!BarkerBonanno Method
 	
@@ -679,6 +679,7 @@ contains
     else !if lwarmstart
 
       call readrestartfiles
+	  ! If perturbations are are turned on for warmstart
 	  if (warm_randomnizer) then
 		krand  = min(krand,kmax)
 		!!TEMP
