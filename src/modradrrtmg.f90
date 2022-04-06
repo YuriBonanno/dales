@@ -207,8 +207,7 @@ contains
     allocate(LWP_grid(imax, jmax, krad1))
     allocate(LWP_flattened(imax,jmax))
     allocate(WVP_flattened(imax,jmax))
-    
-    LWP_vertical(:) = 0.0
+ 
     LWP_flattened(:,:) = 0.0
     WVP_flattened(:,:) = 0.0
     LWP_grid(:,:,:) = 0.0
