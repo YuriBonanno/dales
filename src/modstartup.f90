@@ -111,7 +111,7 @@ contains
 	!BarkerBonanno Method
 	! ---------------------------
 	namelist/BARBON/ &
-        diagnostic_run, cloud_nRT, barker_method, n_GLQ_clear, n_RT_Ratio,&
+        barker_method, n_GLQ_clear, n_RT_Ratio,&
          n_classes_initial, cloud_threshold, cloud_patch_threshold, use_gauleg,&
          use_evenly_spaced, use_bin, warm_randomnizer, min_GLQ_in_class, &
 		 classes_same_size, dynamic_GLQ_per_class
