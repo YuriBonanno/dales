@@ -280,8 +280,6 @@ contains
 	!broadcast namelists BARBON
 	!BarkerBonanno Method
 	! ---------------------------
-	call MPI_BCAST(diagnostic_run,1,MPI_LOGICAL,0,commwrld,mpierr)
-	call MPI_BCAST(cloud_nRT,1,MPI_LOGICAL,0,commwrld,mpierr)
 	call MPI_BCAST(barker_method,1,MPI_LOGICAL,0,commwrld,mpierr)
 	
 	call MPI_BCAST(use_gauleg,1,MPI_LOGICAL,0,commwrld,mpierr)
