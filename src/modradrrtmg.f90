@@ -212,7 +212,6 @@ contains
     LWP_flattened(:,:) = 0.0
     WVP_flattened(:,:) = 0.0
     LWP_grid(:,:,:) = 0.0
-    LWP_grid_biased(:,:,:) = 0.0
     
     if (barker_method) then
       call BarkerRad(sunUp)
@@ -1253,8 +1252,6 @@ contains
       deallocate(class_of_GLQ)
     end if
 
-    deallocate(original_index_all)
-    deallocate(GLQ_points_all)
     deallocate(GLQ_index_all)
     
   end subroutine BarkerRad
