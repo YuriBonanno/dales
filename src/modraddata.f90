@@ -186,7 +186,6 @@ SAVE
 	real(kind=kind_rb) :: cloud_threshold != 0.0				!for the definition of a clouded collumn
 	real(kind=kind_rb) :: cloud_patch_threshold != 0.0		!for the definition of cloud top
 	
-	real(kind=kind_rb),allocatable,dimension(:) :: LWP_vertical 		!vertical slab average LWP
 	real(kind=kind_rb),allocatable,dimension(:,:) :: LWP_flattened 		!flattened collumns LWP content		!Moved up from modradrrtmgyuri for test purposes, still necessary there if this is removed here
 	real(kind=kind_rb),allocatable,dimension(:,:) :: WVP_flattened 											!Moved up from modradrrtmgyuri for test purposes
 	real(kind=kind_rb),allocatable,dimension(:,:,:) :: LWP_grid

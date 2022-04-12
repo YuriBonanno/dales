@@ -212,11 +212,11 @@ contains
     WVP_flattened(:,:) = 0.0
     LWP_grid(:,:,:) = 0.0
     
-    ! if (barker_method) then
-      ! call BarkerRad(sunUp)
-    ! else
-      ! call StephanRad(sunUp)
-    ! end if
+    if (barker_method) then
+      call BarkerRad(sunUp)
+    else
+      call StephanRad(sunUp)
+    end if
     
     deallocate(LWP_grid)
     deallocate(LWP_flattened)
