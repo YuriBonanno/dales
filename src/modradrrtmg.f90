@@ -1874,23 +1874,23 @@ contains
 		real(kind=kind_rb), allocatable, dimension(:,:) :: tempLWPFlatArray
 		real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempLWPGridArray
   		
-		! xsize = i1-1
-		! ysize = j1-1
-		! zsize = k1
-		
-		! x1 = 2
-		! x2 = i1
-		! y1 = 2
-		! y2 = j1
-    
-    xsize = 64
-		ysize = 64
+		xsize = i1-1
+		ysize = j1-1
 		zsize = k1
 		
 		x1 = 2
-		x2 = 65
+		x2 = i1
 		y1 = 2
-		y2 = 65
+		y2 = j1
+    
+    ! xsize = 64
+		! ysize = 64
+		! zsize = k1
+		
+		! x1 = 2
+		! x2 = 65
+		! y1 = 2
+		! y2 = 65
 
 		! call writetofiledefinedsize("TESTSTD_LWD", lwd())
 
