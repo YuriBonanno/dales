@@ -163,7 +163,7 @@ contains
 
 		!Define layerMass_grid
 		layerMass_grid(1:imax,1:jmax,1:kradmax) = 100.*( interfaceP_grid(1:imax,1:jmax,1:kradmax) - interfaceP_grid(1:imax,1:jmax,2:kradmax+1) ) / grav  !of full level
-	    layerMass_grid(1:imax,1:jmax,krad1) = 100.*( interfaceP_grid(1:imax,1:jmax,krad1) - interfaceP_grid(1:imax,1:jmax,krad2) ) / grav
+	  layerMass_grid(1:imax,1:jmax,krad1) = 100.*( interfaceP_grid(1:imax,1:jmax,krad1) - interfaceP_grid(1:imax,1:jmax,krad2) ) / grav
         
 		!Define grid liquid water path
 		LWP_grid(1:imax,1:jmax,1:kradmax) = qcl_grid(1:imax,1:jmax,1:kradmax)*layerMass_grid(1:imax,1:jmax,1:kradmax)*1e3
