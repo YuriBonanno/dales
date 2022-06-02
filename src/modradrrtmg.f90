@@ -1434,10 +1434,10 @@ contains
 	call writetofiledefinedsize("column_swd_" // trim(NameSuffix), tempRadColumn, 1, zsize, 1, 1, .true.)
 		
 	
-  call writetofiledefinedsize("swdTotal_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-  call writetofiledefinedsize("swuTotal_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-  call writetofiledefinedsize("lwdTotal_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
-  call writetofiledefinedsize("lwuTotal_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
+  call writetofiledefinedsize("swdTotal_" // trim(NameSuffix), swd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+  call writetofiledefinedsize("swuTotal_" // trim(NameSuffix), swu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+  call writetofiledefinedsize("lwdTotal_" // trim(NameSuffix), lwd(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
+  call writetofiledefinedsize("lwuTotal_" // trim(NameSuffix), lwu(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize, .true.)
 	! call writetofiledefinedsize("swdir_" // trim(NameSuffix), swdir(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("swdif_" // trim(NameSuffix), swdif(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
 	! call writetofiledefinedsize("lwc_" // trim(NameSuffix), lwc(x1:x2,y1:y2,1:k1), 3, xsize, ysize, zsize)
