@@ -1744,6 +1744,8 @@ contains
 	implicit none
 	
 	logical :: sunUp
+  integer :: xsize, ysize, zsize !!!									!helper integers for easy size allocation of writetofiles
+  integer :: x1, x2, y1, y2 !!!
 	integer :: i, ratioSize, k
 	integer, dimension(:) :: ratios (13)
 	real(kind=kind_rb), dimension(:) :: timeSet (14)
