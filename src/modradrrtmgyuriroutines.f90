@@ -1133,6 +1133,112 @@ contains
 
 	end subroutine
 
+	subroutine Rmse(dataset, filename, xsize, ysize, zsize)
+		integer :: xsize, ysize, zsize
+		REAL(kind=kind_rb)    :: rmse, SumVar, x
+		REAL(kind=kind_rb)    :: rmse(zsize), Std(zsize), Var(zsize)
+		integer :: Ncolumns
+		integer :: dims, i, j, k, m
+		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		logical :: fileexists=.false.
+		character(*) :: filename
+		character(200) :: fullpath
+		character(200) :: makedir
+		character(5000) :: frmt
+
+		makedir = "datadir"
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		! for mean
+		fullpath = trim(makedir) // '/' // trim(filename) // '_rmse'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(10, file=fullpath, status="old", position="append", action="write")
+		else
+			open(10, file=fullpath, status="new", action="write")
+		end if
+
+		Ncolumns = xsize*ysize
+		rmse(:) = 0.0
+
+		frmt = "(F18.10"
+		do k=1,zsize
+      rmse = sqrt( sum(dataset**2)/size(dataset) )
+			if (k==1) then
+				continue
+			else
+				frmt = trim(frmt)
+				frmt = trim(frmt) // ",F18.10 "
+				frmt = trim(frmt)
+			end if
+
+		enddo
+		frmt = trim(frmt) // ", A)"
+		
+		write(10, frmt, advance="no")  rmse(:), ","
+		close(10)
+		! deallocate(fullpath)
+		! deallocate(makedir)
+	end subroutine Rmse
+
+	subroutine RmseOnlyClouds(dataset, filename, xsize, ysize, zsize, NColumns)
+		integer :: xsize, ysize, zsize
+		REAL(kind=kind_rb)    :: rmse(zsize), Std(zsize), Var(zsize)
+		integer :: Ncolumns
+		integer :: dims, i, j, k, m
+		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
+		logical :: fileexists=.false.
+		character(*) :: filename
+		character(200) :: fullpath
+		character(200) :: makedir
+		character(5000) :: frmt
+
+		makedir = "datadir"
+		call execute_command_line ('mkdir -p ' // trim(makedir))
+		! for mean
+		fullpath = trim(makedir) // '/' // trim(filename) // '_mean'
+		inquire(file=fullpath, exist=fileexists)
+		if (fileexists) then
+			open(10, file=fullpath, status="old", position="append", action="write")
+		else
+			open(10, file=fullpath, status="new", action="write")
+		end if
+
+
+		if (NColumns /= 0) then
+			frmt = "(F18.10"
+			do k=1,zsize
+				rmse = sqrt( sum(dataset**2)/NColumns )
+				if (k==1) then
+					continue
+				else
+					frmt = trim(frmt)
+					frmt = trim(frmt) // ",F18.10 "
+					frmt = trim(frmt)
+				end if
+
+			enddo
+			frmt = trim(frmt) // ", A)"
+		else
+			rmse(:) = 0
+			frmt = "(F18.10"
+			do k=1,zsize
+				if (k==1) then
+					continue
+				else
+					frmt = trim(frmt)
+					frmt = trim(frmt) // ",F18.10 "
+					frmt = trim(frmt)
+				end if
+			end do
+			frmt = trim(frmt) // ", A)"
+		end if
+		
+		write(10, frmt, advance="no")  Mean(:), ","
+		close(10)
+		! deallocate(fullpath)
+		! deallocate(makedir)
+	end subroutine RmseOnlyClouds
+
 end module modradrrtmgyuriroutines
 
 

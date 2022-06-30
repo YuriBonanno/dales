@@ -1740,11 +1740,11 @@ contains
   subroutine Diagnostics(sunUp)
   	use modraddata
 	use modglobal, only : i1, j1, k1, kind_rb, ih, jh, imax, jmax
-	use modradrrtmgyuriroutines, only : writetofiledefinedsizeint, writetofiledefinedsize
+	use modradrrtmgyuriroutines, only : Rmse, RmseOnlyClouds, writetofiledefinedsizeint, writetofiledefinedsize
 	implicit none
 	
 	logical :: sunUp
-	integer :: i, ratioSize
+	integer :: i, ratioSize, k
 	integer, dimension(:) :: ratios (13)
 	real(kind=kind_rb), dimension(:) :: timeSet (14)
 	
@@ -1752,6 +1752,10 @@ contains
 	real(kind=kind_rb), dimension(:,:,:) :: temp_lwd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+  real(kind=kind_rb), dimension(:,:,:) :: rmse_lwu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: rmse_lwd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: rmse_swu (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
+	real(kind=kind_rb), dimension(:,:,:) :: rmse_swd (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swdir (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_swdif (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
 	real(kind=kind_rb), dimension(:,:,:) :: temp_lwc (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1,k1)
@@ -1768,6 +1772,19 @@ contains
 	real(kind=kind_rb), dimension(:,:) :: temp_LW_up_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
 	real(kind=kind_rb), dimension(:,:) :: temp_LW_dn_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
 	
+  real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayK !!!
+  
+  xsize = i1-1 !!!
+	ysize = j1-1 !!!
+	zsize = k1 !!!
+		
+	x1 = 2 !!!
+	x2 = i1 !!!
+	y1 = 2 !!!
+	y2 = j1 !!!
+  
+  allocate(tempRadArrayK(xsize, ysize, 4)) !!!
+  
 	!Welke datasets wil ik weergeven?
 	! - Alle TOA
 	! - Rad op relevante hoogtes
@@ -1785,46 +1802,116 @@ contains
 	
 	!PUT ALL THE TEMPRADS FROM STEPHAN INTO FILES
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	  temp_lwu(:,:,:) = lwu(:,:,:)
-	  temp_lwd(:,:,:) = lwd(:,:,:)
-	  temp_swu(:,:,:) = swu(:,:,:)
-	  temp_swd(:,:,:) = swd(:,:,:)
+  temp_lwu(:,:,:) = lwu(:,:,:)
+  temp_lwd(:,:,:) = lwd(:,:,:)
+  temp_swu(:,:,:) = swu(:,:,:)
+  temp_swd(:,:,:) = swd(:,:,:)
+  
+  rmse_lwu(:,:,:) = 0. !!!
+  rmse_lwd(:,:,:) = 0. !!!
+  rmse_swu(:,:,:) = 0. !!!
+  rmse_swd(:,:,:) = 0. !!!
 
-	  temp_swdir(:,:,:) = swdir(:,:,:)
-	  temp_swdif(:,:,:) = swdif(:,:,:)
-	  temp_lwc(:,:,:) = lwc(:,:,:)
+  temp_swdir(:,:,:) = swdir(:,:,:)
+  temp_swdif(:,:,:) = swdif(:,:,:)
+  temp_lwc(:,:,:) = lwc(:,:,:)
 
-	  temp_lwuca(:,:,:) = lwuca(:,:,:)
-	  temp_lwdca(:,:,:) = lwdca(:,:,:)
-	  temp_swuca(:,:,:) = swuca(:,:,:)
-	  temp_swdca(:,:,:) = swdca(:,:,:)
+  temp_lwuca(:,:,:) = lwuca(:,:,:)
+  temp_lwdca(:,:,:) = lwdca(:,:,:)
+  temp_swuca(:,:,:) = swuca(:,:,:)
+  temp_swdca(:,:,:) = swdca(:,:,:)
 
-	  temp_SW_up_TOA(:,:) = SW_up_TOA(:,:)
-	  temp_SW_dn_TOA(:,:) = SW_dn_TOA(:,:)
-	  temp_LW_up_TOA(:,:) = LW_up_TOA(:,:)
-	  temp_LW_dn_TOA(:,:) = LW_dn_TOA(:,:)
+  temp_SW_up_TOA(:,:) = SW_up_TOA(:,:)
+  temp_SW_dn_TOA(:,:) = SW_dn_TOA(:,:)
+  temp_LW_up_TOA(:,:) = LW_up_TOA(:,:)
+  temp_LW_dn_TOA(:,:) = LW_dn_TOA(:,:)
 
-	  temp_SW_up_ca_TOA(:,:) = SW_up_ca_TOA(:,:)
-	  temp_SW_dn_ca_TOA(:,:) = SW_dn_ca_TOA(:,:)
-	  temp_LW_up_ca_TOA(:,:) = LW_up_ca_TOA(:,:)
-	  temp_LW_dn_ca_TOA(:,:) = LW_dn_ca_TOA(:,:)
-	  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  temp_SW_up_ca_TOA(:,:) = SW_up_ca_TOA(:,:)
+  temp_SW_dn_ca_TOA(:,:) = SW_dn_ca_TOA(:,:)
+  temp_LW_up_ca_TOA(:,:) = LW_up_ca_TOA(:,:)
+  temp_LW_dn_ca_TOA(:,:) = LW_dn_ca_TOA(:,:)
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
+  rmse_lwu(:,:,:) = lwu(:,:,:)-temp_lwu(:,:,:) !!!
+	rmse_lwd(:,:,:) = lwd(:,:,:)-temp_lwd(:,:,:) !!!
+	rmse_swu(:,:,:) = swu(:,:,:)-temp_swu(:,:,:) !!!
+	rmse_swd(:,:,:) = swd(:,:,:)-temp_swd(:,:,:) !!!
 	! call cpu_time(endTime)
 	! netTime = endTime - endTime
 	! timeSet(1) = netTime
-	
 	call CompileStatistics
+  
+  call Rmse(rmse_lwu(x1:x2,y1:y2,LWP_index), "rmse_lwu", xsize, ysize, 4) !!!
+  do k=1,4 !!!
+    tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  end do !!!
+  call RmseOnlyClouds(tempRadArrayK,"rmse_lwu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
+  !
+  call Rmse(rmse_lwd(x1:x2,y1:y2,LWP_index), "rmse_lwd", xsize, ysize, 4) !!!
+  do k=1,4 !!!
+    tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  end do !!!
+  call RmseOnlyClouds(tempRadArrayK,"rmse_lwd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
+  !
+  call Rmse(rmse_swu(x1:x2,y1:y2,LWP_index), "rmse_swu", xsize, ysize, 4) !!!
+  do k=1,4 !!!
+    tempRadArrayK(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  end do !!!
+  call RmseOnlyClouds(tempRadArrayK,"rmse_swu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
+  !
+  call Rmse(rmse_swd(x1:x2,y1:y2,LWP_index), "rmse_swd", xsize, ysize, 4) !!!
+  do k=1,4 !!!
+    tempRadArrayK(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  end do !!!
+  call RmseOnlyClouds(tempRadArrayK,"rmse_swd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
 	call PrintRadiationData("diagnostics")
 	do i=1,ratioSize
 
 		n_RT_Ratio = ratios(i)
 		! call cpu_time(startTime)
 		call BarkerRad(sunUp)
+    rmse_lwu(:,:,:) = lwu(:,:,:)-temp_lwu(:,:,:) !!!
+	  rmse_lwd(:,:,:) = lwd(:,:,:)-temp_lwd(:,:,:) !!!
+	  rmse_swu(:,:,:) = swu(:,:,:)-temp_swu(:,:,:) !!!
+	  rmse_swd(:,:,:) = swd(:,:,:)-temp_swd(:,:,:) !!!
 		! call cpu_time(endTime)
 		! netTime = endTime - endTime
 		! timeSet(i+1) = netTime
 		call CompileStatistics
+    
+    		! the values found at LWP_index
+		!
+		call Rmse(rmse_lwu(x1:x2,y1:y2,LWP_index), "rmse_lwu", xsize, ysize, 4) !!!
+		do k=1,4 !!!
+			tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+		end do !!!
+		call RmseOnlyClouds(tempRadArrayK,"rmse_lwu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		
+		!
+		call Rmse(rmse_lwd(x1:x2,y1:y2,LWP_index), "rmse_lwd", xsize, ysize, 4) !!!
+		do k=1,4 !!!
+			tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+		end do !!!
+		call RmseOnlyClouds(tempRadArrayK,"rmse_lwd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		
+		!
+		call Rmse(rmse_swu(x1:x2,y1:y2,LWP_index), "rmse_swu", xsize, ysize, 4) !!!
+		do k=1,4 !!!
+			tempRadArrayK(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+		end do !!!
+		call RmseOnlyClouds(tempRadArrayK,"rmse_swu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		
+		!
+		call Rmse(rmse_swd(x1:x2,y1:y2,LWP_index), "rmse_swd", xsize, ysize, 4) !!!
+		do k=1,4 !!!
+			tempRadArrayK(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+		end do !!!
+		call RmseOnlyClouds(tempRadArrayK,"rmse_swd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+    
 		call PrintRadiationData("diagnostics")
 	end do
 	
@@ -1853,6 +1940,18 @@ contains
 	  LW_up_ca_TOA(:,:) = temp_LW_up_ca_TOA(:,:)
 	  LW_dn_ca_TOA(:,:) = temp_LW_dn_ca_TOA(:,:)
 	
+  	call finishstatisticsline("rmse_lwu")
+		call finishstatisticsline("rmse_lwu_Clouds_Only")
+		
+		call finishstatisticsline("rmse_lwd")
+		call finishstatisticsline("rmse_lwd_Clouds_Only")
+		
+		call finishstatisticsline("rmse_swu")
+		call finishstatisticsline("rmse_swu_Clouds_Only")
+		
+		call finishstatisticsline("rmse_swd")
+		call finishstatisticsline("rmse_swd_Clouds_Only")
+  
 	! call writetofiledefinedsize("LWP_grid", LWP_grid, 3, imax, jmax , k1, .false.)
 	! call writetofiledefinedsize("netTime", timeSet, 1, 14, 1, 1, .false.)
 	
@@ -1861,7 +1960,7 @@ contains
   end subroutine Diagnostics
 
 	subroutine CompileStatistics
-	  	use modraddata
+	  use modraddata
 		use modglobal, only : imax, jmax, kmax, i1, j1, k1, kind_rb, zf, ih, jh
 		use modradrrtmgyuriroutines, only : MeanVariance, MeanVarianceOnlyClouds, GetDiff !, writetofiledefinedsize
 	
