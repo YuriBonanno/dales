@@ -1774,7 +1774,7 @@ contains
 	real(kind=kind_rb), dimension(:,:) :: temp_LW_up_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
 	real(kind=kind_rb), dimension(:,:) :: temp_LW_dn_ca_TOA (i1+ih-(2-ih)+1,j1+jh-(2-jh)+1)
 	
-  real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayK !!!
+  real(kind=kind_rb), allocatable, dimension(:,:,:) :: tempRadArrayColumn !!!
   
   xsize = i1-1 !!!
 	ysize = j1-1 !!!
