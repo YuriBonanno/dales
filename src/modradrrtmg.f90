@@ -1785,7 +1785,7 @@ contains
 	y1 = 2 !!!
 	y2 = j1 !!!
   
-  allocate(tempRadArrayK(xsize, ysize, 4)) !!!
+  allocate(tempRadArrayColumn(xsize, ysize, k1)) !!!
   
 	!Welke datasets wil ik weergeven?
 	! - Alle TOA
@@ -1843,32 +1843,61 @@ contains
 	! timeSet(1) = netTime
 	call CompileStatistics
   
-  call Rmse(rmse_lwu(x1:x2,y1:y2,LWP_index), "rmse_lwu", xsize, ysize, 4) !!!
-  do k=1,4 !!!
-    tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-  end do !!!
-  call RmseOnlyClouds(tempRadArrayK,"rmse_lwu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  ! call Rmse(rmse_lwu(x1:x2,y1:y2,LWP_index), "rmse_lwu", xsize, ysize, 4) !!!
+  ! do k=1,4 !!!
+    ! tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  ! end do !!!
+  ! call RmseOnlyClouds(tempRadArrayK,"rmse_lwu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
   
-  !
-  call Rmse(rmse_lwd(x1:x2,y1:y2,LWP_index), "rmse_lwd", xsize, ysize, 4) !!!
-  do k=1,4 !!!
-    tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-  end do !!!
-  call RmseOnlyClouds(tempRadArrayK,"rmse_lwd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
   
-  !
-  call Rmse(rmse_swu(x1:x2,y1:y2,LWP_index), "rmse_swu", xsize, ysize, 4) !!!
-  do k=1,4 !!!
-    tempRadArrayK(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-  end do !!!
-  call RmseOnlyClouds(tempRadArrayK,"rmse_swu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  ! call Rmse(rmse_lwd(x1:x2,y1:y2,LWP_index), "rmse_lwd", xsize, ysize, 4) !!!
+  ! do k=1,4 !!!
+    ! tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  ! end do !!!
+  ! call RmseOnlyClouds(tempRadArrayK,"rmse_lwd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
   
-  !
-  call Rmse(rmse_swd(x1:x2,y1:y2,LWP_index), "rmse_swd", xsize, ysize, 4) !!!
-  do k=1,4 !!!
-    tempRadArrayK(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-  end do !!!
-  call RmseOnlyClouds(tempRadArrayK,"rmse_swd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
+  ! call Rmse(rmse_swu(x1:x2,y1:y2,LWP_index), "rmse_swu", xsize, ysize, 4) !!!
+  ! do k=1,4 !!!
+    ! tempRadArrayK(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  ! end do !!!
+  ! call RmseOnlyClouds(tempRadArrayK,"rmse_swu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
+  
+  ! call Rmse(rmse_swd(x1:x2,y1:y2,LWP_index), "rmse_swd", xsize, ysize, 4) !!!
+  ! do k=1,4 !!!
+    ! tempRadArrayK(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
+  ! end do !!!
+  ! call RmseOnlyClouds(tempRadArrayK,"rmse_swd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+  
+  	! the values for the whole column
+		!
+		call Rmse(rmse_lwu(x1:x2,y1:y2,:), "rmse_lwu", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_lwu_Clouds_Only", xsize, ysize, zsize, n_clouds)
+		
+		!
+		call Rmse(rmse_lwd(x1:x2,y1:y2,:), "rmse_lwd", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_lwd_Clouds_Only", xsize, ysize, zsize, n_clouds)
+		
+		!
+		call Rmse(rmse_swu(x1:x2,y1:y2,:), "rmse_swu", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_swu_Clouds_Only", xsize, ysize, zsize, n_clouds)
+		
+		!
+		call Rmse(rmse_swd(x1:x2,y1:y2,:), "rmse_swd", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_swd_Clouds_Only", xsize, ysize, zsize, n_clouds)
   
 	call PrintRadiationData("diagnostics")
 	do i=1,ratioSize
@@ -1885,34 +1914,34 @@ contains
 		! timeSet(i+1) = netTime
 		call CompileStatistics
     
-    		! the values found at LWP_index
+  	! the values for the whole column
 		!
-		call Rmse(rmse_lwu(x1:x2,y1:y2,LWP_index), "rmse_lwu", xsize, ysize, 4) !!!
-		do k=1,4 !!!
-			tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-		end do !!!
-		call RmseOnlyClouds(tempRadArrayK,"rmse_lwu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		call Rmse(rmse_lwu(x1:x2,y1:y2,:), "rmse_lwu", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_lwu(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_lwu_Clouds_Only", xsize, ysize, zsize, n_clouds)
 		
 		!
-		call Rmse(rmse_lwd(x1:x2,y1:y2,LWP_index), "rmse_lwd", xsize, ysize, 4) !!!
-		do k=1,4 !!!
-			tempRadArrayK(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-		end do !!!
-		call RmseOnlyClouds(tempRadArrayK,"rmse_lwd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		call Rmse(rmse_lwd(x1:x2,y1:y2,:), "rmse_lwd", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_lwd(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_lwd_Clouds_Only", xsize, ysize, zsize, n_clouds)
 		
 		!
-		call Rmse(rmse_swu(x1:x2,y1:y2,LWP_index), "rmse_swu", xsize, ysize, 4) !!!
-		do k=1,4 !!!
-			tempRadArrayK(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-		end do !!!
-		call RmseOnlyClouds(tempRadArrayK,"rmse_swu_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		call Rmse(rmse_swu(x1:x2,y1:y2,:), "rmse_swu", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_swu(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_swu_Clouds_Only", xsize, ysize, zsize, n_clouds)
 		
 		!
-		call Rmse(rmse_swd(x1:x2,y1:y2,LWP_index), "rmse_swd", xsize, ysize, 4) !!!
-		do k=1,4 !!!
-			tempRadArrayK(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,LWP_index(k)) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold) !!!
-		end do !!!
-		call RmseOnlyClouds(tempRadArrayK,"rmse_swd_Clouds_Only", xsize, ysize, 4, n_clouds) !!!
+		call Rmse(rmse_swd(x1:x2,y1:y2,:), "rmse_swd", xsize, ysize, zsize)
+		do k=1,zsize
+			tempRadArrayColumn(1:xsize,1:ysize,k) = rmse_swd(x1:x2,y1:y2,k) * merge(1,0,cloudFracModRad(1:xsize,1:ysize)>cloud_threshold)
+		end do
+		call RmseOnlyClouds(tempRadArrayColumn,"rmse_swd_Clouds_Only", xsize, ysize, zsize, n_clouds)
     
 		call PrintRadiationData("diagnostics")
 	end do
