@@ -1233,7 +1233,7 @@ contains
 			frmt = trim(frmt) // ", A)"
 		end if
 		
-		write(10, frmt, advance="no")  Mean(:), ","
+		write(10, frmt, advance="no")  rmse(:), ","
 		close(10)
 		! deallocate(fullpath)
 		! deallocate(makedir)
