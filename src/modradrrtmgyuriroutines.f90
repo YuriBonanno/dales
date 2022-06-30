@@ -1135,7 +1135,7 @@ contains
 
 	subroutine Rmse(dataset, filename, xsize, ysize, zsize)
 		integer :: xsize, ysize, zsize
-		REAL(kind=kind_rb)    :: rmse(zsize), Std(zsize), Var(zsize)
+		REAL(kind=kind_rb)    :: rmsetest(zsize), Std(zsize), Var(zsize)
 		integer :: Ncolumns
 		integer :: dims, i, j, k, m
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
@@ -1157,11 +1157,11 @@ contains
 		end if
 
 		Ncolumns = xsize*ysize
-		rmse(:) = 0.0
+		rmsetest(:) = 0.0
 
 		frmt = "(F18.10"
 		do k=1,zsize
-      rmse = sqrt( sum(dataset**2)/size(dataset) )
+      rmsetest = sqrt( sum(dataset**2)/size(dataset) )
 			if (k==1) then
 				continue
 			else
@@ -1173,7 +1173,7 @@ contains
 		enddo
 		frmt = trim(frmt) // ", A)"
 		
-		write(10, frmt, advance="no")  rmse(:), ","
+		write(10, frmt, advance="no")  rmsetest(:), ","
 		close(10)
 		! deallocate(fullpath)
 		! deallocate(makedir)
@@ -1181,7 +1181,7 @@ contains
 
 	subroutine RmseOnlyClouds(dataset, filename, xsize, ysize, zsize, NColumns)
 		integer :: xsize, ysize, zsize
-		REAL(kind=kind_rb)    :: rmse(zsize), Std(zsize), Var(zsize)
+		REAL(kind=kind_rb)    :: rmsetest(zsize), Std(zsize), Var(zsize)
 		integer :: Ncolumns
 		integer :: dims, i, j, k, m
 		real(kind=kind_rb) :: dataset (xsize, ysize, zsize)
@@ -1194,7 +1194,7 @@ contains
 		makedir = "datadir"
 		call execute_command_line ('mkdir -p ' // trim(makedir))
 		! for mean
-		fullpath = trim(makedir) // '/' // trim(filename) // '_mean'
+		fullpath = trim(makedir) // '/' // trim(filename) // '_rmse'
 		inquire(file=fullpath, exist=fileexists)
 		if (fileexists) then
 			open(10, file=fullpath, status="old", position="append", action="write")
@@ -1206,7 +1206,7 @@ contains
 		if (NColumns /= 0) then
 			frmt = "(F18.10"
 			do k=1,zsize
-				rmse = sqrt( sum(dataset**2)/NColumns )
+				rmsetest = sqrt( sum(dataset**2)/NColumns )
 				if (k==1) then
 					continue
 				else
@@ -1218,7 +1218,7 @@ contains
 			enddo
 			frmt = trim(frmt) // ", A)"
 		else
-			rmse(:) = 0
+			rmsetest(:) = 0
 			frmt = "(F18.10"
 			do k=1,zsize
 				if (k==1) then
@@ -1232,7 +1232,7 @@ contains
 			frmt = trim(frmt) // ", A)"
 		end if
 		
-		write(10, frmt, advance="no")  rmse(:), ","
+		write(10, frmt, advance="no")  rmsetest(:), ","
 		close(10)
 		! deallocate(fullpath)
 		! deallocate(makedir)
