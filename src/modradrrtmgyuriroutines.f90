@@ -1135,7 +1135,6 @@ contains
 
 	subroutine Rmse(dataset, filename, xsize, ysize, zsize)
 		integer :: xsize, ysize, zsize
-		REAL(kind=kind_rb)    :: rmse, SumVar, x
 		REAL(kind=kind_rb)    :: rmse(zsize), Std(zsize), Var(zsize)
 		integer :: Ncolumns
 		integer :: dims, i, j, k, m
