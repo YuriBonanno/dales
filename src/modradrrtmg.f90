@@ -1740,7 +1740,7 @@ contains
   subroutine Diagnostics(sunUp)
   	use modraddata
 	use modglobal, only : i1, j1, k1, kind_rb, ih, jh, imax, jmax
-	use modradrrtmgyuriroutines, only : Rmse, RmseOnlyClouds, writetofiledefinedsizeint, writetofiledefinedsize
+	use modradrrtmgyuriroutines, only : Rmse, RmseOnlyClouds, writetofiledefinedsizeint, writetofiledefinedsize, finishstatisticsline
 	implicit none
 	
 	logical :: sunUp
